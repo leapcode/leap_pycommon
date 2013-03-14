@@ -14,12 +14,12 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 """
 Set of functions to help checking situations
 """
-import logging
+
 import inspect
+import logging
 import traceback
 
 

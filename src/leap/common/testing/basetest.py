@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# leap.common.testing.basetest.py
+# basetest.py
 # Copyright (C) 2013 LEAP
 #
 # This program is free software: you can redistribute it and/or modify
@@ -27,20 +27,23 @@ try:
 except ImportError:
     import unittest
 
+from leap.common.check import leap_assert
 from leap.common.files import mkdir_p, check_and_fix_urw_only
-
-_system = platform.system()
 
 
 class BaseLeapTest(unittest.TestCase):
     """
     Base Leap TestCase
     """
-
     __name__ = "leap_test"
+    _system = platform.system()
 
     @classmethod
     def setUpClass(cls):
+        """
+        sets up common facilities
+        for testing this TestCase
+        """
         cls.old_path = os.environ['PATH']
         cls.old_home = os.environ['HOME']
         cls.tempdir = tempfile.mkdtemp(prefix="leap_tests-")
@@ -53,10 +56,18 @@ class BaseLeapTest(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
+        """
+        cleanup common facilities used
+        for testing this TestCase
+        """
         os.environ["PATH"] = cls.old_path
         os.environ["HOME"] = cls.old_home
-        # safety check
-        assert cls.tempdir.startswith('/tmp/leap_tests-')
+        # safety check! please do not wipe my home...
+        # XXX needs to adapt to non-linuces
+        leap_assert(
+            cls.tempdir.startswith('/tmp/leap_tests-'),
+            "beware! tried to remove a dir which does not "
+            "live in temporal folder!")
         shutil.rmtree(cls.tempdir)
 
     # you have to override these methods
@@ -64,37 +75,63 @@ class BaseLeapTest(unittest.TestCase):
     # here that you can forget to call.
 
     def setUp(self):
+        """not implemented"""
         raise NotImplementedError("abstract base class")
 
     def tearDown(self):
+        """not implemented"""
         raise NotImplementedError("abstract base class")
 
     #
     # helper methods
     #
 
-    def get_tempfile(self, filename):
-        return os.path.join(self.tempdir, filename)
-
     def _missing_test_for_plat(self, do_raise=False):
+        """
+        Raises NotImplementedError for this platform
+        if do_raise is True
+
+        @param do_raise: flag to actually raise exception
+        @type do_raise: bool
+        """
         if do_raise:
             raise NotImplementedError(
                 "This test is not implemented "
                 "for the running platform: %s" %
-                _system)
+                self._system)
+
+    def get_tempfile(self, filename):
+        """
+        Returns the path of a given filename
+        prepending the temporal dir associated with this
+        TestCase
+
+        @param filename: the filename
+        @type filename: str
+        """
+        return os.path.join(self.tempdir, filename)
 
     def touch(self, filepath):
+        """
+        Touches a filepath, creating folders along
+        the way if needed.
+
+        @param filepath: path to be touched
+        @type filepath: str
+        """
         folder, filename = os.path.split(filepath)
         if not os.path.isdir(folder):
             mkdir_p(folder)
-        # XXX should move to test_basetest
         self.assertTrue(os.path.isdir(folder))
-
         with open(filepath, 'w') as fp:
             fp.write(' ')
-
-        # XXX should move to test_basetest
         self.assertTrue(os.path.isfile(filepath))
 
     def chmod600(self, filepath):
+        """
+        Chmods 600 a file
+
+        @param filepath: filepath to be chmodded
+        @type filepath: str
+        """
         check_and_fix_urw_only(filepath)

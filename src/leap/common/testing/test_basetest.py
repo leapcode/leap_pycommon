@@ -16,7 +16,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 Unittests for base test
-...becase it's oh so meta"""
+...becase it's oh so meta
+"""
 try:
     import unittest2 as unittest
 except ImportError:
@@ -27,12 +28,20 @@ import StringIO
 
 from leap.testing.basetest import BaseLeapTest
 
-# global for tempdir checking
-_tempdir = None
+_tempdir = None  # global for tempdir checking
 
 
 class _TestCaseRunner(object):
+    """
+    TestCaseRunner used to run
+    BaseLeapTest
+    """
     def run_testcase(self, testcase=None):
+        """
+        Runs a given testcase
+        @param testcase: the testcase
+        @type testcase: unittest.TestCase
+        """
         if not testcase:
             return None
         loader = unittest.TestLoader()
@@ -46,8 +55,12 @@ class _TestCaseRunner(object):
 
 
 class TestAbstractBaseLeapTest(unittest.TestCase, _TestCaseRunner):
-
+    """
+    TestCase for BaseLeapTest abs
+    """
     def test_abstract_base_class(self):
+        """test errors raised when setup/teardown not
+        overloaded"""
         class _BaseTest(BaseLeapTest):
             def test_dummy_method(self):
                 pass
@@ -65,36 +78,54 @@ class TestAbstractBaseLeapTest(unittest.TestCase, _TestCaseRunner):
 
 
 class TestInitBaseLeapTest(BaseLeapTest):
+    """
+    testcase for testing initialization of BaseLeapTest
+    """
 
     def setUp(self):
+        """nuke it"""
         pass
 
     def tearDown(self):
+        """nuke it"""
         pass
 
     def test_path_is_changed(self):
+        """tests whether we have changed the PATH env var"""
         os_path = os.environ['PATH']
         self.assertTrue(os_path.startswith(self.tempdir))
 
     def test_old_path_is_saved(self):
+        """tests whether we restore the PATH env var"""
         self.assertTrue(len(self.old_path) > 1)
 
 
 class TestCleanedBaseLeapTest(unittest.TestCase, _TestCaseRunner):
+    """
+    testcase for testing tempdir creation and cleanup
+    """
 
     def test_tempdir_is_cleaned_after_tests(self):
+        """
+        test if a TestCase derived from BaseLeapTest
+        creates and cleans the temporal dir
+        """
         class _BaseTest(BaseLeapTest):
             def setUp(self):
+                """set global _tempdir to this instance tempdir"""
                 global _tempdir
                 _tempdir = self.tempdir
 
             def tearDown(self):
+                """nothing"""
                 pass
 
             def test_tempdir_created(self):
+                """test if tempdir was created"""
                 self.assertTrue(os.path.isdir(self.tempdir))
 
             def test_tempdir_created_on_setupclass(self):
+                """test if tempdir is the one created by setupclass"""
                 self.assertEqual(_tempdir, self.tempdir)
 
         results = self.run_testcase(_BaseTest)
