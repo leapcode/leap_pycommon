@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# leap.common.testing.test_basetest
+# test_basetest.py
 # Copyright (C) 2013 LEAP
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,8 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-Unittests for base test
-...becase it's oh so meta
+Unittests for BaseLeapTest ...becase it's oh so meta
 """
 try:
     import unittest2 as unittest
@@ -33,12 +32,12 @@ _tempdir = None  # global for tempdir checking
 
 class _TestCaseRunner(object):
     """
-    TestCaseRunner used to run
-    BaseLeapTest
+    TestCaseRunner used to run BaseLeapTest
     """
     def run_testcase(self, testcase=None):
         """
-        Runs a given testcase
+        Runs a given TestCase
+
         @param testcase: the testcase
         @type testcase: unittest.TestCase
         """
@@ -59,8 +58,9 @@ class TestAbstractBaseLeapTest(unittest.TestCase, _TestCaseRunner):
     TestCase for BaseLeapTest abs
     """
     def test_abstract_base_class(self):
-        """test errors raised when setup/teardown not
-        overloaded"""
+        """
+        Test errors raised when setup/teardown not overloaded
+        """
         class _BaseTest(BaseLeapTest):
             def test_dummy_method(self):
                 pass
@@ -79,7 +79,7 @@ class TestAbstractBaseLeapTest(unittest.TestCase, _TestCaseRunner):
 
 class TestInitBaseLeapTest(BaseLeapTest):
     """
-    testcase for testing initialization of BaseLeapTest
+    TestCase for testing initialization of BaseLeapTest
     """
 
     def setUp(self):
@@ -102,13 +102,13 @@ class TestInitBaseLeapTest(BaseLeapTest):
 
 class TestCleanedBaseLeapTest(unittest.TestCase, _TestCaseRunner):
     """
-    testcase for testing tempdir creation and cleanup
+    TestCase for testing tempdir creation and cleanup
     """
 
     def test_tempdir_is_cleaned_after_tests(self):
         """
-        test if a TestCase derived from BaseLeapTest
-        creates and cleans the temporal dir
+        test if a TestCase derived from BaseLeapTest creates and cleans the
+        temporal dir
         """
         class _BaseTest(BaseLeapTest):
             def setUp(self):

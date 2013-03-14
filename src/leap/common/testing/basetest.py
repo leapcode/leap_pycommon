@@ -41,8 +41,10 @@ class BaseLeapTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """
-        sets up common facilities
-        for testing this TestCase
+        Sets up common facilities for testing this TestCase:
+        - custom PATH and HOME environmental variables
+        - creates a temporal folder to which those point.
+        It saves the old path and home vars so they can be restored later.
         """
         cls.old_path = os.environ['PATH']
         cls.old_home = os.environ['HOME']
@@ -57,8 +59,9 @@ class BaseLeapTest(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         """
-        cleanup common facilities used
-        for testing this TestCase
+        Cleanup common facilities used for testing this TestCase:
+        - restores the default PATH and HOME variables
+        - removes the temporal folder
         """
         os.environ["PATH"] = cls.old_path
         os.environ["HOME"] = cls.old_home
