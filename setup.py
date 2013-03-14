@@ -36,7 +36,7 @@ setup(
         "Common files used by the LEAP Client project."
     ),
     namespace_packages=["leap"],
-    package_dir = {'': 'src'},
+    package_dir={'': 'src'},
     packages=find_packages('src'),
     #test_suite='leap.common.tests',
     #install_requires=requirements,
