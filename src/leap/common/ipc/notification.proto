@@ -1,0 +1,23 @@
+// https://developers.google.com/protocol-buffers/docs/pythontutorial
+// https://developers.google.com/protocol-buffers/docs/reference/python-generated
+
+package leap.common;
+
+message Notification {
+
+  enum Component {
+    client = 0;
+    soledad = 1;
+    eip = 2;
+    smtp_relay = 3;
+    mx = 4;
+  }
+
+  required int32 id = 1;
+  required Component component = 2;
+  required string content = 3;
+  required string mac_method = 4;
+  required bytes mac = 5;
+  optional string enc_method = 6;
+  optional bool error_occurred = 7;
+}
