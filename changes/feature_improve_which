@@ -1,0 +1,2 @@
+  o Prioritize the path_extension in the which method so it finds our bundled
+    app before the system one, if any.
