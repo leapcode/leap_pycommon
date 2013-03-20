@@ -112,7 +112,7 @@ def which(name, flags=os.X_OK, path_extension="/usr/sbin:/sbin"):
     result = []
     exts = filter(None, os.environ.get('PATHEXT', '').split(os.pathsep))
     path = os.environ.get('PATH', None)
-    path += ":" + path_extension
+    path = path_extension + os.pathsep + path
     if path is None:
         return []
     parts = path.split(os.pathsep)
