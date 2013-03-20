@@ -21,7 +21,7 @@
 
 PROTOC = protoc
 
-all: notification_pb2.py
+all: signal_pb2.py
 
 %_pb2.py: %.proto
 	$(PROTOC) --python_out=./ $<
