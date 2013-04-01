@@ -46,8 +46,8 @@ setup(
     ),
     namespace_packages=["leap"],
     package_dir={'': 'src'},
-    packages=find_packages('src'),
-    #test_suite='leap.common.tests',
+    packages=find_packages('src', exclude=['leap.common.tests']),
+    test_suite='leap.common.tests',
     install_requires=requirements,
     dependency_links=dependency_links,
 )

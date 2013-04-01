@@ -66,7 +66,7 @@ class EventsRpcServer(SocketRpcServer):
         # parent implementation does not hold the server instance, so we do it
         # here.
         self._server = ThreadedTCPServer((self.host, self.port),
-                                        SocketHandler, self)
+                                         SocketHandler, self)
         # if we chose to use a random port, fetch the port number info.
         if self.port is 0:
             self.port = self._server.socket.getsockname()[1]
