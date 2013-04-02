@@ -1,0 +1,69 @@
+// signal.proto
+// Copyright (C) 2013 LEA
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+package leap.common.events;
+
+enum Event {
+  CLIENT_SESSION_ID = 1;
+  CLIENT_UID = 2;
+  SOLEDAD_CREATING_KEYS = 3;
+  SOLEDAD_DONE_CREATING_KEYS = 4;
+  SOLEDAD_UPLOADING_KEYS = 5;
+  SOLEDAD_DONE_UPLOADING_KEYS = 6;
+  SOLEDAD_DOWNLOADING_KEYS = 7;
+  SOLEDAD_DONE_DOWNLOADING_KEYS = 8;
+  SOLEDAD_NEW_DATA_TO_SYNC = 9;
+  SOLEDAD_DONE_DATA_SYNC = 10;
+  UPDATER_NEW_UPDATES = 11;
+  UPDATER_DONE_UPDATING = 12;
+}
+
+message SignalRequest {
+  required Event event = 1;
+  required string content = 2;
+  required string mac_method = 3;
+  required bytes mac = 4;
+  optional string enc_method = 5;
+  optional bool error_occurred = 6;
+}
+
+message RegisterRequest {
+  required Event event = 1;
+  required int32 port = 2;
+  required string mac_method = 3;
+  required bytes mac = 4;
+}
+
+message EventResponse {
+
+  enum Status {
+    OK = 1;
+    UNAUTH = 2;
+    ERROR = 3;
+  }
+
+  required Status status = 1;
+  optional string result = 2;
+}
+
+service EventsServerService {
+  rpc register(RegisterRequest) returns (EventResponse);
+  rpc signal(SignalRequest) returns (EventResponse);
+}
+
+service EventsComponentService {
+  rpc signal(SignalRequest) returns (EventResponse);
+}

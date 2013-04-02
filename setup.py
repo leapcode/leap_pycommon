@@ -19,8 +19,17 @@ setup file for leap.common
 """
 from setuptools import setup, find_packages
 
+
 requirements = [
+    'protobuf',
+    'protobuf.socketrpc',
 ]
+
+
+dependency_links = [
+    'https://protobuf-socket-rpc.googlecode.com/files/protobuf.socketrpc-1.3.2-py2.6.egg#egg=protobuf.socketrpc',
+]
+
 
 # XXX add classifiers, docs
 
@@ -37,7 +46,8 @@ setup(
     ),
     namespace_packages=["leap"],
     package_dir={'': 'src'},
-    packages=find_packages('src'),
-    #test_suite='leap.common.tests',
-    #install_requires=requirements,
+    packages=find_packages('src', exclude=['leap.common.tests']),
+    test_suite='leap.common.tests',
+    install_requires=requirements,
+    dependency_links=dependency_links,
 )
