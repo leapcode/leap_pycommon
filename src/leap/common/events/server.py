@@ -29,6 +29,7 @@ A server can receive different kinds of requests from components:
 
 import logging
 import sets
+import socket
 
 
 from protobuf.socketrpc import RpcService

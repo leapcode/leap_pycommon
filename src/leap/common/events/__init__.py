@@ -97,4 +97,4 @@ def signal(signal, content="", mac_method="", mac="", reqcbk=None,
         calls
     @rtype: leap.common.events.events_pb2.EventsResponse or None
     """
-    return component.signal(signal)
+    return component.signal(signal, content, mac_method, mac, reqcbk, timeout)
