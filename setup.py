@@ -19,15 +19,19 @@ setup file for leap.common
 """
 from setuptools import setup, find_packages
 
-
+# XXX parse pkg/requirements.pip
 requirements = [
+    "jsonschema",
+    "pyxdg",
     'protobuf',
     'protobuf.socketrpc',
 ]
 
 
 dependency_links = [
-    'https://protobuf-socket-rpc.googlecode.com/files/protobuf.socketrpc-1.3.2-py2.6.egg#egg=protobuf.socketrpc',
+    # XXX this link is only for py2.6???
+    # we need to get this packaged or included
+    "https://protobuf-socket-rpc.googlecode.com/files/protobuf.socketrpc-1.3.2-py2.6.egg#egg=protobuf.socketrpc",
 ]
 
 
