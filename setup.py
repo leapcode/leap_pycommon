@@ -20,6 +20,7 @@ setup file for leap.common
 from setuptools import setup, find_packages
 
 requirements = [
+    "PyOpenSSL",
 ]
 
 # XXX add classifiers, docs
