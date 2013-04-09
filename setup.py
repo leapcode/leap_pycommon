@@ -21,6 +21,7 @@ from setuptools import setup, find_packages
 
 requirements = [
     "PyOpenSSL",
+    "python-dateutil",
 ]
 
 # XXX add classifiers, docs
