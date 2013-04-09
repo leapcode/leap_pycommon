@@ -31,7 +31,8 @@ requirements = [
 dependency_links = [
     # XXX this link is only for py2.6???
     # we need to get this packaged or included
-    "https://protobuf-socket-rpc.googlecode.com/files/protobuf.socketrpc-1.3.2-py2.6.egg#egg=protobuf.socketrpc",
+    #"https://protobuf-socket-rpc.googlecode.com/files/protobuf.socketrpc-1.3.2-py2.6.egg#egg=protobuf.socketrpc",
+    "https://code.google.com/p/protobuf-socket-rpc/downloads/detail?name=protobuf.socketrpc-1.3.2.tar.gz#egg=protobuf.socketrpc",
 ]
 
 
