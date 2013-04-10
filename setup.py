@@ -42,7 +42,7 @@ dependency_links = [
 
 setup(
     name='leap.common',
-    version='0.2.0-dev',
+    version='0.2.1-dev',
     url='https://leap.se/',
     license='GPLv3+',
     author='The LEAP Encryption Access Project',
