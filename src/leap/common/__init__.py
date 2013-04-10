@@ -11,9 +11,9 @@ try:
     import pygeoip
     HAS_GEOIP = True
 except ImportError:
-    logger.debug('PyGeoIP not found. Disabled Geo support.')
+    #logger.debug('PyGeoIP not found. Disabled Geo support.')
     HAS_GEOIP = False
 
 __all__ = ["certs", "check", "files", "events"]
 
-__version__ = "0.2.0-dev"
+__version__ = "0.2.1-dev"

@@ -42,6 +42,8 @@ dependency_links = [
 
 setup(
     name='leap.common',
+    # If you change version, do it also in
+    # src/leap/common/__init__.py
     version='0.2.1-dev',
     url='https://leap.se/',
     license='GPLv3+',
