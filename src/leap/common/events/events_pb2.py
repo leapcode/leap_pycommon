@@ -3,76 +3,79 @@
 from google.protobuf import descriptor
 from google.protobuf import message
 from google.protobuf import reflection
-from google.protobuf import service
-from google.protobuf import service_reflection
 from google.protobuf import descriptor_pb2
 # @@protoc_insertion_point(imports)
 
 
+
 DESCRIPTOR = descriptor.FileDescriptor(
-    name='events.proto',
-    package='leap.common.events',
-    serialized_pb='\n\x0c\x65vents.proto\x12\x12leap.common.events\"\x97\x01\n\rSignalRequest\x12(\n\x05\x65vent\x18\x01 \x02(\x0e\x32\x19.leap.common.events.Event\x12\x0f\n\x07\x63ontent\x18\x02 \x02(\t\x12\x12\n\nmac_method\x18\x03 \x02(\t\x12\x0b\n\x03mac\x18\x04 \x02(\x0c\x12\x12\n\nenc_method\x18\x05 \x01(\t\x12\x16\n\x0e\x65rror_occurred\x18\x06 \x01(\x08\"j\n\x0fRegisterRequest\x12(\n\x05\x65vent\x18\x01 \x02(\x0e\x32\x19.leap.common.events.Event\x12\x0c\n\x04port\x18\x02 \x02(\x05\x12\x12\n\nmac_method\x18\x03 \x02(\t\x12\x0b\n\x03mac\x18\x04 \x02(\x0c\"\x82\x01\n\rEventResponse\x12\x38\n\x06status\x18\x01 \x02(\x0e\x32(.leap.common.events.EventResponse.Status\x12\x0e\n\x06result\x18\x02 \x01(\t\"\'\n\x06Status\x12\x06\n\x02OK\x10\x01\x12\n\n\x06UNAUTH\x10\x02\x12\t\n\x05\x45RROR\x10\x03*\xd5\x02\n\x05\x45vent\x12\x15\n\x11\x43LIENT_SESSION_ID\x10\x01\x12\x0e\n\nCLIENT_UID\x10\x02\x12\x19\n\x15SOLEDAD_CREATING_KEYS\x10\x03\x12\x1e\n\x1aSOLEDAD_DONE_CREATING_KEYS\x10\x04\x12\x1a\n\x16SOLEDAD_UPLOADING_KEYS\x10\x05\x12\x1f\n\x1bSOLEDAD_DONE_UPLOADING_KEYS\x10\x06\x12\x1c\n\x18SOLEDAD_DOWNLOADING_KEYS\x10\x07\x12!\n\x1dSOLEDAD_DONE_DOWNLOADING_KEYS\x10\x08\x12\x1c\n\x18SOLEDAD_NEW_DATA_TO_SYNC\x10\t\x12\x1a\n\x16SOLEDAD_DONE_DATA_SYNC\x10\n\x12\x17\n\x13UPDATER_NEW_UPDATES\x10\x0b\x12\x19\n\x15UPDATER_DONE_UPDATING\x10\x0c\x32\xb9\x01\n\x13\x45ventsServerService\x12R\n\x08register\x12#.leap.common.events.RegisterRequest\x1a!.leap.common.events.EventResponse\x12N\n\x06signal\x12!.leap.common.events.SignalRequest\x1a!.leap.common.events.EventResponse2h\n\x16\x45ventsComponentService\x12N\n\x06signal\x12!.leap.common.events.SignalRequest\x1a!.leap.common.events.EventResponse')
+  name='events.proto',
+  package='leap.common.events',
+  serialized_pb='\n\x0c\x65vents.proto\x12\x12leap.common.events\"\x97\x01\n\rSignalRequest\x12(\n\x05\x65vent\x18\x01 \x02(\x0e\x32\x19.leap.common.events.Event\x12\x0f\n\x07\x63ontent\x18\x02 \x02(\t\x12\x12\n\nmac_method\x18\x03 \x02(\t\x12\x0b\n\x03mac\x18\x04 \x02(\x0c\x12\x12\n\nenc_method\x18\x05 \x01(\t\x12\x16\n\x0e\x65rror_occurred\x18\x06 \x01(\x08\"j\n\x0fRegisterRequest\x12(\n\x05\x65vent\x18\x01 \x02(\x0e\x32\x19.leap.common.events.Event\x12\x0c\n\x04port\x18\x02 \x02(\x05\x12\x12\n\nmac_method\x18\x03 \x02(\t\x12\x0b\n\x03mac\x18\x04 \x02(\x0c\"\x82\x01\n\rEventResponse\x12\x38\n\x06status\x18\x01 \x02(\x0e\x32(.leap.common.events.EventResponse.Status\x12\x0e\n\x06result\x18\x02 \x01(\t\"\'\n\x06Status\x12\x06\n\x02OK\x10\x01\x12\n\n\x06UNAUTH\x10\x02\x12\t\n\x05\x45RROR\x10\x03*\xe7\x02\n\x05\x45vent\x12\x15\n\x11\x43LIENT_SESSION_ID\x10\x01\x12\x0e\n\nCLIENT_UID\x10\x02\x12\x19\n\x15SOLEDAD_CREATING_KEYS\x10\x03\x12\x1e\n\x1aSOLEDAD_DONE_CREATING_KEYS\x10\x04\x12\x1a\n\x16SOLEDAD_UPLOADING_KEYS\x10\x05\x12\x1f\n\x1bSOLEDAD_DONE_UPLOADING_KEYS\x10\x06\x12\x1c\n\x18SOLEDAD_DOWNLOADING_KEYS\x10\x07\x12!\n\x1dSOLEDAD_DONE_DOWNLOADING_KEYS\x10\x08\x12\x1c\n\x18SOLEDAD_NEW_DATA_TO_SYNC\x10\t\x12\x1a\n\x16SOLEDAD_DONE_DATA_SYNC\x10\n\x12\x17\n\x13UPDATER_NEW_UPDATES\x10\x0b\x12\x19\n\x15UPDATER_DONE_UPDATING\x10\x0c\x12\x10\n\x0cRAISE_WINDOW\x10\r2\xb9\x01\n\x13\x45ventsServerService\x12R\n\x08register\x12#.leap.common.events.RegisterRequest\x1a!.leap.common.events.EventResponse\x12N\n\x06signal\x12!.leap.common.events.SignalRequest\x1a!.leap.common.events.EventResponse2h\n\x16\x45ventsComponentService\x12N\n\x06signal\x12!.leap.common.events.SignalRequest\x1a!.leap.common.events.EventResponse')
 
 _EVENT = descriptor.EnumDescriptor(
-    name='Event',
-    full_name='leap.common.events.Event',
-    filename=None,
-    file=DESCRIPTOR,
-    values=[
-        descriptor.EnumValueDescriptor(
-            name='CLIENT_SESSION_ID', index=0, number=1,
-            options=None,
-            type=None),
-        descriptor.EnumValueDescriptor(
-            name='CLIENT_UID', index=1, number=2,
-            options=None,
-            type=None),
-        descriptor.EnumValueDescriptor(
-            name='SOLEDAD_CREATING_KEYS', index=2, number=3,
-            options=None,
-            type=None),
-        descriptor.EnumValueDescriptor(
-            name='SOLEDAD_DONE_CREATING_KEYS', index=3, number=4,
-            options=None,
-            type=None),
-        descriptor.EnumValueDescriptor(
-            name='SOLEDAD_UPLOADING_KEYS', index=4, number=5,
-            options=None,
-            type=None),
-        descriptor.EnumValueDescriptor(
-            name='SOLEDAD_DONE_UPLOADING_KEYS', index=5, number=6,
-            options=None,
-            type=None),
-        descriptor.EnumValueDescriptor(
-            name='SOLEDAD_DOWNLOADING_KEYS', index=6, number=7,
-            options=None,
-            type=None),
-        descriptor.EnumValueDescriptor(
-            name='SOLEDAD_DONE_DOWNLOADING_KEYS', index=7, number=8,
-            options=None,
-            type=None),
-        descriptor.EnumValueDescriptor(
-            name='SOLEDAD_NEW_DATA_TO_SYNC', index=8, number=9,
-            options=None,
-            type=None),
-        descriptor.EnumValueDescriptor(
-            name='SOLEDAD_DONE_DATA_SYNC', index=9, number=10,
-            options=None,
-            type=None),
-        descriptor.EnumValueDescriptor(
-            name='UPDATER_NEW_UPDATES', index=10, number=11,
-            options=None,
-            type=None),
-        descriptor.EnumValueDescriptor(
-            name='UPDATER_DONE_UPDATING', index=11, number=12,
-            options=None,
-            type=None),
-    ],
-    containing_type=None,
-    options=None,
-    serialized_start=432,
-    serialized_end=773,
+  name='Event',
+  full_name='leap.common.events.Event',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    descriptor.EnumValueDescriptor(
+      name='CLIENT_SESSION_ID', index=0, number=1,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='CLIENT_UID', index=1, number=2,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='SOLEDAD_CREATING_KEYS', index=2, number=3,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='SOLEDAD_DONE_CREATING_KEYS', index=3, number=4,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='SOLEDAD_UPLOADING_KEYS', index=4, number=5,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='SOLEDAD_DONE_UPLOADING_KEYS', index=5, number=6,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='SOLEDAD_DOWNLOADING_KEYS', index=6, number=7,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='SOLEDAD_DONE_DOWNLOADING_KEYS', index=7, number=8,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='SOLEDAD_NEW_DATA_TO_SYNC', index=8, number=9,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='SOLEDAD_DONE_DATA_SYNC', index=9, number=10,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='UPDATER_NEW_UPDATES', index=10, number=11,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='UPDATER_DONE_UPDATING', index=11, number=12,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='RAISE_WINDOW', index=12, number=13,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=432,
+  serialized_end=791,
 )
 
 
@@ -88,277 +91,206 @@ SOLEDAD_NEW_DATA_TO_SYNC = 9
 SOLEDAD_DONE_DATA_SYNC = 10
 UPDATER_NEW_UPDATES = 11
 UPDATER_DONE_UPDATING = 12
+RAISE_WINDOW = 13
 
 
 _EVENTRESPONSE_STATUS = descriptor.EnumDescriptor(
-    name='Status',
-    full_name='leap.common.events.EventResponse.Status',
-    filename=None,
-    file=DESCRIPTOR,
-    values=[
-        descriptor.EnumValueDescriptor(
-            name='OK', index=0, number=1,
-            options=None,
-            type=None),
-        descriptor.EnumValueDescriptor(
-            name='UNAUTH', index=1, number=2,
-            options=None,
-            type=None),
-        descriptor.EnumValueDescriptor(
-            name='ERROR', index=2, number=3,
-            options=None,
-            type=None),
-    ],
-    containing_type=None,
-    options=None,
-    serialized_start=390,
-    serialized_end=429,
+  name='Status',
+  full_name='leap.common.events.EventResponse.Status',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    descriptor.EnumValueDescriptor(
+      name='OK', index=0, number=1,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='UNAUTH', index=1, number=2,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='ERROR', index=2, number=3,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=390,
+  serialized_end=429,
 )
 
 
 _SIGNALREQUEST = descriptor.Descriptor(
-    name='SignalRequest',
-    full_name='leap.common.events.SignalRequest',
-    filename=None,
-    file=DESCRIPTOR,
-    containing_type=None,
-    fields=[
-        descriptor.FieldDescriptor(
-            name='event', full_name='leap.common.events.SignalRequest.event', index=0,
-            number=1, type=14, cpp_type=8, label=2,
-            has_default_value=False, default_value=1,
-            message_type=None, enum_type=None, containing_type=None,
-            is_extension=False, extension_scope=None,
-            options=None),
-        descriptor.FieldDescriptor(
-            name='content', full_name='leap.common.events.SignalRequest.content', index=1,
-            number=2, type=9, cpp_type=9, label=2,
-            has_default_value=False, default_value=unicode("", "utf-8"),
-            message_type=None, enum_type=None, containing_type=None,
-            is_extension=False, extension_scope=None,
-            options=None),
-        descriptor.FieldDescriptor(
-            name='mac_method', full_name='leap.common.events.SignalRequest.mac_method', index=2,
-            number=3, type=9, cpp_type=9, label=2,
-            has_default_value=False, default_value=unicode("", "utf-8"),
-            message_type=None, enum_type=None, containing_type=None,
-            is_extension=False, extension_scope=None,
-            options=None),
-        descriptor.FieldDescriptor(
-            name='mac', full_name='leap.common.events.SignalRequest.mac', index=3,
-            number=4, type=12, cpp_type=9, label=2,
-            has_default_value=False, default_value="",
-            message_type=None, enum_type=None, containing_type=None,
-            is_extension=False, extension_scope=None,
-            options=None),
-        descriptor.FieldDescriptor(
-            name='enc_method', full_name='leap.common.events.SignalRequest.enc_method', index=4,
-            number=5, type=9, cpp_type=9, label=1,
-            has_default_value=False, default_value=unicode("", "utf-8"),
-            message_type=None, enum_type=None, containing_type=None,
-            is_extension=False, extension_scope=None,
-            options=None),
-        descriptor.FieldDescriptor(
-            name='error_occurred', full_name='leap.common.events.SignalRequest.error_occurred', index=5,
-            number=6, type=8, cpp_type=7, label=1,
-            has_default_value=False, default_value=False,
-            message_type=None, enum_type=None, containing_type=None,
-            is_extension=False, extension_scope=None,
-            options=None),
-    ],
-    extensions=[
-    ],
-    nested_types=[],
-    enum_types=[
-    ],
-    options=None,
-    is_extendable=False,
-    extension_ranges=[],
-    serialized_start=37,
-    serialized_end=188,
+  name='SignalRequest',
+  full_name='leap.common.events.SignalRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    descriptor.FieldDescriptor(
+      name='event', full_name='leap.common.events.SignalRequest.event', index=0,
+      number=1, type=14, cpp_type=8, label=2,
+      has_default_value=False, default_value=1,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='content', full_name='leap.common.events.SignalRequest.content', index=1,
+      number=2, type=9, cpp_type=9, label=2,
+      has_default_value=False, default_value=unicode("", "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='mac_method', full_name='leap.common.events.SignalRequest.mac_method', index=2,
+      number=3, type=9, cpp_type=9, label=2,
+      has_default_value=False, default_value=unicode("", "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='mac', full_name='leap.common.events.SignalRequest.mac', index=3,
+      number=4, type=12, cpp_type=9, label=2,
+      has_default_value=False, default_value="",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='enc_method', full_name='leap.common.events.SignalRequest.enc_method', index=4,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode("", "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='error_occurred', full_name='leap.common.events.SignalRequest.error_occurred', index=5,
+      number=6, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=37,
+  serialized_end=188,
 )
 
 
 _REGISTERREQUEST = descriptor.Descriptor(
-    name='RegisterRequest',
-    full_name='leap.common.events.RegisterRequest',
-    filename=None,
-    file=DESCRIPTOR,
-    containing_type=None,
-    fields=[
-        descriptor.FieldDescriptor(
-            name='event', full_name='leap.common.events.RegisterRequest.event', index=0,
-            number=1, type=14, cpp_type=8, label=2,
-            has_default_value=False, default_value=1,
-            message_type=None, enum_type=None, containing_type=None,
-            is_extension=False, extension_scope=None,
-            options=None),
-        descriptor.FieldDescriptor(
-            name='port', full_name='leap.common.events.RegisterRequest.port', index=1,
-            number=2, type=5, cpp_type=1, label=2,
-            has_default_value=False, default_value=0,
-            message_type=None, enum_type=None, containing_type=None,
-            is_extension=False, extension_scope=None,
-            options=None),
-        descriptor.FieldDescriptor(
-            name='mac_method', full_name='leap.common.events.RegisterRequest.mac_method', index=2,
-            number=3, type=9, cpp_type=9, label=2,
-            has_default_value=False, default_value=unicode("", "utf-8"),
-            message_type=None, enum_type=None, containing_type=None,
-            is_extension=False, extension_scope=None,
-            options=None),
-        descriptor.FieldDescriptor(
-            name='mac', full_name='leap.common.events.RegisterRequest.mac', index=3,
-            number=4, type=12, cpp_type=9, label=2,
-            has_default_value=False, default_value="",
-            message_type=None, enum_type=None, containing_type=None,
-            is_extension=False, extension_scope=None,
-            options=None),
-    ],
-    extensions=[
-    ],
-    nested_types=[],
-    enum_types=[
-    ],
-    options=None,
-    is_extendable=False,
-    extension_ranges=[],
-    serialized_start=190,
-    serialized_end=296,
+  name='RegisterRequest',
+  full_name='leap.common.events.RegisterRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    descriptor.FieldDescriptor(
+      name='event', full_name='leap.common.events.RegisterRequest.event', index=0,
+      number=1, type=14, cpp_type=8, label=2,
+      has_default_value=False, default_value=1,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='port', full_name='leap.common.events.RegisterRequest.port', index=1,
+      number=2, type=5, cpp_type=1, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='mac_method', full_name='leap.common.events.RegisterRequest.mac_method', index=2,
+      number=3, type=9, cpp_type=9, label=2,
+      has_default_value=False, default_value=unicode("", "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='mac', full_name='leap.common.events.RegisterRequest.mac', index=3,
+      number=4, type=12, cpp_type=9, label=2,
+      has_default_value=False, default_value="",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=190,
+  serialized_end=296,
 )
 
 
 _EVENTRESPONSE = descriptor.Descriptor(
-    name='EventResponse',
-    full_name='leap.common.events.EventResponse',
-    filename=None,
-    file=DESCRIPTOR,
-    containing_type=None,
-    fields=[
-        descriptor.FieldDescriptor(
-            name='status', full_name='leap.common.events.EventResponse.status', index=0,
-            number=1, type=14, cpp_type=8, label=2,
-            has_default_value=False, default_value=1,
-            message_type=None, enum_type=None, containing_type=None,
-            is_extension=False, extension_scope=None,
-            options=None),
-        descriptor.FieldDescriptor(
-            name='result', full_name='leap.common.events.EventResponse.result', index=1,
-            number=2, type=9, cpp_type=9, label=1,
-            has_default_value=False, default_value=unicode("", "utf-8"),
-            message_type=None, enum_type=None, containing_type=None,
-            is_extension=False, extension_scope=None,
-            options=None),
-    ],
-    extensions=[
-    ],
-    nested_types=[],
-    enum_types=[
-        _EVENTRESPONSE_STATUS,
-    ],
-    options=None,
-    is_extendable=False,
-    extension_ranges=[],
-    serialized_start=299,
-    serialized_end=429,
+  name='EventResponse',
+  full_name='leap.common.events.EventResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    descriptor.FieldDescriptor(
+      name='status', full_name='leap.common.events.EventResponse.status', index=0,
+      number=1, type=14, cpp_type=8, label=2,
+      has_default_value=False, default_value=1,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='result', full_name='leap.common.events.EventResponse.result', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode("", "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+    _EVENTRESPONSE_STATUS,
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=299,
+  serialized_end=429,
 )
-
 
 _SIGNALREQUEST.fields_by_name['event'].enum_type = _EVENT
 _REGISTERREQUEST.fields_by_name['event'].enum_type = _EVENT
 _EVENTRESPONSE.fields_by_name['status'].enum_type = _EVENTRESPONSE_STATUS
-_EVENTRESPONSE_STATUS.containing_type = _EVENTRESPONSE
-
+_EVENTRESPONSE_STATUS.containing_type = _EVENTRESPONSE;
+DESCRIPTOR.message_types_by_name['SignalRequest'] = _SIGNALREQUEST
+DESCRIPTOR.message_types_by_name['RegisterRequest'] = _REGISTERREQUEST
+DESCRIPTOR.message_types_by_name['EventResponse'] = _EVENTRESPONSE
 
 class SignalRequest(message.Message):
-    __metaclass__ = reflection.GeneratedProtocolMessageType
-    DESCRIPTOR = _SIGNALREQUEST
-
-    # @@protoc_insertion_point(class_scope:leap.common.events.SignalRequest)
-
+  __metaclass__ = reflection.GeneratedProtocolMessageType
+  DESCRIPTOR = _SIGNALREQUEST
+  
+  # @@protoc_insertion_point(class_scope:leap.common.events.SignalRequest)
 
 class RegisterRequest(message.Message):
-    __metaclass__ = reflection.GeneratedProtocolMessageType
-    DESCRIPTOR = _REGISTERREQUEST
-
-    # @@protoc_insertion_point(class_scope:leap.common.events.RegisterRequest)
-
+  __metaclass__ = reflection.GeneratedProtocolMessageType
+  DESCRIPTOR = _REGISTERREQUEST
+  
+  # @@protoc_insertion_point(class_scope:leap.common.events.RegisterRequest)
 
 class EventResponse(message.Message):
-    __metaclass__ = reflection.GeneratedProtocolMessageType
-    DESCRIPTOR = _EVENTRESPONSE
-
-    # @@protoc_insertion_point(class_scope:leap.common.events.EventResponse)
-
-
-_EVENTSSERVERSERVICE = descriptor.ServiceDescriptor(
-    name='EventsServerService',
-    full_name='leap.common.events.EventsServerService',
-    file=DESCRIPTOR,
-    index=0,
-    options=None,
-    serialized_start=776,
-    serialized_end=961,
-    methods=[
-        descriptor.MethodDescriptor(
-            name='register',
-            full_name='leap.common.events.EventsServerService.register',
-            index=0,
-            containing_service=None,
-            input_type=_REGISTERREQUEST,
-            output_type=_EVENTRESPONSE,
-            options=None,
-        ),
-        descriptor.MethodDescriptor(
-            name='signal',
-            full_name='leap.common.events.EventsServerService.signal',
-            index=1,
-            containing_service=None,
-            input_type=_SIGNALREQUEST,
-            output_type=_EVENTRESPONSE,
-            options=None,
-        ),
-    ])
-
-
-class EventsServerService(service.Service):
-    __metaclass__ = service_reflection.GeneratedServiceType
-    DESCRIPTOR = _EVENTSSERVERSERVICE
-
-
-class EventsServerService_Stub(EventsServerService):
-    __metaclass__ = service_reflection.GeneratedServiceStubType
-    DESCRIPTOR = _EVENTSSERVERSERVICE
-
-
-_EVENTSCOMPONENTSERVICE = descriptor.ServiceDescriptor(
-    name='EventsComponentService',
-    full_name='leap.common.events.EventsComponentService',
-    file=DESCRIPTOR,
-    index=1,
-    options=None,
-    serialized_start=963,
-    serialized_end=1067,
-    methods=[
-        descriptor.MethodDescriptor(
-            name='signal',
-            full_name='leap.common.events.EventsComponentService.signal',
-            index=0,
-            containing_service=None,
-            input_type=_SIGNALREQUEST,
-            output_type=_EVENTRESPONSE,
-            options=None,
-        ),
-    ])
-
-
-class EventsComponentService(service.Service):
-    __metaclass__ = service_reflection.GeneratedServiceType
-    DESCRIPTOR = _EVENTSCOMPONENTSERVICE
-
-
-class EventsComponentService_Stub(EventsComponentService):
-    __metaclass__ = service_reflection.GeneratedServiceStubType
-    DESCRIPTOR = _EVENTSCOMPONENTSERVICE
+  __metaclass__ = reflection.GeneratedProtocolMessageType
+  DESCRIPTOR = _EVENTRESPONSE
+  
+  # @@protoc_insertion_point(class_scope:leap.common.events.EventResponse)
 
 # @@protoc_insertion_point(module_scope)

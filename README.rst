@@ -8,3 +8,11 @@ A collection of shared utils used by the several python LEAP subprojects.
 * leap.common.events
 * leap.common.files
 * leap.common.testing
+
+Library dependencies
+--------------------
+* ``protobuf-compiler``
+
+Python dependencies
+-------------------
+* See ``pkg/requirements.pip``

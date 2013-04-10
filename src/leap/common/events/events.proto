@@ -29,6 +29,7 @@ enum Event {
   SOLEDAD_DONE_DATA_SYNC = 10;
   UPDATER_NEW_UPDATES = 11;
   UPDATER_DONE_UPDATING = 12;
+  RAISE_WINDOW = 13;
 }
 
 message SignalRequest {

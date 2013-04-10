@@ -43,3 +43,11 @@ To signal an event:
 >>>     events_pb2 as proto,
 >>> )
 >>> signal(proto.CLIENT_UID)
+
+Adding events
+-------------
+
+* Add the new event under enum ``Event`` in ``events.proto`` 
+* Compile the new protocolbuffers file::
+
+  make
