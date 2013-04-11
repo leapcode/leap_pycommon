@@ -99,7 +99,7 @@ class EventsSingletonDaemon(threading.Thread):
                             % len(args))
         if cls.__instance is None:
             cls.__instance = object.__new__(
-                EventsSingletonDaemon, *args, **kwargs)
+                EventsSingletonDaemon)
             cls.__initialize(cls.__instance, args[0], args[1])
         return cls.__instance
 

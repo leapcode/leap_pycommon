@@ -66,10 +66,13 @@ def ensure_component_daemon():
     @return: the daemon instance
     @rtype: EventsComponentDaemon
     """
-    daemon = EventsComponentDaemon.ensure(0)
     import time
+    daemon = EventsComponentDaemon.ensure(0)
+    logger.debug('ensure component daemon')
+
     # Because we use a random port we want to wait until a port is assigned to
     # local component daemon.
+
     while not (EventsComponentDaemon.get_instance() and
                EventsComponentDaemon.get_instance().get_port()):
         time.sleep(0.1)

@@ -14,7 +14,6 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
-
 """
 A server for the events mechanism.
 
@@ -25,10 +24,7 @@ A server can receive different kinds of requests from components:
 
   2. Signal request: redistribute the signal to registered components.
 """
-
-
 import logging
-import sets
 import socket
 
 
@@ -95,9 +91,11 @@ class EventsServerService(proto.EventsServerService):
         logger.info("Received registration request: %s" % str(request))
         # add component port to signal list
         if request.event not in registered_components:
-            registered_components[request.event] = sets.Set()
+            registered_components[request.event] = set([])
         registered_components[request.event].add(request.port)
         # send response back to component
+
+        logger.debug('sending response back')
         response = proto.EventResponse()
         response.status = proto.EventResponse.OK
         done.run(response)
