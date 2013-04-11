@@ -25,6 +25,8 @@ requirements = [
     "pyxdg",
     'protobuf',
     'protobuf.socketrpc',
+    "PyOpenSSL",
+    "python-dateutil",
 ]
 
 
