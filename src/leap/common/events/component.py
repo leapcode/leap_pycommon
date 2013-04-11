@@ -134,7 +134,9 @@ def register(signal, callback, uid=None, replace=False, reqcbk=None,
     request.mac = ""
     service = RpcService(proto.EventsServerService_Stub,
                          server.SERVER_PORT, 'localhost')
-    logger.info("Sending registration request to server: %s", str(request))
+    logger.info("Sending registration request to server on port %s: %s",
+            server.SERVER_PORT,
+            str(request))
     return service.register(request, callback=reqcbk, timeout=timeout)
 
 
