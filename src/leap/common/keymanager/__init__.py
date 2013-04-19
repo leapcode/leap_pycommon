@@ -40,11 +40,6 @@ from leap.common.keymanager.openpgp import (
 )
 
 
-wrapper_map = {
-    OpenPGPKey: OpenPGPWrapper(),
-}
-
-
 class KeyManager(object):
 
     def __init__(self, address, url):
@@ -59,6 +54,9 @@ class KeyManager(object):
         """
         self.address = address
         self.url = url
+        self.wrapper_map = {
+            OpenPGPKey: OpenPGPWrapper(),
+        }
 
     def send_key(self, ktype, send_private=False, password=None):
         """
@@ -99,13 +97,13 @@ class KeyManager(object):
             keyserver.
         """
         try:
-            return wrapper_map[ktype].get_key(address)
+            return self.wrapper_map[ktype].get_key(address)
         except KeyNotFound:
             key = filter(lambda k: isinstance(k, ktype),
                          self._fetch_keys(address))
             if key is None:
                 raise KeyNotFound()
-            wrapper_map[ktype].put_key(key)
+            self.wrapper_map[ktype].put_key(key)
             return key
 
 
@@ -137,4 +135,4 @@ class KeyManager(object):
         @return: The generated key.
         @rtype: EncryptionKey
         """
-        return wrapper_map[ktype].gen_key(self.address)
+        return self.wrapper_map[ktype].gen_key(self.address)
