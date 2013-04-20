@@ -26,12 +26,26 @@ import unittest
 
 from leap.common.testing.basetest import BaseLeapTest
 from leap.common.keymanager import KeyManager, openpgp, KeyNotFound
-
+from leap.soledad import Soledad
+from leap.common.keymanager.gpg import GPGWrapper
 
 class KeyManagerTestCase(BaseLeapTest):
 
     def setUp(self):
-        pass
+        self._soledad = Soledad(
+            "leap@leap.se",
+            "123456",
+            gnupg_home=self.tempdir+"/gnupg",
+            secret_path=self.tempdir+"/secret.gpg",
+            local_db_path=self.tempdir+"/soledad.u1db",
+            bootstrap=False,
+        )
+        # initialize solead by hand for testing purposes
+        self._soledad._init_dirs()
+        self._soledad._gpg = GPGWrapper(gnupghome=self.tempdir+"/gnupg")
+        self._soledad._shared_db = None
+        self._soledad._init_keys()
+        self._soledad._init_db()
 
     def tearDown(self):
         pass
@@ -40,7 +54,7 @@ class KeyManagerTestCase(BaseLeapTest):
         return KeyManager(user, url)
 
     def test_openpgp_gen_key(self):
-        pgp = openpgp.OpenPGPWrapper(self.tempdir+'/gnupg')
+        pgp = openpgp.OpenPGPWrapper(self._soledad)
         try:
             pgp.get_key('user@leap.se')
         except KeyNotFound:
@@ -51,12 +65,12 @@ class KeyManagerTestCase(BaseLeapTest):
             self.assertEqual(
                 '4096', key.length, 'Wrong key length.')
 
-    def test_openpgp_put_key(self):
-        pgp = openpgp.OpenPGPWrapper(self.tempdir+'/gnupg2')
+    def test_openpgp_put_key_raw(self):
+        pgp = openpgp.OpenPGPWrapper(self._soledad)
         try:
             pgp.get_key('leap@leap.se')
         except KeyNotFound:
-            pgp.put_key(PUBLIC_KEY)
+            pgp.put_key_raw(PUBLIC_KEY)
             key = pgp.get_key('leap@leap.se')
             self.assertIsInstance(key, openpgp.OpenPGPKey)
             self.assertEqual(

@@ -16,7 +16,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-
 class KeyNotFound(Exception):
     """
     Raised when key was no found on keyserver.

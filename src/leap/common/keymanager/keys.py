@@ -21,6 +21,12 @@ Abstact key type and wrapper representations.
 """
 
 
+try:
+    import simplejson as json
+except ImportError:
+    import json  # noqa
+
+
 from abc import ABCMeta, abstractmethod
 
 
@@ -44,13 +50,13 @@ class EncryptionKey(object):
     __metaclass__ = ABCMeta
 
     def __init__(self, address, key_id=None, fingerprint=None,
-                 key_data=None, length=None, expiry_date=None,
-                 validation=None, first_seen_at=None,
-                 last_audited_at=None):
+                 key_data=None, private=None, length=None, expiry_date=None,
+                 validation=None, first_seen_at=None, last_audited_at=None):
         self.address = address
         self.key_id = key_id
         self.fingerprint = fingerprint
         self.key_data = key_data
+        self.private = private
         self.length = length
         self.expiry_date = expiry_date
         self.validation = validation
@@ -66,10 +72,11 @@ class EncryptionKey(object):
         """
         return json.dumps({
             'address': self.address,
-            'type': str(self.__type__),
+            'type': str(self.__class__),
             'key_id': self.key_id,
             'fingerprint': self.fingerprint,
             'key_data': self.key_data,
+            'private': self.private,
             'length': self.length,
             'expiry_date': self.expiry_date,
             'validation': self.validation,
@@ -91,6 +98,15 @@ class KeyTypeWrapper(object):
     """
 
     __metaclass__ = ABCMeta
+
+    def __init__(self, soledad):
+        """
+        Initialize the Key Type Wrapper.
+
+        @param soledad: A Soledad instance for local storage of keys.
+        @type soledad: leap.soledad.Soledad
+        """
+        self._soledad = soledad
 
     @abstractmethod
     def get_key(self, address):
@@ -124,4 +140,3 @@ class KeyTypeWrapper(object):
         @return: The key bound to C{address}.
         @rtype: EncryptionKey
         """
-

@@ -395,4 +395,3 @@ class GPGWrapper(gnupg.GPG):
         @rtype: bool
         """
         self.is_encrypted_asym() or self.is_encrypted_sym()
-

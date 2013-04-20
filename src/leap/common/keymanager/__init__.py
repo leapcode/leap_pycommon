@@ -21,12 +21,6 @@ Key Manager is a Nicknym agent for LEAP client.
 """
 
 
-try:
-    import simplejson as json
-except ImportError:
-    import json  # noqa
-
-
 from u1db.errors import HTTPError
 
 
@@ -42,20 +36,22 @@ from leap.common.keymanager.openpgp import (
 
 class KeyManager(object):
 
-    def __init__(self, address, url):
+    def __init__(self, address, url, soledad):
         """
         Initialize a Key Manager for user's C{address} with provider's
         nickserver reachable in C{url}.
 
         @param address: The address of the user of this Key Manager.
         @type address: str
-        @param url: The URL of the key manager.
+        @param url: The URL of the nickserver.
         @type url: str
+        @param soledad: A Soledad instance for local storage of keys.
+        @type soledad: leap.soledad.Soledad
         """
-        self.address = address
-        self.url = url
-        self.wrapper_map = {
-            OpenPGPKey: OpenPGPWrapper(),
+        self._address = address
+        self._url = url
+        self._wrapper_map = {
+            OpenPGPKey: OpenPGPWrapper(soledad),
         }
 
     def send_key(self, ktype, send_private=False, password=None):
@@ -97,15 +93,14 @@ class KeyManager(object):
             keyserver.
         """
         try:
-            return self.wrapper_map[ktype].get_key(address)
+            return self._wrapper_map[ktype].get_key(address)
         except KeyNotFound:
             key = filter(lambda k: isinstance(k, ktype),
                          self._fetch_keys(address))
             if key is None:
                 raise KeyNotFound()
-            self.wrapper_map[ktype].put_key(key)
+            self._wrapper_map[ktype].put_key(key)
             return key
-
 
     def _fetch_keys(self, address):
         """
@@ -119,11 +114,13 @@ class KeyManager(object):
         @raise KeyNotFound: If the key was not found on nickserver.
         @raise httplib.HTTPException:
         """
+        raise NotImplementedError(self._fetch_keys)
 
     def refresh_keys(self):
         """
         Update the user's db of validated keys to see if there are changes.
         """
+        raise NotImplementedError(self.refresh_keys)
 
     def gen_key(self, ktype):
         """
@@ -135,4 +132,4 @@ class KeyManager(object):
         @return: The generated key.
         @rtype: EncryptionKey
         """
-        return self.wrapper_map[ktype].gen_key(self.address)
+        return self._wrapper_map[ktype].gen_key(self._address)
