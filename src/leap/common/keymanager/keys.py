@@ -109,12 +109,14 @@ class KeyTypeWrapper(object):
         self._soledad = soledad
 
     @abstractmethod
-    def get_key(self, address):
+    def get_key(self, address, private=False):
         """
         Get key from local storage.
 
         @param address: The address bound to the key.
         @type address: str
+        @param private: Look for a private key instead of a public one?
+        @type private: bool
 
         @return: The key bound to C{address}.
         @rtype: EncryptionKey

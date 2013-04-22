@@ -20,10 +20,13 @@
 Key Manager is a Nicknym agent for LEAP client.
 """
 
+import httplib
+
 
 from u1db.errors import HTTPError
 
 
+from leap.common.check import leap_assert
 from leap.common.keymanager.errors import (
     KeyNotFound,
     KeyAlreadyExists,
@@ -31,7 +34,9 @@ from leap.common.keymanager.errors import (
 from leap.common.keymanager.openpgp import (
     OpenPGPKey,
     OpenPGPWrapper,
+    _encrypt_symmetric,
 )
+from leap.common.keymanager.http import HTTPClient
 
 
 class KeyManager(object):
@@ -49,9 +54,10 @@ class KeyManager(object):
         @type soledad: leap.soledad.Soledad
         """
         self._address = address
-        self._url = url
+        self._http_client = HTTPClient(url)
         self._wrapper_map = {
             OpenPGPKey: OpenPGPWrapper(soledad),
+            # other types of key will be added to this mapper.
         }
 
     def send_key(self, ktype, send_private=False, password=None):
@@ -73,9 +79,32 @@ class KeyManager(object):
         @type ktype: KeyType
 
         @raise httplib.HTTPException:
+        @raise KeyNotFound: If the key was not found both locally and in
+            keyserver.
         """
+        # prepare the public key bound to address
+        data = {
+            'address': self._address,
+            'keys': [
+                json.loads(
+                    self.get_key(
+                        self._address, ktype, private=False).get_json()),
+            ]
+        }
+        # prepare the private key bound to address
+        if send_private:
+            privkey = json.loads(
+                self.get_key(self._address, ktype, private=True).get_json())
+            privkey.key_data = _encrypt_symmetric(data, passphrase)
+            data['keys'].append(privkey)
+        headers = None  # TODO: replace for token-based-auth
+        self._http_client.request(
+            'PUT',
+            '/key/%s' % address,
+            json.dumps(data),
+            headers)
 
-    def get_key(self, address, ktype):
+    def get_key(self, address, ktype, private=False):
         """
         Return a key of type C{ktype} bound to C{address}.
 
@@ -86,14 +115,19 @@ class KeyManager(object):
         @type address: str
         @param ktype: The type of the key.
         @type ktype: KeyType
+        @param private: Look for a private key instead of a public one?
+        @type private: bool
 
         @return: A key of type C{ktype} bound to C{address}.
         @rtype: EncryptionKey
         @raise KeyNotFound: If the key was not found both locally and in
             keyserver.
         """
+        leap_assert(
+            ktype in self._wrapper_map,
+            'Unkown key type: %s.' % str(ktype))
         try:
-            return self._wrapper_map[ktype].get_key(address)
+            return self._wrapper_map[ktype].get_key(address, private=private)
         except KeyNotFound:
             key = filter(lambda k: isinstance(k, ktype),
                          self._fetch_keys(address))
@@ -114,7 +148,17 @@ class KeyManager(object):
         @raise KeyNotFound: If the key was not found on nickserver.
         @raise httplib.HTTPException:
         """
-        raise NotImplementedError(self._fetch_keys)
+        self._http_client.request('GET', '/key/%s' % address, None, None)
+        keydata = json.loads(self._http_client.read_response())
+        leap_assert(
+            keydata['address'] == address,
+            "Fetched key for wrong address.")
+        for key in keydata['keys']:
+            # find the key class in the mapper
+            keyCLass = filter(
+                lambda klass: str(klass) == key['type'],
+                self._wrapper_map).pop()
+            yield _build_key_from_dict(kClass, address, key)
 
     def refresh_keys(self):
         """

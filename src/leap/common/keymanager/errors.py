@@ -16,6 +16,11 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
+"""
+Errors and exceptions used by the Key Manager.
+"""
+
+
 class KeyNotFound(Exception):
     """
     Raised when key was no found on keyserver.

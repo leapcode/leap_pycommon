@@ -25,11 +25,88 @@ import unittest
 
 
 from leap.common.testing.basetest import BaseLeapTest
-from leap.common.keymanager import KeyManager, openpgp, KeyNotFound
 from leap.soledad import Soledad
+from leap.common.keymanager import KeyManager, openpgp, KeyNotFound
+from leap.common.keymanager.openpgp import OpenPGPKey
 from leap.common.keymanager.gpg import GPGWrapper
+from leap.common.keymanager.util import (
+    _is_address,
+    _build_key_from_dict,
+    _keymanager_doc_id,
+)
 
-class KeyManagerTestCase(BaseLeapTest):
+
+class KeyManagerUtilTestCase(BaseLeapTest):
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+    def test__is_address(self):
+        self.assertTrue(
+            _is_address('user@leap.se'),
+            'Incorrect address detection.')
+        self.assertFalse(
+            _is_address('userleap.se'),
+            'Incorrect address detection.')
+        self.assertFalse(
+            _is_address('user@'),
+            'Incorrect address detection.')
+        self.assertFalse(
+            _is_address('@leap.se'),
+            'Incorrect address detection.')
+
+    def test__build_key_from_dict(self):
+        kdict = {
+            'address': 'leap@leap.se',
+            'key_id': 'key_id',
+            'fingerprint': 'fingerprint',
+            'key_data': 'key_data',
+            'private': 'private',
+            'length': 'length',
+            'expiry_date': 'expiry_date',
+            'first_seen_at': 'first_seen_at',
+            'last_audited_at': 'last_audited_at',
+            'validation': 'validation',
+        }
+        key = _build_key_from_dict(OpenPGPKey, 'leap@leap.se', kdict)
+        self.assertEqual(kdict['address'], key.address,
+            'Wrong data in key.')
+        self.assertEqual(kdict['key_id'], key.key_id,
+            'Wrong data in key.')
+        self.assertEqual(kdict['fingerprint'], key.fingerprint,
+            'Wrong data in key.')
+        self.assertEqual(kdict['key_data'], key.key_data,
+            'Wrong data in key.')
+        self.assertEqual(kdict['private'], key.private,
+            'Wrong data in key.')
+        self.assertEqual(kdict['length'], key.length,
+            'Wrong data in key.')
+        self.assertEqual(kdict['expiry_date'], key.expiry_date,
+            'Wrong data in key.')
+        self.assertEqual(kdict['first_seen_at'], key.first_seen_at,
+            'Wrong data in key.')
+        self.assertEqual(kdict['last_audited_at'], key.last_audited_at,
+            'Wrong data in key.')
+        self.assertEqual(kdict['validation'], key.validation,
+            'Wrong data in key.')
+
+    def test__keymanager_doc_id(self):
+        doc_id1 = _keymanager_doc_id('leap@leap.se', private=False)
+        doc_id2 = _keymanager_doc_id('leap@leap.se', private=True)
+        doc_id3 = _keymanager_doc_id('user@leap.se', private=False)
+        doc_id4 = _keymanager_doc_id('user@leap.se', private=True)
+        self.assertFalse(doc_id1 == doc_id2, 'Doc ids are equal!')
+        self.assertFalse(doc_id1 == doc_id3, 'Doc ids are equal!')
+        self.assertFalse(doc_id1 == doc_id4, 'Doc ids are equal!')
+        self.assertFalse(doc_id2 == doc_id3, 'Doc ids are equal!')
+        self.assertFalse(doc_id2 == doc_id4, 'Doc ids are equal!')
+        self.assertFalse(doc_id3 == doc_id4, 'Doc ids are equal!')
+
+
+class KeyManagerCryptoTestCase(BaseLeapTest):
 
     def setUp(self):
         self._soledad = Soledad(
