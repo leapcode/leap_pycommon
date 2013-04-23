@@ -17,7 +17,7 @@
 
 
 """
-Abstact key type and wrapper representations.
+Abstact key type and encryption scheme representations.
 """
 
 
@@ -86,22 +86,23 @@ class EncryptionKey(object):
 
 
 #
-# Key wrappers
+# Encryption schemes
 #
 
-class KeyTypeWrapper(object):
+class EncryptionScheme(object):
     """
-    Abstract class for Key Type Wrappers.
+    Abstract class for Encryption Schemes.
 
-    A wrapper for a certain key type should know how to get and put keys in
-    local storage using Soledad and also how to generate new keys.
+    A wrapper for a certain encryption schemes should know how to get and put
+    keys in local storage using Soledad, how to generate new keys and how to
+    find out about possibly encrypted content.
     """
 
     __metaclass__ = ABCMeta
 
     def __init__(self, soledad):
         """
-        Initialize the Key Type Wrapper.
+        Initialize this Encryption Scheme.
 
         @param soledad: A Soledad instance for local storage of keys.
         @type soledad: leap.soledad.Soledad
@@ -139,6 +140,16 @@ class KeyTypeWrapper(object):
 
         @param address: The address bound to the key.
         @type address: str
+
         @return: The key bound to C{address}.
         @rtype: EncryptionKey
+        """
+
+    @abstractmethod
+    def delete_key(self, key):
+        """
+        Remove C{key} from storage.
+
+        @param key: The key to be removed.
+        @type key: EncryptionKey
         """

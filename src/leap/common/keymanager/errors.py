@@ -31,3 +31,10 @@ class KeyAlreadyExists(Exception):
     """
     Raised when attempted to create a key that already exists.
     """
+
+
+class KeyAttributesDiffer(Exception):
+    """
+    Raised when trying to delete a key but the stored key differs from the key
+    passed to the delete_key() method.
+    """

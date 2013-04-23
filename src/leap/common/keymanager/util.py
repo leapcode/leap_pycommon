@@ -25,6 +25,9 @@ import re
 
 
 from hashlib import sha256
+from binascii import b2a_base64
+
+
 from leap.common.check import leap_assert
 
 
@@ -79,11 +82,13 @@ def _build_key_from_doc(kClass, address, doc):
     return _build_key_from_dict(kClass, address, doc.content)
 
 
-def _keymanager_doc_id(address, private=False):
+def _keymanager_doc_id(ktype, address, private=False):
     """
     Return the document id for the document containing a key for
     C{address}.
 
+    @param address: The type of the key.
+    @type address: KeyType
     @param address: The address bound to the key.
     @type address: str
     @param private: Whether the key is private or not.
@@ -93,5 +98,6 @@ def _keymanager_doc_id(address, private=False):
     @rtype: str
     """
     leap_assert(_is_address(address), "Wrong address format: %s" % address)
-    ktype = 'private' if private else 'public'
-    return sha256('key-manager-'+address+'-'+ktype).hexdigest()
+    ktype = str(ktype)
+    visibility = 'private' if private else 'public'
+    return sha256('key-manager-'+address+'-'+ktype+'-'+visibility).hexdigest()

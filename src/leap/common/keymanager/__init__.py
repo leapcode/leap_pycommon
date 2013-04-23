@@ -33,8 +33,8 @@ from leap.common.keymanager.errors import (
 )
 from leap.common.keymanager.openpgp import (
     OpenPGPKey,
-    OpenPGPWrapper,
-    _encrypt_symmetric,
+    OpenPGPScheme,
+    encrypt_sym,
 )
 from leap.common.keymanager.http import HTTPClient
 
@@ -56,7 +56,7 @@ class KeyManager(object):
         self._address = address
         self._http_client = HTTPClient(url)
         self._wrapper_map = {
-            OpenPGPKey: OpenPGPWrapper(soledad),
+            OpenPGPKey: OpenPGPScheme(soledad),
             # other types of key will be added to this mapper.
         }
 
@@ -95,7 +95,7 @@ class KeyManager(object):
         if send_private:
             privkey = json.loads(
                 self.get_key(self._address, ktype, private=True).get_json())
-            privkey.key_data = _encrypt_symmetric(data, passphrase)
+            privkey.key_data = encrypt_sym(data, passphrase)
             data['keys'].append(privkey)
         headers = None  # TODO: replace for token-based-auth
         self._http_client.request(

@@ -26,14 +26,17 @@ import unittest
 
 from leap.common.testing.basetest import BaseLeapTest
 from leap.soledad import Soledad
+from leap.soledad.crypto import SoledadCrypto
+
+
 from leap.common.keymanager import KeyManager, openpgp, KeyNotFound
 from leap.common.keymanager.openpgp import OpenPGPKey
-from leap.common.keymanager.gpg import GPGWrapper
 from leap.common.keymanager.util import (
     _is_address,
     _build_key_from_dict,
     _keymanager_doc_id,
 )
+from leap.common.keymanager import errors
 
 
 class KeyManagerUtilTestCase(BaseLeapTest):
@@ -72,32 +75,46 @@ class KeyManagerUtilTestCase(BaseLeapTest):
             'validation': 'validation',
         }
         key = _build_key_from_dict(OpenPGPKey, 'leap@leap.se', kdict)
-        self.assertEqual(kdict['address'], key.address,
+        self.assertEqual(
+            kdict['address'], key.address,
             'Wrong data in key.')
-        self.assertEqual(kdict['key_id'], key.key_id,
+        self.assertEqual(
+            kdict['key_id'], key.key_id,
             'Wrong data in key.')
-        self.assertEqual(kdict['fingerprint'], key.fingerprint,
+        self.assertEqual(
+            kdict['fingerprint'], key.fingerprint,
             'Wrong data in key.')
-        self.assertEqual(kdict['key_data'], key.key_data,
+        self.assertEqual(
+            kdict['key_data'], key.key_data,
             'Wrong data in key.')
-        self.assertEqual(kdict['private'], key.private,
+        self.assertEqual(
+            kdict['private'], key.private,
             'Wrong data in key.')
-        self.assertEqual(kdict['length'], key.length,
+        self.assertEqual(
+            kdict['length'], key.length,
             'Wrong data in key.')
-        self.assertEqual(kdict['expiry_date'], key.expiry_date,
+        self.assertEqual(
+            kdict['expiry_date'], key.expiry_date,
             'Wrong data in key.')
-        self.assertEqual(kdict['first_seen_at'], key.first_seen_at,
+        self.assertEqual(
+            kdict['first_seen_at'], key.first_seen_at,
             'Wrong data in key.')
-        self.assertEqual(kdict['last_audited_at'], key.last_audited_at,
+        self.assertEqual(
+            kdict['last_audited_at'], key.last_audited_at,
             'Wrong data in key.')
-        self.assertEqual(kdict['validation'], key.validation,
+        self.assertEqual(
+            kdict['validation'], key.validation,
             'Wrong data in key.')
 
     def test__keymanager_doc_id(self):
-        doc_id1 = _keymanager_doc_id('leap@leap.se', private=False)
-        doc_id2 = _keymanager_doc_id('leap@leap.se', private=True)
-        doc_id3 = _keymanager_doc_id('user@leap.se', private=False)
-        doc_id4 = _keymanager_doc_id('user@leap.se', private=True)
+        doc_id1 = _keymanager_doc_id(
+            OpenPGPKey, 'leap@leap.se', private=False)
+        doc_id2 = _keymanager_doc_id(
+            OpenPGPKey, 'leap@leap.se', private=True)
+        doc_id3 = _keymanager_doc_id(
+            OpenPGPKey, 'user@leap.se', private=False)
+        doc_id4 = _keymanager_doc_id(
+            OpenPGPKey, 'user@leap.se', private=True)
         self.assertFalse(doc_id1 == doc_id2, 'Doc ids are equal!')
         self.assertFalse(doc_id1 == doc_id3, 'Doc ids are equal!')
         self.assertFalse(doc_id1 == doc_id4, 'Doc ids are equal!')
@@ -119,7 +136,7 @@ class KeyManagerCryptoTestCase(BaseLeapTest):
         )
         # initialize solead by hand for testing purposes
         self._soledad._init_dirs()
-        self._soledad._gpg = GPGWrapper(gnupghome=self.tempdir+"/gnupg")
+        self._soledad._crypto = SoledadCrypto(self._soledad)
         self._soledad._shared_db = None
         self._soledad._init_keys()
         self._soledad._init_db()
@@ -130,31 +147,86 @@ class KeyManagerCryptoTestCase(BaseLeapTest):
     def _key_manager(user='user@leap.se', url='https://domain.org:6425'):
         return KeyManager(user, url)
 
-    def test_openpgp_gen_key(self):
-        pgp = openpgp.OpenPGPWrapper(self._soledad)
-        try:
-            pgp.get_key('user@leap.se')
-        except KeyNotFound:
-            key = pgp.gen_key('user@leap.se')
-            self.assertIsInstance(key, openpgp.OpenPGPKey)
-            self.assertEqual(
-                'user@leap.se', key.address, 'Wrong address bound to key.')
-            self.assertEqual(
-                '4096', key.length, 'Wrong key length.')
+    def _test_openpgp_gen_key(self):
+        pgp = openpgp.OpenPGPScheme(self._soledad)
+        self.assertRaises(KeyNotFound, pgp.get_key, 'user@leap.se')
+        key = pgp.gen_key('user@leap.se')
+        self.assertIsInstance(key, openpgp.OpenPGPKey)
+        self.assertEqual(
+            'user@leap.se', key.address, 'Wrong address bound to key.')
+        self.assertEqual(
+            '4096', key.length, 'Wrong key length.')
+
+    def test_openpgp_put_delete_key(self):
+        pgp = openpgp.OpenPGPScheme(self._soledad)
+        self.assertRaises(KeyNotFound, pgp.get_key, 'leap@leap.se')
+        pgp.put_key_raw(PUBLIC_KEY)
+        key = pgp.get_key('leap@leap.se', private=False)
+        pgp.delete_key(key)
+        self.assertRaises(KeyNotFound, pgp.get_key, 'leap@leap.se')
 
     def test_openpgp_put_key_raw(self):
-        pgp = openpgp.OpenPGPWrapper(self._soledad)
-        try:
-            pgp.get_key('leap@leap.se')
-        except KeyNotFound:
-            pgp.put_key_raw(PUBLIC_KEY)
-            key = pgp.get_key('leap@leap.se')
-            self.assertIsInstance(key, openpgp.OpenPGPKey)
-            self.assertEqual(
-                'leap@leap.se', key.address, 'Wrong address bound to key.')
-            self.assertEqual(
-                '4096', key.length, 'Wrong key length.')
+        pgp = openpgp.OpenPGPScheme(self._soledad)
+        self.assertRaises(KeyNotFound, pgp.get_key, 'leap@leap.se')
+        pgp.put_key_raw(PUBLIC_KEY)
+        key = pgp.get_key('leap@leap.se', private=False)
+        self.assertIsInstance(key, openpgp.OpenPGPKey)
+        self.assertEqual(
+            'leap@leap.se', key.address, 'Wrong address bound to key.')
+        self.assertEqual(
+            '4096', key.length, 'Wrong key length.')
+        pgp.delete_key(key)
+        self.assertRaises(KeyNotFound, pgp.get_key, 'leap@leap.se')
 
+    def test_get_public_key(self):
+        pgp = openpgp.OpenPGPScheme(self._soledad)
+        self.assertRaises(KeyNotFound, pgp.get_key, 'leap@leap.se')
+        pgp.put_key_raw(PUBLIC_KEY)
+        self.assertRaises(
+            KeyNotFound, pgp.get_key, 'leap@leap.se', private=True)
+        key = pgp.get_key('leap@leap.se', private=False)
+        self.assertEqual('leap@leap.se', key.address)
+        self.assertFalse(key.private)
+        self.assertEqual(KEY_FINGERPRINT, key.fingerprint)
+        pgp.delete_key(key)
+        self.assertRaises(KeyNotFound, pgp.get_key, 'leap@leap.se')
+
+    def test_openpgp_encrypt_decrypt_asym(self):
+        # encrypt
+        pgp = openpgp.OpenPGPScheme(self._soledad)
+        pgp.put_key_raw(PUBLIC_KEY)
+        pubkey = pgp.get_key('leap@leap.se', private=False)
+        cyphertext = openpgp.encrypt_asym('data', pubkey)
+        # assert
+        self.assertTrue(cyphertext is not None)
+        self.assertTrue(cyphertext != '')
+        self.assertTrue(cyphertext != 'data')
+        self.assertTrue(openpgp.is_encrypted_asym(cyphertext))
+        self.assertFalse(openpgp.is_encrypted_sym(cyphertext))
+        self.assertTrue(openpgp.is_encrypted(cyphertext))
+        # decrypt
+        self.assertRaises(
+            KeyNotFound, pgp.get_key, 'leap@leap.se', private=True)
+        pgp.put_key_raw(PRIVATE_KEY)
+        privkey = pgp.get_key('leap@leap.se', private=True)
+        plaintext = openpgp.decrypt_asym(cyphertext, privkey)
+        pgp.delete_key(pubkey)
+        pgp.delete_key(privkey)
+        self.assertRaises(
+            KeyNotFound, pgp.get_key, 'leap@leap.se', private=False)
+        self.assertRaises(
+            KeyNotFound, pgp.get_key, 'leap@leap.se', private=True)
+
+    def test_openpgp_encrypt_decrypt_sym(self):
+        cyphertext = openpgp.encrypt_sym('data', 'pass')
+        self.assertTrue(cyphertext is not None)
+        self.assertTrue(cyphertext != '')
+        self.assertTrue(cyphertext != 'data')
+        self.assertTrue(openpgp.is_encrypted_sym(cyphertext))
+        self.assertFalse(openpgp.is_encrypted_asym(cyphertext))
+        self.assertTrue(openpgp.is_encrypted(cyphertext))
+        plaintext = openpgp.decrypt_sym(cyphertext, 'pass')
+        self.assertEqual('data', plaintext)
 
 
 # Key material for testing

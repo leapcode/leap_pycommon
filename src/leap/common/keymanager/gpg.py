@@ -394,4 +394,4 @@ class GPGWrapper(gnupg.GPG):
         @return: Whether data is encrypted to a key.
         @rtype: bool
         """
-        self.is_encrypted_asym() or self.is_encrypted_sym()
+        return self.is_encrypted_asym(data) or self.is_encrypted_sym(data)
