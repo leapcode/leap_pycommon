@@ -21,9 +21,7 @@ Key Manager is a Nicknym agent for LEAP client.
 """
 
 import httplib
-
-
-from u1db.errors import HTTPError
+import requests
 
 
 from leap.common.check import leap_assert
@@ -39,7 +37,6 @@ from leap.common.keymanager.openpgp import (
     OpenPGPScheme,
     encrypt_sym,
 )
-from leap.common.keymanager.http import HTTPClient
 
 
 TAGS_INDEX = 'by-tags'
@@ -52,7 +49,7 @@ INDEXES = {
 
 class KeyManager(object):
 
-    def __init__(self, address, url, soledad):
+    def __init__(self, address, nickserver_url, soledad):
         """
         Initialize a Key Manager for user's C{address} with provider's
         nickserver reachable in C{url}.
@@ -65,7 +62,7 @@ class KeyManager(object):
         @type soledad: leap.soledad.Soledad
         """
         self._address = address
-        self._http_client = HTTPClient(url)
+        self._nickserver_url = nickserver_url
         self._soledad = soledad
         self._wrapper_map = {
             OpenPGPKey: OpenPGPScheme(soledad),
@@ -105,6 +102,22 @@ class KeyManager(object):
             self._soledad.delete_index(name)
             self._soledad.create_index(name, *expression)
 
+    def _get_dict_from_http_json(self, path):
+        """
+        Make a GET HTTP request and return a dictionary containing the
+        response.
+        """
+        response = requests.get(self._nickserver_url+path)
+        leap_assert(r.status_code == 200, 'Invalid response.')
+        leap_assert(
+            response.headers['content-type'].startswith('application/json')
+                is True,
+            'Content-type is not JSON.')
+        return r.json()
+
+    #
+    # key management
+    #
 
     def send_key(self, ktype, send_private=False, password=None):
         """
@@ -143,12 +156,10 @@ class KeyManager(object):
                 self.get_key(self._address, ktype, private=True).get_json())
             privkey.key_data = encrypt_sym(data, passphrase)
             data['keys'].append(privkey)
-        headers = None  # TODO: replace for token-based-auth
-        self._http_client.request(
-            'PUT',
-            '/key/%s' % address,
-            json.dumps(data),
-            headers)
+        requests.put(
+            self._nickserver_url + '/key/' + address,
+            data=data,
+            auth=(self._address, None))  # TODO: replace for token-based auth.
 
     def get_key(self, address, ktype, private=False, fetch_remote=True):
         """
@@ -201,8 +212,7 @@ class KeyManager(object):
         @raise KeyNotFound: If the key was not found on nickserver.
         @raise httplib.HTTPException:
         """
-        self._http_client.request('GET', '/key/%s' % address, None, None)
-        keydata = json.loads(self._http_client.read_response())
+        keydata = self._get_dict_from_http_json('/key/%s' % address)
         leap_assert(
             keydata['address'] == address,
             "Fetched key for wrong address.")

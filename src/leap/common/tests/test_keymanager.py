@@ -151,10 +151,9 @@ class KeyManagerWithSoledadTestCase(BaseLeapTest):
         pass
 
 
-
 class OpenPGPCryptoTestCase(KeyManagerWithSoledadTestCase):
 
-    def _test_openpgp_gen_key(self):
+    def test_openpgp_gen_key(self):
         pgp = openpgp.OpenPGPScheme(self._soledad)
         self.assertRaises(KeyNotFound, pgp.get_key, 'user@leap.se')
         key = pgp.gen_key('user@leap.se')
