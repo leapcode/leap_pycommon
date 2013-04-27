@@ -33,13 +33,11 @@ from leap.common.keymanager.errors import (
 from leap.common.keymanager.keys import (
     EncryptionKey,
     EncryptionScheme,
+    is_address,
+    keymanager_doc_id,
+    build_key_from_dict,
 )
 from leap.common.keymanager.gpg import GPGWrapper
-from leap.common.keymanager.util import (
-    _is_address,
-    _build_key_from_doc,
-    _keymanager_doc_id,
-)
 
 
 #
@@ -307,7 +305,7 @@ class OpenPGPScheme(EncryptionScheme):
         @raise KeyAlreadyExists: If key already exists in local database.
         """
         # make sure the key does not already exist
-        leap_assert(_is_address(address), 'Not an user address: %s' % address)
+        leap_assert(is_address(address), 'Not an user address: %s' % address)
         try:
             self.get_key(address)
             raise KeyAlreadyExists(address)
@@ -358,11 +356,11 @@ class OpenPGPScheme(EncryptionScheme):
         @rtype: OpenPGPKey
         @raise KeyNotFound: If the key was not found on local storage.
         """
-        leap_assert(_is_address(address), 'Not an user address: %s' % address)
+        leap_assert(is_address(address), 'Not an user address: %s' % address)
         doc = self._get_key_doc(address, private)
         if doc is None:
             raise KeyNotFound(address)
-        return _build_key_from_doc(OpenPGPKey, address, doc)
+        return build_key_from_dict(OpenPGPKey, address, doc.content)
 
     def put_key_raw(self, data):
         """
@@ -422,7 +420,7 @@ class OpenPGPScheme(EncryptionScheme):
         if doc is None:
             self._soledad.create_doc_from_json(
                 key.get_json(),
-                doc_id=_keymanager_doc_id(
+                doc_id=keymanager_doc_id(
                     OpenPGPKey, key.address, key.private))
         else:
             doc.set_json(key.get_json())
@@ -442,7 +440,7 @@ class OpenPGPScheme(EncryptionScheme):
         @rtype: leap.soledad.backends.leap_backend.LeapDocument
         """
         return self._soledad.get_doc(
-            _keymanager_doc_id(OpenPGPKey, address, private))
+            keymanager_doc_id(OpenPGPKey, address, private))
 
     def delete_key(self, key):
         """
@@ -458,5 +456,5 @@ class OpenPGPScheme(EncryptionScheme):
         if stored_key.__dict__ != key.__dict__:
             raise KeyAttributesDiffer(key)
         doc = self._soledad.get_doc(
-            _keymanager_doc_id(OpenPGPKey, key.address, key.private))
+            keymanager_doc_id(OpenPGPKey, key.address, key.private))
         self._soledad.delete_doc(doc)

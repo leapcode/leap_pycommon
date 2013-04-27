@@ -25,10 +25,80 @@ try:
     import simplejson as json
 except ImportError:
     import json  # noqa
+import re
 
 
+from hashlib import sha256
 from abc import ABCMeta, abstractmethod
+from leap.common.check import leap_assert
 
+
+#
+# Key handling utilities
+#
+
+def is_address(address):
+    """
+    Return whether the given C{address} is in the form user@provider.
+
+    @param address: The address to be tested.
+    @type address: str
+    @return: Whether C{address} is in the form user@provider.
+    @rtype: bool
+    """
+    return bool(re.match('[\w.-]+@[\w.-]+', address))
+
+
+def build_key_from_dict(kClass, address, kdict):
+    """
+    Build an C{kClass} key bound to C{address} based on info in C{kdict}.
+
+    @param address: The address bound to the key.
+    @type address: str
+    @param kdict: Dictionary with key data.
+    @type kdict: dict
+    @return: An instance of the key.
+    @rtype: C{kClass}
+    """
+    leap_assert(address == kdict['address'], 'Wrong address in key data.')
+    return kClass(
+        address,
+        key_id=kdict['key_id'],
+        fingerprint=kdict['fingerprint'],
+        key_data=kdict['key_data'],
+        private=kdict['private'],
+        length=kdict['length'],
+        expiry_date=kdict['expiry_date'],
+        first_seen_at=kdict['first_seen_at'],
+        last_audited_at=kdict['last_audited_at'],
+        validation=kdict['validation'],  # TODO: verify for validation.
+    )
+
+
+def keymanager_doc_id(ktype, address, private=False):
+    """
+    Return the document id for the document containing a key for
+    C{address}.
+
+    @param address: The type of the key.
+    @type address: KeyType
+    @param address: The address bound to the key.
+    @type address: str
+    @param private: Whether the key is private or not.
+    @type private: bool
+    @return: The document id for the document that stores a key bound to
+        C{address}.
+    @rtype: str
+    """
+    leap_assert(is_address(address), "Wrong address format: %s" % address)
+    ktype = str(ktype)
+    visibility = 'private' if private else 'public'
+    return sha256('keymanager-'+address+'-'+ktype+'-'+visibility).hexdigest()
+
+
+#
+# Abstraction for encryption keys
+#
 
 class EncryptionKey(object):
     """
@@ -82,6 +152,7 @@ class EncryptionKey(object):
             'validation': self.validation,
             'first_seen_at': self.first_seen_at,
             'last_audited_at': self.last_audited_at,
+            'tags': ['keymanager-key'],
         })
 
 

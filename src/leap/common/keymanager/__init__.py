@@ -31,12 +31,23 @@ from leap.common.keymanager.errors import (
     KeyNotFound,
     KeyAlreadyExists,
 )
+from leap.common.keymanager.keys import (
+    build_key_from_dict,
+)
 from leap.common.keymanager.openpgp import (
     OpenPGPKey,
     OpenPGPScheme,
     encrypt_sym,
 )
 from leap.common.keymanager.http import HTTPClient
+
+
+TAGS_INDEX = 'by-tags'
+TAGS_AND_PRIVATE_INDEX = 'by-tags-and-private'
+INDEXES = {
+    TAGS_INDEX: ['tags'],
+    TAGS_AND_PRIVATE_INDEX: ['tags', 'bool(private)'],
+}
 
 
 class KeyManager(object):
@@ -55,10 +66,45 @@ class KeyManager(object):
         """
         self._address = address
         self._http_client = HTTPClient(url)
+        self._soledad = soledad
         self._wrapper_map = {
             OpenPGPKey: OpenPGPScheme(soledad),
             # other types of key will be added to this mapper.
         }
+        self._init_indexes()
+
+    #
+    # utilities
+    #
+
+    def _key_class_from_type(self, ktype):
+        """
+        Return key class from string representation of key type.
+        """
+        return filter(
+            lambda klass: str(klass) == ktype,
+            self._wrapper_map).pop()
+
+    def _init_indexes(self):
+        """
+        Initialize the database indexes.
+        """
+        # Ask the database for currently existing indexes.
+        db_indexes = dict(self._soledad.list_indexes())
+        # Loop through the indexes we expect to find.
+        for name, expression in INDEXES.items():
+            if name not in db_indexes:
+                # The index does not yet exist.
+                self._soledad.create_index(name, *expression)
+                continue
+            if expression == db_indexes[name]:
+                # The index exists and is up to date.
+                continue
+            # The index exists but the definition is not what expected, so we
+            # delete it and add the proper index expression.
+            self._soledad.delete_index(name)
+            self._soledad.create_index(name, *expression)
+
 
     def send_key(self, ktype, send_private=False, password=None):
         """
@@ -104,7 +150,7 @@ class KeyManager(object):
             json.dumps(data),
             headers)
 
-    def get_key(self, address, ktype, private=False):
+    def get_key(self, address, ktype, private=False, fetch_remote=True):
         """
         Return a key of type C{ktype} bound to C{address}.
 
@@ -129,14 +175,21 @@ class KeyManager(object):
         try:
             return self._wrapper_map[ktype].get_key(address, private=private)
         except KeyNotFound:
-            key = filter(lambda k: isinstance(k, ktype),
-                         self._fetch_keys(address))
-            if key is None:
+            if fetch_remote is False:
+                raise
+            # fetch keys from server and discard unwanted types.
+            keys = filter(lambda k: isinstance(k, ktype),
+                          self.fetch_keys_from_server(address))
+            if len(keys) is 0:
                 raise KeyNotFound()
-            self._wrapper_map[ktype].put_key(key)
+            leap_assert(
+                len(keys) == 1,
+                'Got more than one key of type %s for %s.' %
+                (str(ktype), address))
+            self._wrapper_map[ktype].put_key(keys[0])
             return key
 
-    def _fetch_keys(self, address):
+    def fetch_keys_from_server(self, address):
         """
         Fetch keys bound to C{address} from nickserver.
 
@@ -153,18 +206,42 @@ class KeyManager(object):
         leap_assert(
             keydata['address'] == address,
             "Fetched key for wrong address.")
+        keys = []
         for key in keydata['keys']:
-            # find the key class in the mapper
-            keyCLass = filter(
-                lambda klass: str(klass) == key['type'],
-                self._wrapper_map).pop()
-            yield _build_key_from_dict(kClass, address, key)
+            keys.append(
+                build_key_from_dict(
+                    self._key_class_from_type(key['type']),
+                    address,
+                    key))
+        return keys
+
+    def get_all_keys_in_local_db(self, private=False):
+        """
+        Return all keys stored in local database.
+
+        @return: A list with all keys in local db.
+        @rtype: list
+        """
+        return map(
+            lambda doc: build_key_from_dict(
+                self._key_class_from_type(doc.content['type']),
+                doc.content['address'],
+                doc.content),
+            self._soledad.get_from_index(
+                TAGS_AND_PRIVATE_INDEX,
+                'keymanager-key',
+                '1' if private else '0'))
 
     def refresh_keys(self):
         """
-        Update the user's db of validated keys to see if there are changes.
+        Fetch keys from nickserver and update them locally.
         """
-        raise NotImplementedError(self.refresh_keys)
+        addresses = set(map(
+            lambda doc: doc.address,
+            self.get_all_keys_in_local_db(False)))
+        for address in addresses:
+            for key in self.fetch_keys_from_server(address):
+                self._wrapper_map[key.__class__].put_key(key)
 
     def gen_key(self, ktype):
         """

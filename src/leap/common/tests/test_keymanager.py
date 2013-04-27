@@ -29,12 +29,18 @@ from leap.soledad import Soledad
 from leap.soledad.crypto import SoledadCrypto
 
 
-from leap.common.keymanager import KeyManager, openpgp, KeyNotFound
+from leap.common.keymanager import (
+    KeyManager,
+    openpgp,
+    KeyNotFound,
+    TAGS_INDEX,
+    TAGS_AND_PRIVATE_INDEX,
+)
 from leap.common.keymanager.openpgp import OpenPGPKey
-from leap.common.keymanager.util import (
-    _is_address,
-    _build_key_from_dict,
-    _keymanager_doc_id,
+from leap.common.keymanager.keys import (
+    is_address,
+    build_key_from_dict,
+    keymanager_doc_id,
 )
 from leap.common.keymanager import errors
 
@@ -47,21 +53,21 @@ class KeyManagerUtilTestCase(BaseLeapTest):
     def tearDown(self):
         pass
 
-    def test__is_address(self):
+    def test_is_address(self):
         self.assertTrue(
-            _is_address('user@leap.se'),
+            is_address('user@leap.se'),
             'Incorrect address detection.')
         self.assertFalse(
-            _is_address('userleap.se'),
+            is_address('userleap.se'),
             'Incorrect address detection.')
         self.assertFalse(
-            _is_address('user@'),
+            is_address('user@'),
             'Incorrect address detection.')
         self.assertFalse(
-            _is_address('@leap.se'),
+            is_address('@leap.se'),
             'Incorrect address detection.')
 
-    def test__build_key_from_dict(self):
+    def test_build_key_from_dict(self):
         kdict = {
             'address': 'leap@leap.se',
             'key_id': 'key_id',
@@ -74,7 +80,7 @@ class KeyManagerUtilTestCase(BaseLeapTest):
             'last_audited_at': 'last_audited_at',
             'validation': 'validation',
         }
-        key = _build_key_from_dict(OpenPGPKey, 'leap@leap.se', kdict)
+        key = build_key_from_dict(OpenPGPKey, 'leap@leap.se', kdict)
         self.assertEqual(
             kdict['address'], key.address,
             'Wrong data in key.')
@@ -106,14 +112,14 @@ class KeyManagerUtilTestCase(BaseLeapTest):
             kdict['validation'], key.validation,
             'Wrong data in key.')
 
-    def test__keymanager_doc_id(self):
-        doc_id1 = _keymanager_doc_id(
+    def test_keymanager_doc_id(self):
+        doc_id1 = keymanager_doc_id(
             OpenPGPKey, 'leap@leap.se', private=False)
-        doc_id2 = _keymanager_doc_id(
+        doc_id2 = keymanager_doc_id(
             OpenPGPKey, 'leap@leap.se', private=True)
-        doc_id3 = _keymanager_doc_id(
+        doc_id3 = keymanager_doc_id(
             OpenPGPKey, 'user@leap.se', private=False)
-        doc_id4 = _keymanager_doc_id(
+        doc_id4 = keymanager_doc_id(
             OpenPGPKey, 'user@leap.se', private=True)
         self.assertFalse(doc_id1 == doc_id2, 'Doc ids are equal!')
         self.assertFalse(doc_id1 == doc_id3, 'Doc ids are equal!')
@@ -123,7 +129,7 @@ class KeyManagerUtilTestCase(BaseLeapTest):
         self.assertFalse(doc_id3 == doc_id4, 'Doc ids are equal!')
 
 
-class KeyManagerCryptoTestCase(BaseLeapTest):
+class KeyManagerWithSoledadTestCase(BaseLeapTest):
 
     def setUp(self):
         self._soledad = Soledad(
@@ -144,8 +150,9 @@ class KeyManagerCryptoTestCase(BaseLeapTest):
     def tearDown(self):
         pass
 
-    def _key_manager(user='user@leap.se', url='https://domain.org:6425'):
-        return KeyManager(user, url)
+
+
+class OpenPGPCryptoTestCase(KeyManagerWithSoledadTestCase):
 
     def _test_openpgp_gen_key(self):
         pgp = openpgp.OpenPGPScheme(self._soledad)
@@ -227,6 +234,27 @@ class KeyManagerCryptoTestCase(BaseLeapTest):
         self.assertTrue(openpgp.is_encrypted(cyphertext))
         plaintext = openpgp.decrypt_sym(cyphertext, 'pass')
         self.assertEqual('data', plaintext)
+
+
+class KeyManagerKeyManagementTestCase(
+    KeyManagerWithSoledadTestCase):
+
+    def _key_manager(self, user='leap@leap.se', url=''):
+        return KeyManager(user, url, self._soledad)
+
+    def test_get_all_keys_in_db(self):
+        km = self._key_manager()
+        km._wrapper_map[OpenPGPKey].put_key_raw(PRIVATE_KEY)
+        # get public keys
+        keys = km.get_all_keys_in_local_db(False)
+        self.assertEqual(len(keys), 1, 'Wrong number of keys')
+        self.assertEqual('leap@leap.se', keys[0].address)
+        self.assertFalse(keys[0].private)
+        # get private keys
+        keys = km.get_all_keys_in_local_db(True)
+        self.assertEqual(len(keys), 1, 'Wrong number of keys')
+        self.assertEqual('leap@leap.se', keys[0].address)
+        self.assertTrue(keys[0].private)
 
 
 # Key material for testing
