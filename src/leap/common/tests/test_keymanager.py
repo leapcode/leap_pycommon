@@ -135,7 +135,6 @@ class KeyManagerWithSoledadTestCase(BaseLeapTest):
         self._soledad = Soledad(
             "leap@leap.se",
             "123456",
-            gnupg_home=self.tempdir+"/gnupg",
             secret_path=self.tempdir+"/secret.gpg",
             local_db_path=self.tempdir+"/soledad.u1db",
             bootstrap=False,
