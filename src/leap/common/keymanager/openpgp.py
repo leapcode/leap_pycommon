@@ -58,9 +58,8 @@ def encrypt_sym(data, passphrase):
     """
 
     def _encrypt_cb(gpg):
-        return str(
-            gpg.encrypt(
-                data, None, passphrase=passphrase, symmetric=True))
+        return gpg.encrypt(
+                data, None, passphrase=passphrase, symmetric=True).data
 
     return _safe_call(_encrypt_cb)
 
@@ -79,7 +78,7 @@ def decrypt_sym(data, passphrase):
     """
 
     def _decrypt_cb(gpg):
-        return str(gpg.decrypt(data, passphrase=passphrase))
+        return gpg.decrypt(data, passphrase=passphrase).data
 
     return _safe_call(_decrypt_cb)
 
@@ -99,9 +98,8 @@ def encrypt_asym(data, key):
     leap_assert(key.private is False, 'Key is not public.')
 
     def _encrypt_cb(gpg):
-        return str(
-            gpg.encrypt(
-                data, key.fingerprint, symmetric=False))
+        return gpg.encrypt(
+                data, key.fingerprint, symmetric=False).data
 
     return _safe_call(_encrypt_cb, key.key_data)
 
@@ -121,7 +119,7 @@ def decrypt_asym(data, key):
     leap_assert(key.private is True, 'Key is not private.')
 
     def _decrypt_cb(gpg):
-        return str(gpg.decrypt(data))
+        return gpg.decrypt(data).data
 
     return _safe_call(_decrypt_cb, key.key_data)
 
