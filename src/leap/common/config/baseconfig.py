@@ -70,12 +70,11 @@ class BaseConfig:
         @return: returns the value for the specified key in the config
         """
         leap_assert(self._config_checker, "Load the config first")
-        return self._config_checker.config[key]
+        return self._config_checker.config.get(key, None)
 
     def get_path_prefix(self):
         """
         Returns the platform dependant path prefixer
-
         """
         return get_platform_prefixer().get_path_prefix(
             standalone=self.standalone)
