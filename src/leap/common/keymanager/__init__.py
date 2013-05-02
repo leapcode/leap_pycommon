@@ -20,14 +20,16 @@
 Key Manager is a Nicknym agent for LEAP client.
 """
 
-import httplib
 import requests
 
+try:
+    import simplejson as json
+except ImportError:
+    import json  # noqa
 
 from leap.common.check import leap_assert
 from leap.common.keymanager.errors import (
     KeyNotFound,
-    KeyAlreadyExists,
 )
 from leap.common.keymanager.keys import (
     build_key_from_dict,
@@ -108,12 +110,12 @@ class KeyManager(object):
         response.
         """
         response = requests.get(self._nickserver_url+path)
-        leap_assert(r.status_code == 200, 'Invalid response.')
+        leap_assert(response.status_code == 200, 'Invalid response.')
         leap_assert(
             response.headers['content-type'].startswith('application/json')
                 is True,
             'Content-type is not JSON.')
-        return r.json()
+        return response.json()
 
     #
     # key management
@@ -132,8 +134,6 @@ class KeyManager(object):
         will be saved in the server in a way it is publicly retrievable
         through the hash string.
 
-        @param address: The address bound to the key.
-        @type address: str
         @param ktype: The type of the key.
         @type ktype: KeyType
 
@@ -154,10 +154,10 @@ class KeyManager(object):
         if send_private:
             privkey = json.loads(
                 self.get_key(self._address, ktype, private=True).get_json())
-            privkey.key_data = encrypt_sym(data, passphrase)
+            privkey.key_data = encrypt_sym(data, password)
             data['keys'].append(privkey)
         requests.put(
-            self._nickserver_url + '/key/' + address,
+            self._nickserver_url + '/key/' + self._address,
             data=data,
             auth=(self._address, None))  # TODO: replace for token-based auth.
 
@@ -198,7 +198,7 @@ class KeyManager(object):
                 'Got more than one key of type %s for %s.' %
                 (str(ktype), address))
             self._wrapper_map[ktype].put_key(keys[0])
-            return key
+            return self._wrapper_map[ktype].get_key(address, private=private)
 
     def fetch_keys_from_server(self, address):
         """

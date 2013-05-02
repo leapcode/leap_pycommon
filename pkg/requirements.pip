@@ -5,3 +5,4 @@ protobuf.socketrpc
 pyopenssl
 python-dateutil
 autopep8
+python-gnupg

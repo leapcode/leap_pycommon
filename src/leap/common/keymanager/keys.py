@@ -194,6 +194,7 @@ class EncryptionScheme(object):
         @rtype: EncryptionKey
         @raise KeyNotFound: If the key was not found on local storage.
         """
+        pass
 
     @abstractmethod
     def put_key(self, key):
@@ -203,6 +204,7 @@ class EncryptionScheme(object):
         @param key: The key to be stored.
         @type key: EncryptionKey
         """
+        pass
 
     @abstractmethod
     def gen_key(self, address):
@@ -215,6 +217,7 @@ class EncryptionScheme(object):
         @return: The key bound to C{address}.
         @rtype: EncryptionKey
         """
+        pass
 
     @abstractmethod
     def delete_key(self, key):
@@ -224,3 +227,4 @@ class EncryptionScheme(object):
         @param key: The key to be removed.
         @type key: EncryptionKey
         """
+        pass

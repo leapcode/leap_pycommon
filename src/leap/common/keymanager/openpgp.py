@@ -29,6 +29,7 @@ from leap.common.check import leap_assert
 from leap.common.keymanager.errors import (
     KeyNotFound,
     KeyAlreadyExists,
+    KeyAttributesDiffer
 )
 from leap.common.keymanager.keys import (
     EncryptionKey,
@@ -450,7 +451,7 @@ class OpenPGPScheme(EncryptionScheme):
         leap_assert(key.__class__ is OpenPGPKey, 'Wrong key type.')
         stored_key = self.get_key(key.address, private=key.private)
         if stored_key is None:
-            raise KeyDoesNotExist(key)
+            raise KeyNotFound(key)
         if stored_key.__dict__ != key.__dict__:
             raise KeyAttributesDiffer(key)
         doc = self._soledad.get_doc(

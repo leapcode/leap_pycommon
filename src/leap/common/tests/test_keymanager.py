@@ -21,9 +21,6 @@ Tests for the Key Manager.
 """
 
 
-import unittest
-
-
 from leap.common.testing.basetest import BaseLeapTest
 from leap.soledad import Soledad
 from leap.soledad.crypto import SoledadCrypto
