@@ -30,6 +30,7 @@ except ImportError:
 from leap.common.check import leap_assert
 from leap.common.keymanager.errors import (
     KeyNotFound,
+    NoPasswordGiven,
 )
 from leap.common.keymanager.keys import (
     build_key_from_dict,
@@ -51,7 +52,7 @@ INDEXES = {
 
 class KeyManager(object):
 
-    def __init__(self, address, nickserver_url, soledad):
+    def __init__(self, address, nickserver_url, soledad, token=None):
         """
         Initialize a Key Manager for user's C{address} with provider's
         nickserver reachable in C{url}.
@@ -66,11 +67,13 @@ class KeyManager(object):
         self._address = address
         self._nickserver_url = nickserver_url
         self._soledad = soledad
+        self.token = token
         self._wrapper_map = {
             OpenPGPKey: OpenPGPScheme(soledad),
             # other types of key will be added to this mapper.
         }
         self._init_indexes()
+        self._fetcher = requests
 
     #
     # utilities
@@ -109,7 +112,7 @@ class KeyManager(object):
         Make a GET HTTP request and return a dictionary containing the
         response.
         """
-        response = requests.get(self._nickserver_url+path)
+        response = self._fetcher.get(self._nickserver_url+path)
         leap_assert(response.status_code == 200, 'Invalid response.')
         leap_assert(
             response.headers['content-type'].startswith('application/json')
@@ -142,24 +145,27 @@ class KeyManager(object):
             keyserver.
         """
         # prepare the public key bound to address
+        pubkey = self.get_key(
+            self._address, ktype, private=False, fetch_remote=False)
         data = {
             'address': self._address,
             'keys': [
-                json.loads(
-                    self.get_key(
-                        self._address, ktype, private=False).get_json()),
+                json.loads(pubkey.get_json()),
             ]
         }
         # prepare the private key bound to address
         if send_private:
-            privkey = json.loads(
-                self.get_key(self._address, ktype, private=True).get_json())
-            privkey.key_data = encrypt_sym(data, password)
+            if password is None or password == '':
+                raise NoPasswordGiven('Can\'t send unencrypted private keys!')
+            privkey = self.get_key(
+                self._address, ktype, private=True, fetch_remote=False)
+            privkey = json.loads(privkey.get_json())
+            privkey.key_data = encrypt_sym(privkey.key_data, password)
             data['keys'].append(privkey)
-        requests.put(
+        self._fetcher.put(
             self._nickserver_url + '/key/' + self._address,
             data=data,
-            auth=(self._address, None))  # TODO: replace for token-based auth.
+            auth=(self._address, self._token))
 
     def get_key(self, address, ktype, private=False, fetch_remote=True):
         """
@@ -248,7 +254,8 @@ class KeyManager(object):
         """
         addresses = set(map(
             lambda doc: doc.address,
-            self.get_all_keys_in_local_db(False)))
+            self.get_all_keys_in_local_db(private=False)))
+        # TODO: maybe we should not attempt to refresh our own public key?
         for address in addresses:
             for key in self.fetch_keys_from_server(address):
                 self._wrapper_map[key.__class__].put_key(key)
@@ -264,3 +271,16 @@ class KeyManager(object):
         @rtype: EncryptionKey
         """
         return self._wrapper_map[ktype].gen_key(self._address)
+
+    #
+    # Token setter/getter
+    #
+
+    def _get_token(self):
+        return self._token
+
+    def _set_token(self, token):
+        self._token = token
+
+    token = property(
+        _get_token, _set_token, doc='The auth token.')

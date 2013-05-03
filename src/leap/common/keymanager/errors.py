@@ -38,3 +38,9 @@ class KeyAttributesDiffer(Exception):
     Raised when trying to delete a key but the stored key differs from the key
     passed to the delete_key() method.
     """
+
+class NoPasswordGiven(Exception):
+    """
+    Raised when trying to perform some action that needs a password without
+    providing one.
+    """
