@@ -25,7 +25,7 @@ import re
 import tempfile
 import shutil
 
-from leap.common.check import leap_assert
+from leap.common.check import leap_assert, leap_assert_type
 from leap.common.keymanager.errors import (
     KeyNotFound,
     KeyAlreadyExists,
@@ -42,7 +42,7 @@ from leap.common.keymanager.gpg import GPGWrapper
 
 
 #
-# Utility functions
+# API functions
 #
 
 def encrypt_sym(data, passphrase):
@@ -175,6 +175,49 @@ def is_encrypted_asym(data):
 
     return _safe_call(_is_encrypted_cb)
 
+def sign(data, key):
+    """
+    Sign C{data} with C{key}.
+
+    @param data: The data to be signed.
+    @type data: str
+    @param key: The key to be used to sign.
+    @type key: OpenPGPKey
+
+    @return: The ascii-armored signed data.
+    @rtype: str
+    """
+    leap_assert_type(key, OpenPGPKey)
+    leap_assert(key.private == True)
+
+    def _sign_cb(gpg):
+        return gpg.sign(data, keyid=key.key_id).data
+
+    return _safe_call(_sign_cb, key.key_data)
+
+def verify(data, key):
+    """
+    Verify signed C{data} with C{key}.
+
+    @param data: The data to be verified.
+    @type data: str
+    @param key: The key to be used on verification.
+    @type key: OpenPGPKey
+
+    @return: The ascii-armored signed data.
+    @rtype: str
+    """
+    leap_assert_type(key, OpenPGPKey)
+    leap_assert(key.private == False)
+
+    def _verify_cb(gpg):
+        return gpg.verify(data).valid
+
+    return _safe_call(_verify_cb, key.key_data)
+
+#
+# Helper functions
+#
 
 def _build_key_from_gpg(address, key, key_data):
     """

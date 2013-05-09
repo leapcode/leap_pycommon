@@ -169,7 +169,7 @@ class KeyManagerWithSoledadTestCase(BaseLeapTest):
 
 class OpenPGPCryptoTestCase(KeyManagerWithSoledadTestCase):
 
-    def test_openpgp_gen_key(self):
+    def _test_openpgp_gen_key(self):
         pgp = openpgp.OpenPGPScheme(self._soledad)
         self.assertRaises(KeyNotFound, pgp.get_key, 'user@leap.se')
         key = pgp.gen_key('user@leap.se')
@@ -362,6 +362,34 @@ class KeyManagerKeyManagementTestCase(
         km.fetch_keys_from_server.assert_called_once_with(
             'leap@leap.se'
         )
+
+    def test_verify_with_private_raises(self):
+        km = self._key_manager()
+        km._wrapper_map[OpenPGPKey].put_key_raw(PRIVATE_KEY)
+        data = 'data'
+        privkey = km.get_key(ADDRESS, OpenPGPKey, private=True)
+        signed = openpgp.sign(data, privkey)
+        self.assertRaises(
+            AssertionError,
+            openpgp.verify, signed, privkey)
+
+    def test_sign_with_public_raises(self):
+        km = self._key_manager()
+        km._wrapper_map[OpenPGPKey].put_key_raw(PUBLIC_KEY)
+        data = 'data'
+        pubkey = km.get_key(ADDRESS, OpenPGPKey, private=False)
+        self.assertRaises(
+            AssertionError,
+            openpgp.sign, data, pubkey)
+
+    def test_sign_verify(self):
+        km = self._key_manager()
+        km._wrapper_map[OpenPGPKey].put_key_raw(PRIVATE_KEY)
+        data = 'data'
+        privkey = km.get_key(ADDRESS, OpenPGPKey, private=True)
+        signed = openpgp.sign(data, privkey)
+        pubkey = km.get_key(ADDRESS, OpenPGPKey, private=False)
+        self.assertTrue(openpgp.verify(signed, pubkey))
 
 
 # Key material for testing
