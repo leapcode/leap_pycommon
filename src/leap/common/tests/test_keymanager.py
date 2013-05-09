@@ -51,6 +51,7 @@ from leap.common.keymanager import errors
 
 
 ADDRESS = 'leap@leap.se'
+ADDRESS_2 = 'anotheruser@leap.se'
 
 
 class KeyManagerUtilTestCase(BaseLeapTest):
@@ -182,15 +183,15 @@ class OpenPGPCryptoTestCase(KeyManagerWithSoledadTestCase):
     def test_openpgp_put_delete_key(self):
         pgp = openpgp.OpenPGPScheme(self._soledad)
         self.assertRaises(KeyNotFound, pgp.get_key, ADDRESS)
-        pgp.put_key_raw(PUBLIC_KEY)
+        pgp.put_ascii_key(PUBLIC_KEY)
         key = pgp.get_key(ADDRESS, private=False)
         pgp.delete_key(key)
         self.assertRaises(KeyNotFound, pgp.get_key, ADDRESS)
 
-    def test_openpgp_put_key_raw(self):
+    def test_openpgp_put_ascii_key(self):
         pgp = openpgp.OpenPGPScheme(self._soledad)
         self.assertRaises(KeyNotFound, pgp.get_key, ADDRESS)
-        pgp.put_key_raw(PUBLIC_KEY)
+        pgp.put_ascii_key(PUBLIC_KEY)
         key = pgp.get_key(ADDRESS, private=False)
         self.assertIsInstance(key, openpgp.OpenPGPKey)
         self.assertEqual(
@@ -203,7 +204,7 @@ class OpenPGPCryptoTestCase(KeyManagerWithSoledadTestCase):
     def test_get_public_key(self):
         pgp = openpgp.OpenPGPScheme(self._soledad)
         self.assertRaises(KeyNotFound, pgp.get_key, ADDRESS)
-        pgp.put_key_raw(PUBLIC_KEY)
+        pgp.put_ascii_key(PUBLIC_KEY)
         self.assertRaises(
             KeyNotFound, pgp.get_key, ADDRESS, private=True)
         key = pgp.get_key(ADDRESS, private=False)
@@ -216,7 +217,7 @@ class OpenPGPCryptoTestCase(KeyManagerWithSoledadTestCase):
     def test_openpgp_encrypt_decrypt_asym(self):
         # encrypt
         pgp = openpgp.OpenPGPScheme(self._soledad)
-        pgp.put_key_raw(PUBLIC_KEY)
+        pgp.put_ascii_key(PUBLIC_KEY)
         pubkey = pgp.get_key(ADDRESS, private=False)
         cyphertext = openpgp.encrypt_asym('data', pubkey)
         # assert
@@ -229,7 +230,7 @@ class OpenPGPCryptoTestCase(KeyManagerWithSoledadTestCase):
         # decrypt
         self.assertRaises(
             KeyNotFound, pgp.get_key, ADDRESS, private=True)
-        pgp.put_key_raw(PRIVATE_KEY)
+        pgp.put_ascii_key(PRIVATE_KEY)
         privkey = pgp.get_key(ADDRESS, private=True)
         plaintext = openpgp.decrypt_asym(cyphertext, privkey)
         pgp.delete_key(pubkey)
@@ -250,13 +251,146 @@ class OpenPGPCryptoTestCase(KeyManagerWithSoledadTestCase):
         plaintext = openpgp.decrypt_sym(cyphertext, 'pass')
         self.assertEqual('data', plaintext)
 
+    def test_verify_with_private_raises(self):
+        pgp = openpgp.OpenPGPScheme(self._soledad)
+        pgp.put_ascii_key(PRIVATE_KEY)
+        data = 'data'
+        privkey = pgp.get_key(ADDRESS, private=True)
+        signed = openpgp.sign(data, privkey)
+        self.assertRaises(
+            AssertionError,
+            openpgp.verify, signed, privkey)
+
+    def test_sign_with_public_raises(self):
+        pgp = openpgp.OpenPGPScheme(self._soledad)
+        pgp.put_ascii_key(PUBLIC_KEY)
+        data = 'data'
+        pubkey = pgp.get_key(ADDRESS, private=False)
+        self.assertRaises(
+            AssertionError,
+            openpgp.sign, data, pubkey)
+
+    def test_verify_with_wrong_key_raises(self):
+        pgp = openpgp.OpenPGPScheme(self._soledad)
+        pgp.put_ascii_key(PRIVATE_KEY)
+        data = 'data'
+        privkey = pgp.get_key(ADDRESS, private=True)
+        signed = openpgp.sign(data, privkey)
+        pgp.put_ascii_key(PUBLIC_KEY_2)
+        wrongkey = pgp.get_key(ADDRESS_2)
+        self.assertRaises(
+            errors.InvalidSignature,
+            openpgp.verify, signed, wrongkey)
+
+    def test_encrypt_asym_sign_with_public_raises(self):
+        pgp = openpgp.OpenPGPScheme(self._soledad)
+        pgp.put_ascii_key(PRIVATE_KEY)
+        data = 'data'
+        privkey = pgp.get_key(ADDRESS, private=True)
+        pubkey = pgp.get_key(ADDRESS, private=False)
+        self.assertRaises(
+            AssertionError,
+            openpgp.encrypt_asym, data, privkey, sign=pubkey)
+
+    def test_encrypt_sym_sign_with_public_raises(self):
+        pgp = openpgp.OpenPGPScheme(self._soledad)
+        pgp.put_ascii_key(PUBLIC_KEY)
+        data = 'data'
+        pubkey = pgp.get_key(ADDRESS, private=False)
+        self.assertRaises(
+            AssertionError,
+            openpgp.encrypt_sym, data, '123', sign=pubkey)
+
+    def test_decrypt_asym_verify_with_private_raises(self):
+        pgp = openpgp.OpenPGPScheme(self._soledad)
+        pgp.put_ascii_key(PRIVATE_KEY)
+        data = 'data'
+        privkey = pgp.get_key(ADDRESS, private=True)
+        pubkey = pgp.get_key(ADDRESS, private=False)
+        encrypted_and_signed = openpgp.encrypt_asym(
+            data, pubkey, sign=privkey)
+        self.assertRaises(
+            AssertionError,
+            openpgp.decrypt_asym,
+            encrypted_and_signed, privkey, verify=privkey)
+
+    def test_decrypt_asym_verify_with_wrong_key_raises(self):
+        pgp = openpgp.OpenPGPScheme(self._soledad)
+        pgp.put_ascii_key(PRIVATE_KEY)
+        data = 'data'
+        privkey = pgp.get_key(ADDRESS, private=True)
+        pubkey = pgp.get_key(ADDRESS, private=False)
+        encrypted_and_signed = openpgp.encrypt_asym(data, pubkey, sign=privkey)
+        pgp.put_ascii_key(PUBLIC_KEY_2)
+        wrongkey = pgp.get_key('anotheruser@leap.se')
+        self.assertRaises(
+            errors.InvalidSignature,
+            openpgp.verify, encrypted_and_signed, wrongkey)
+
+    def test_decrypt_sym_verify_with_private_raises(self):
+        pgp = openpgp.OpenPGPScheme(self._soledad)
+        pgp.put_ascii_key(PRIVATE_KEY)
+        data = 'data'
+        privkey = pgp.get_key(ADDRESS, private=True)
+        encrypted_and_signed = openpgp.encrypt_sym(data, '123', sign=privkey)
+        self.assertRaises(
+            AssertionError,
+            openpgp.decrypt_sym,
+            encrypted_and_signed, 'decrypt', verify=privkey)
+
+    def test_decrypt_sym_verify_with_private_raises(self):
+        pgp = openpgp.OpenPGPScheme(self._soledad)
+        pgp.put_ascii_key(PRIVATE_KEY)
+        data = 'data'
+        privkey = pgp.get_key(ADDRESS, private=True)
+        encrypted_and_signed = openpgp.encrypt_sym(data, '123', sign=privkey)
+        pgp.put_ascii_key(PUBLIC_KEY_2)
+        wrongkey = pgp.get_key('anotheruser@leap.se')
+        self.assertRaises(
+            errors.InvalidSignature,
+            openpgp.verify, encrypted_and_signed, wrongkey)
+
+    def test_sign_verify(self):
+        pgp = openpgp.OpenPGPScheme(self._soledad)
+        pgp.put_ascii_key(PRIVATE_KEY)
+        data = 'data'
+        privkey = pgp.get_key(ADDRESS, private=True)
+        signed = openpgp.sign(data, privkey)
+        pubkey = pgp.get_key(ADDRESS, private=False)
+        self.assertTrue(openpgp.verify(signed, pubkey))
+
+    def test_encrypt_asym_sign_decrypt_verify(self):
+        pgp = openpgp.OpenPGPScheme(self._soledad)
+        pgp.put_ascii_key(PRIVATE_KEY)
+        pubkey = pgp.get_key(ADDRESS, private=False)
+        privkey = pgp.get_key(ADDRESS, private=True)
+        pgp.put_ascii_key(PRIVATE_KEY_2)
+        pubkey2 = pgp.get_key(ADDRESS_2, private=False)
+        privkey2 = pgp.get_key(ADDRESS_2, private=True)
+        data = 'data'
+        encrypted_and_signed = openpgp.encrypt_asym(data, pubkey2, sign=privkey)
+        res = openpgp.decrypt_asym(
+                encrypted_and_signed, privkey2, verify=pubkey)
+        self.assertTrue(data, res)
+
+    def test_encrypt_sym_sign_decrypt_verify(self):
+        pgp = openpgp.OpenPGPScheme(self._soledad)
+        pgp.put_ascii_key(PRIVATE_KEY)
+        data = 'data'
+        privkey = pgp.get_key(ADDRESS, private=True)
+        pubkey = pgp.get_key(ADDRESS, private=False)
+        encrypted_and_signed = openpgp.encrypt_sym(data, '123', sign=privkey)
+        res = openpgp.decrypt_sym(
+                encrypted_and_signed, '123', verify=pubkey)
+        self.assertEqual(data, res)
+
 
 class KeyManagerKeyManagementTestCase(
     KeyManagerWithSoledadTestCase):
 
     def test_get_all_keys_in_db(self):
         km = self._key_manager()
-        km._wrapper_map[OpenPGPKey].put_key_raw(PRIVATE_KEY)
+        km._wrapper_map[OpenPGPKey].put_ascii_key(PRIVATE_KEY)
         # get public keys
         keys = km.get_all_keys_in_local_db(False)
         self.assertEqual(len(keys), 1, 'Wrong number of keys')
@@ -270,7 +404,7 @@ class KeyManagerKeyManagementTestCase(
 
     def test_get_public_key(self):
         km = self._key_manager()
-        km._wrapper_map[OpenPGPKey].put_key_raw(PRIVATE_KEY)
+        km._wrapper_map[OpenPGPKey].put_ascii_key(PRIVATE_KEY)
         # get the key
         key = km.get_key(ADDRESS, OpenPGPKey, private=False,
                          fetch_remote=False)
@@ -282,7 +416,7 @@ class KeyManagerKeyManagementTestCase(
 
     def test_get_private_key(self):
         km = self._key_manager()
-        km._wrapper_map[OpenPGPKey].put_key_raw(PRIVATE_KEY)
+        km._wrapper_map[OpenPGPKey].put_ascii_key(PRIVATE_KEY)
         # get the key
         key = km.get_key(ADDRESS, OpenPGPKey, private=True,
                          fetch_remote=False)
@@ -300,7 +434,7 @@ class KeyManagerKeyManagementTestCase(
 
     def test_send_private_key_raises_key_not_found(self):
         km = self._key_manager()
-        km._wrapper_map[OpenPGPKey].put_key_raw(PUBLIC_KEY)
+        km._wrapper_map[OpenPGPKey].put_ascii_key(PUBLIC_KEY)
         self.assertRaises(
             KeyNotFound,
             km.send_key, OpenPGPKey, send_private=True,
@@ -308,14 +442,14 @@ class KeyManagerKeyManagementTestCase(
 
     def test_send_private_key_without_password_raises(self):
         km = self._key_manager()
-        km._wrapper_map[OpenPGPKey].put_key_raw(PUBLIC_KEY)
+        km._wrapper_map[OpenPGPKey].put_ascii_key(PUBLIC_KEY)
         self.assertRaises(
             NoPasswordGiven,
             km.send_key, OpenPGPKey, send_private=True)
 
     def test_send_public_key(self):
         km = self._key_manager()
-        km._wrapper_map[OpenPGPKey].put_key_raw(PUBLIC_KEY)
+        km._wrapper_map[OpenPGPKey].put_ascii_key(PUBLIC_KEY)
         km._fetcher.put = mock.Mock()
         km.token = '123'
         km.send_key(OpenPGPKey, send_private=False)
@@ -356,40 +490,12 @@ class KeyManagerKeyManagementTestCase(
     def test_refresh_keys(self):
         # TODO: maybe we should not attempt to refresh our own public key?
         km = self._key_manager()
-        km._wrapper_map[OpenPGPKey].put_key_raw(PUBLIC_KEY)
+        km._wrapper_map[OpenPGPKey].put_ascii_key(PUBLIC_KEY)
         km.fetch_keys_from_server = mock.Mock(return_value=[])
         km.refresh_keys()
         km.fetch_keys_from_server.assert_called_once_with(
             'leap@leap.se'
         )
-
-    def test_verify_with_private_raises(self):
-        km = self._key_manager()
-        km._wrapper_map[OpenPGPKey].put_key_raw(PRIVATE_KEY)
-        data = 'data'
-        privkey = km.get_key(ADDRESS, OpenPGPKey, private=True)
-        signed = openpgp.sign(data, privkey)
-        self.assertRaises(
-            AssertionError,
-            openpgp.verify, signed, privkey)
-
-    def test_sign_with_public_raises(self):
-        km = self._key_manager()
-        km._wrapper_map[OpenPGPKey].put_key_raw(PUBLIC_KEY)
-        data = 'data'
-        pubkey = km.get_key(ADDRESS, OpenPGPKey, private=False)
-        self.assertRaises(
-            AssertionError,
-            openpgp.sign, data, pubkey)
-
-    def test_sign_verify(self):
-        km = self._key_manager()
-        km._wrapper_map[OpenPGPKey].put_key_raw(PRIVATE_KEY)
-        data = 'data'
-        privkey = km.get_key(ADDRESS, OpenPGPKey, private=True)
-        signed = openpgp.sign(data, privkey)
-        pubkey = km.get_key(ADDRESS, OpenPGPKey, private=False)
-        self.assertTrue(openpgp.verify(signed, pubkey))
 
 
 # Key material for testing
@@ -552,5 +658,63 @@ GuDrwNKYj73C4MWyNnnUFyq8nDHJ/G1NpaF2hiof9RBL4PUU/f92JkceXPBXA8gL
 Mz2ig1OButwPPLFGQhWqxXAGrsS3Ny+BhTJfnfIbbkaLLphBpDZm1D9XKbAUvdd1
 RZXoH+FTg9UAW87eqU610npOkT6cRaBxaMK/mDtGNdc=
 =JTFu
+-----END PGP PRIVATE KEY BLOCK-----
+"""
+
+PUBLIC_KEY_2 = """
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+mI0EUYwJXgEEAMbTKHuPJ5/Gk34l9Z06f+0WCXTDXdte1UBoDtZ1erAbudgC4MOR
+gquKqoj3Hhw0/ILqJ88GcOJmKK/bEoIAuKaqlzDF7UAYpOsPZZYmtRfPC2pTCnXq
+Z1vdeqLwTbUspqXflkCkFtfhGKMq5rH8GV5a3tXZkRWZhdNwhVXZagC3ABEBAAG0
+IWFub3RoZXJ1c2VyIDxhbm90aGVydXNlckBsZWFwLnNlPoi4BBMBAgAiBQJRjAle
+AhsDBgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAKCRB/nfpof+5XWotuA/4tLN4E
+gUr7IfLy2HkHAxzw7A4rqfMN92DIM9mZrDGaWRrOn3aVF7VU1UG7MDkHfPvp/cFw
+ezoCw4s4IoHVc/pVlOkcHSyt4/Rfh248tYEJmFCJXGHpkK83VIKYJAithNccJ6Q4
+JE/o06Mtf4uh/cA1HUL4a4ceqUhtpLJULLeKo7iNBFGMCV4BBADsyQI7GR0wSAxz
+VayLjuPzgT+bjbFeymIhjuxKIEwnIKwYkovztW+4bbOcQs785k3Lp6RzvigTpQQt
+Z/hwcLOqZbZw8t/24+D+Pq9mMP2uUvCFFqLlVvA6D3vKSQ/XNN+YB919WQ04jh63
+yuRe94WenT1RJd6xU1aaUff4rKizuQARAQABiJ8EGAECAAkFAlGMCV4CGwwACgkQ
+f536aH/uV1rPZQQAqCzRysOlu8ez7PuiBD4SebgRqWlxa1TF1ujzfLmuPivROZ2X
+Kw5aQstxgGSjoB7tac49s0huh4X8XK+BtJBfU84JS8Jc2satlfwoyZ35LH6sDZck
+I+RS/3we6zpMfHs3vvp9xgca6ZupQxivGtxlJs294TpJorx+mFFqbV17AzQ=
+=Thdu
+-----END PGP PUBLIC KEY BLOCK-----
+"""
+
+PRIVATE_KEY_2 = """
+-----BEGIN PGP PRIVATE KEY BLOCK-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+lQHYBFGMCV4BBADG0yh7jyefxpN+JfWdOn/tFgl0w13bXtVAaA7WdXqwG7nYAuDD
+kYKriqqI9x4cNPyC6ifPBnDiZiiv2xKCALimqpcwxe1AGKTrD2WWJrUXzwtqUwp1
+6mdb3Xqi8E21LKal35ZApBbX4RijKuax/BleWt7V2ZEVmYXTcIVV2WoAtwARAQAB
+AAP7BLuSAx7tOohnimEs74ks8l/L6dOcsFQZj2bqs4AoY3jFe7bV0tHr4llypb/8
+H3/DYvpf6DWnCjyUS1tTnXSW8JXtx01BUKaAufSmMNg9blKV6GGHlT/Whe9uVyks
+7XHk/+9mebVMNJ/kNlqq2k+uWqJohzC8WWLRK+d1tBeqDsECANZmzltPaqUsGV5X
+C3zszE3tUBgptV/mKnBtopKi+VH+t7K6fudGcG+bAcZDUoH/QVde52mIIjjIdLje
+uajJuHUCAO1mqh+vPoGv4eBLV7iBo3XrunyGXiys4a39eomhxTy3YktQanjjx+ty
+GltAGCs5PbWGO6/IRjjvd46wh53kzvsCAO0J97gsWhzLuFnkxFAJSPk7RRlyl7lI
+1XS/x0Og6j9XHCyY1OYkfBm0to3UlCfkgirzCYlTYObCofzdKFIPDmSqHbQhYW5v
+dGhlcnVzZXIgPGFub3RoZXJ1c2VyQGxlYXAuc2U+iLgEEwECACIFAlGMCV4CGwMG
+CwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEH+d+mh/7ldai24D/i0s3gSBSvsh
+8vLYeQcDHPDsDiup8w33YMgz2ZmsMZpZGs6fdpUXtVTVQbswOQd8++n9wXB7OgLD
+izgigdVz+lWU6RwdLK3j9F+Hbjy1gQmYUIlcYemQrzdUgpgkCK2E1xwnpDgkT+jT
+oy1/i6H9wDUdQvhrhx6pSG2kslQst4qjnQHYBFGMCV4BBADsyQI7GR0wSAxzVayL
+juPzgT+bjbFeymIhjuxKIEwnIKwYkovztW+4bbOcQs785k3Lp6RzvigTpQQtZ/hw
+cLOqZbZw8t/24+D+Pq9mMP2uUvCFFqLlVvA6D3vKSQ/XNN+YB919WQ04jh63yuRe
+94WenT1RJd6xU1aaUff4rKizuQARAQABAAP9EyElqJ3dq3EErXwwT4mMnbd1SrVC
+rUJrNWQZL59mm5oigS00uIyR0SvusOr+UzTtd8ysRuwHy5d/LAZsbjQStaOMBILx
+77TJveOel0a1QK0YSMF2ywZMCKvquvjli4hAtWYz/EwfuzQN3t23jc5ny+GqmqD2
+3FUxLJosFUfLNmECAO9KhVmJi+L9dswIs+2Dkjd1eiRQzNOEVffvYkGYZyKxNiXF
+UA5kvyZcB4iAN9sWCybE4WHZ9jd4myGB0MPDGxkCAP1RsXJbbuD6zS7BXe5gwunO
+2q4q7ptdSl/sJYQuTe1KNP5d/uGsvlcFfsYjpsopasPjFBIncc/2QThMKlhoEaEB
+/0mVAxpT6SrEvUbJ18z7kna24SgMPr3OnPMxPGfvNLJY/Xv/A17YfoqjmByCvsKE
+JCDjopXtmbcrZyoEZbEht9mko4ifBBgBAgAJBQJRjAleAhsMAAoJEH+d+mh/7lda
+z2UEAKgs0crDpbvHs+z7ogQ+Enm4EalpcWtUxdbo83y5rj4r0TmdlysOWkLLcYBk
+o6Ae7WnOPbNIboeF/FyvgbSQX1POCUvCXNrGrZX8KMmd+Sx+rA2XJCPkUv98Hus6
+THx7N776fcYHGumbqUMYrxrcZSbNveE6SaK8fphRam1dewM0
+=a5gs
 -----END PGP PRIVATE KEY BLOCK-----
 """
