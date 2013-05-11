@@ -155,6 +155,16 @@ class EncryptionKey(object):
             'tags': ['keymanager-key'],
         })
 
+    def __repr__(self):
+        """
+        Representation of this class
+        """
+        return u"<%s 0x%s (%s - %s)>" % (
+            self.__class__.__name__,
+            self.key_id,
+            self.address,
+            "priv" if self.private else "publ")
+
 
 #
 # Encryption schemes
