@@ -1,0 +1,1 @@
+  o Refactor opengpg utility functions implementation so it uses a context manager.

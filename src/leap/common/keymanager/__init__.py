@@ -160,7 +160,8 @@ class KeyManager(object):
             privkey = self.get_key(
                 self._address, ktype, private=True, fetch_remote=False)
             privkey = json.loads(privkey.get_json())
-            privkey.key_data = encrypt_sym(privkey.key_data, password)
+            privkey.key_data = encrypt_sym(
+                privkey.key_data, passphrase=password)
             data['keys'].append(privkey)
         self._fetcher.put(
             self._nickserver_url + '/key/' + self._address,

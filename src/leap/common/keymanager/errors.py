@@ -72,6 +72,13 @@ class DecryptionFailed(Exception):
     pass
 
 
+class EncryptionDecryptionFailed(Exception):
+    """
+    Raised upon failures of encryption/decryption.
+    """
+    pass
+
+
 class SignFailed(Exception):
     """
     Raised when failed to sign.
