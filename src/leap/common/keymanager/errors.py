@@ -25,12 +25,14 @@ class KeyNotFound(Exception):
     """
     Raised when key was no found on keyserver.
     """
+    pass
 
 
 class KeyAlreadyExists(Exception):
     """
     Raised when attempted to create a key that already exists.
     """
+    pass
 
 
 class KeyAttributesDiffer(Exception):
@@ -38,9 +40,35 @@ class KeyAttributesDiffer(Exception):
     Raised when trying to delete a key but the stored key differs from the key
     passed to the delete_key() method.
     """
+    pass
 
 class NoPasswordGiven(Exception):
     """
     Raised when trying to perform some action that needs a password without
     providing one.
     """
+    pass
+
+class InvalidSignature(Exception):
+    """
+    Raised when signature could not be verified.
+    """
+    pass
+
+class EncryptionFailed(Exception):
+    """
+    Raised upon failures of encryption.
+    """
+    pass
+
+class DecryptionFailed(Exception):
+    """
+    Raised upon failures of decryption.
+    """
+    pass
+
+class SignFailed(Exception):
+    """
+    Raised when failed to sign.
+    """
+    pass
