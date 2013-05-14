@@ -27,11 +27,16 @@ requirements = [
     'protobuf.socketrpc',
     "PyOpenSSL",
     "python-dateutil",
+    "leap.soledad",
 ]
 
 
 dependency_links = [
     "https://protobuf-socket-rpc.googlecode.com/files/protobuf.socketrpc-1.3.2.tar.gz#egg=protobuf.socketrpc"
+]
+
+tests_requirements = [
+    'mock',
 ]
 
 
@@ -52,8 +57,12 @@ setup(
     ),
     namespace_packages=["leap"],
     package_dir={'': 'src'},
-    packages=find_packages('src', exclude=['leap.common.tests']),
+    # For now, we do not exclude tests because of the circular dependency
+    # between leap.common and leap.soledad.
+    #packages=find_packages('src', exclude=['leap.common.tests']),
+    packages=find_packages('src'),
     test_suite='leap.common.tests',
     install_requires=requirements,
     dependency_links=dependency_links,
+    tests_require=tests_requirements,
 )

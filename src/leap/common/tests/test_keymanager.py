@@ -21,7 +21,7 @@ Tests for the Key Manager.
 """
 
 
-import mock
+from mock import Mock
 try:
     import simplejson as json
 except ImportError:
@@ -141,6 +141,11 @@ class KeyManagerUtilTestCase(BaseLeapTest):
 class KeyManagerWithSoledadTestCase(BaseLeapTest):
 
     def setUp(self):
+        # mock key fetching and storing so Soledad doesn't fail when trying to
+        # reach the server.
+        Soledad._fetch_keys_from_shared_db = Mock(return_value=None)
+        Soledad._assert_keys_in_shared_db = Mock(return_value=None)
+
         self._soledad = Soledad(
             "leap@leap.se",
             "123456",
@@ -148,14 +153,7 @@ class KeyManagerWithSoledadTestCase(BaseLeapTest):
             local_db_path=self.tempdir+"/soledad.u1db",
             server_url='',
             cert_file=None,
-            bootstrap=False,
         )
-        # initialize solead by hand for testing purposes
-        self._soledad._init_dirs()
-        self._soledad._crypto = SoledadCrypto(self._soledad)
-        self._soledad._shared_db = None
-        self._soledad._init_keys()
-        self._soledad._init_db()
 
     def tearDown(self):
         km = self._key_manager()
@@ -450,7 +448,7 @@ class KeyManagerKeyManagementTestCase(
     def test_send_public_key(self):
         km = self._key_manager()
         km._wrapper_map[OpenPGPKey].put_ascii_key(PUBLIC_KEY)
-        km._fetcher.put = mock.Mock()
+        km._fetcher.put = Mock()
         km.token = '123'
         km.send_key(OpenPGPKey, send_private=False)
         # setup args
@@ -478,7 +476,7 @@ class KeyManagerKeyManagementTestCase(
             def json(self):
                 return {'address': 'anotheruser@leap.se', 'keys': []}
 
-        km._fetcher.get = mock.Mock(
+        km._fetcher.get = Mock(
             return_value=Response())
         # do the fetch
         km.fetch_keys_from_server('anotheruser@leap.se')
@@ -491,7 +489,7 @@ class KeyManagerKeyManagementTestCase(
         # TODO: maybe we should not attempt to refresh our own public key?
         km = self._key_manager()
         km._wrapper_map[OpenPGPKey].put_ascii_key(PUBLIC_KEY)
-        km.fetch_keys_from_server = mock.Mock(return_value=[])
+        km.fetch_keys_from_server = Mock(return_value=[])
         km.refresh_keys()
         km.fetch_keys_from_server.assert_called_once_with(
             'leap@leap.se'
