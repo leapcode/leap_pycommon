@@ -31,7 +31,7 @@ requirements = [
 
 
 dependency_links = [
-    "https://protobuf-socket-rpc.googlecode.com/files/protobuf.socketrpc-1.3.2.tar.gz"
+    "https://protobuf-socket-rpc.googlecode.com/files/protobuf.socketrpc-1.3.2.tar.gz#egg=protobuf.socketrpc"
 ]
 
 
