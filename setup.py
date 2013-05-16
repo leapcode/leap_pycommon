@@ -28,6 +28,8 @@ requirements = [
     "PyOpenSSL",
     "python-dateutil",
     "leap.soledad",
+    "python-gnupg",
+    "PyCrypto",
 ]
 
 
