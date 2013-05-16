@@ -66,7 +66,7 @@ def encrypt_sym(data, passphrase, sign=None):
     leap_assert_type(passphrase, str)
     if sign is not None:
         leap_assert_type(sign, OpenPGPKey)
-        leap_assert(sign.private == True)
+        leap_assert(sign.private is True)
 
     def _encrypt_cb(gpg):
         result = gpg.encrypt(
@@ -105,7 +105,7 @@ def decrypt_sym(data, passphrase, verify=None):
     leap_assert_type(passphrase, str)
     if verify is not None:
         leap_assert_type(verify, OpenPGPKey)
-        leap_assert(verify.private == False)
+        leap_assert(verify.private is False)
 
     def _decrypt_cb(gpg):
         result = gpg.decrypt(data, passphrase=passphrase)
@@ -145,7 +145,7 @@ def encrypt_asym(data, pubkey, sign=None):
     leap_assert(pubkey.private is False, 'Key is not public.')
     if sign is not None:
         leap_assert_type(sign, OpenPGPKey)
-        leap_assert(sign.private == True)
+        leap_assert(sign.private is True)
 
     def _encrypt_cb(gpg):
         result = gpg.encrypt(
@@ -185,7 +185,7 @@ def decrypt_asym(data, privkey, verify=None):
     leap_assert(privkey.private is True, 'Key is not private.')
     if verify is not None:
         leap_assert_type(verify, OpenPGPKey)
-        leap_assert(verify.private == False)
+        leap_assert(verify.private is False)
 
     def _decrypt_cb(gpg):
         result = gpg.decrypt(data)
@@ -258,6 +258,7 @@ def is_encrypted_asym(data):
 
     return _safe_call(_is_encrypted_cb)
 
+
 def sign(data, privkey):
     """
     Sign C{data} with C{privkey}.
@@ -271,7 +272,7 @@ def sign(data, privkey):
     @rtype: str
     """
     leap_assert_type(privkey, OpenPGPKey)
-    leap_assert(privkey.private == True)
+    leap_assert(privkey.private is True)
 
     def _sign_cb(gpg):
         result = gpg.sign(data, keyid=privkey.key_id)
@@ -289,6 +290,7 @@ def sign(data, privkey):
 
     return _safe_call(_sign_cb, [privkey])
 
+
 def verify(data, pubkey):
     """
     Verify signed C{data} with C{pubkey}.
@@ -302,7 +304,7 @@ def verify(data, pubkey):
     @rtype: str
     """
     leap_assert_type(pubkey, OpenPGPKey)
-    leap_assert(pubkey.private == False)
+    leap_assert(pubkey.private is False)
 
     def _verify_cb(gpg):
         result = gpg.verify(data)
@@ -313,6 +315,7 @@ def verify(data, pubkey):
         return True
 
     return _safe_call(_verify_cb, [pubkey])
+
 
 #
 # Helper functions
@@ -358,8 +361,8 @@ def _build_keyring(keys=[]):
     @return: A GPG wrapper with a unitary keyring.
     @rtype: gnupg.GPG
     """
-    privkeys = filter(lambda key: key.private == True, keys)
-    pubkeys = filter(lambda key: key.private == False, keys)
+    privkeys = filter(lambda key: key.private is True, keys)
+    pubkeys = filter(lambda key: key.private is False, keys)
     # here we filter out public keys that have a correspondent private key in
     # the list because the private key_data by itself is enough to also have
     # the public key in the keyring, and we want to count the keys afterwards.

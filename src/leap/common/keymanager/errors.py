@@ -42,6 +42,7 @@ class KeyAttributesDiffer(Exception):
     """
     pass
 
+
 class NoPasswordGiven(Exception):
     """
     Raised when trying to perform some action that needs a password without
@@ -49,11 +50,13 @@ class NoPasswordGiven(Exception):
     """
     pass
 
+
 class InvalidSignature(Exception):
     """
     Raised when signature could not be verified.
     """
     pass
+
 
 class EncryptionFailed(Exception):
     """
@@ -61,11 +64,13 @@ class EncryptionFailed(Exception):
     """
     pass
 
+
 class DecryptionFailed(Exception):
     """
     Raised upon failures of decryption.
     """
     pass
+
 
 class SignFailed(Exception):
     """

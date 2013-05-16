@@ -366,9 +366,10 @@ class OpenPGPCryptoTestCase(KeyManagerWithSoledadTestCase):
         pubkey2 = pgp.get_key(ADDRESS_2, private=False)
         privkey2 = pgp.get_key(ADDRESS_2, private=True)
         data = 'data'
-        encrypted_and_signed = openpgp.encrypt_asym(data, pubkey2, sign=privkey)
+        encrypted_and_signed = openpgp.encrypt_asym(
+            data, pubkey2, sign=privkey)
         res = openpgp.decrypt_asym(
-                encrypted_and_signed, privkey2, verify=pubkey)
+            encrypted_and_signed, privkey2, verify=pubkey)
         self.assertTrue(data, res)
 
     def test_encrypt_sym_sign_decrypt_verify(self):
@@ -379,12 +380,12 @@ class OpenPGPCryptoTestCase(KeyManagerWithSoledadTestCase):
         pubkey = pgp.get_key(ADDRESS, private=False)
         encrypted_and_signed = openpgp.encrypt_sym(data, '123', sign=privkey)
         res = openpgp.decrypt_sym(
-                encrypted_and_signed, '123', verify=pubkey)
+            encrypted_and_signed, '123', verify=pubkey)
         self.assertEqual(data, res)
 
 
 class KeyManagerKeyManagementTestCase(
-    KeyManagerWithSoledadTestCase):
+        KeyManagerWithSoledadTestCase):
 
     def test_get_all_keys_in_db(self):
         km = self._key_manager()
@@ -473,6 +474,7 @@ class KeyManagerKeyManagementTestCase(
         class Response(object):
             status_code = 200
             headers = {'content-type': 'application/json'}
+
             def json(self):
                 return {'address': 'anotheruser@leap.se', 'keys': []}
 
@@ -482,7 +484,7 @@ class KeyManagerKeyManagementTestCase(
         km.fetch_keys_from_server('anotheruser@leap.se')
         # and verify the call
         km._fetcher.get.assert_called_once_with(
-           km._nickserver_url + '/key/' + 'anotheruser@leap.se',
+            km._nickserver_url + '/key/' + 'anotheruser@leap.se',
         )
 
     def test_refresh_keys(self):

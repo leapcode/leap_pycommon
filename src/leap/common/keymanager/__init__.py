@@ -116,7 +116,7 @@ class KeyManager(object):
         leap_assert(response.status_code == 200, 'Invalid response.')
         leap_assert(
             response.headers['content-type'].startswith('application/json')
-                is True,
+            is True,
             'Content-type is not JSON.')
         return response.json()
 
