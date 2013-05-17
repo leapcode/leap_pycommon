@@ -192,7 +192,9 @@ class KeyManager(object):
         try:
             return self._wrapper_map[ktype].get_key(address, private=private)
         except KeyNotFound:
-            if fetch_remote is False:
+            # we will only try to fetch a key from nickserver if fetch_remote
+            # is True and the key is not private.
+            if fetch_remote is False or private is True:
                 raise
             # fetch keys from server and discard unwanted types.
             keys = filter(lambda k: isinstance(k, ktype),
