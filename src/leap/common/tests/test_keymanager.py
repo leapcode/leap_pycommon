@@ -143,16 +143,17 @@ class KeyManagerWithSoledadTestCase(BaseLeapTest):
     def setUp(self):
         # mock key fetching and storing so Soledad doesn't fail when trying to
         # reach the server.
-        Soledad._fetch_keys_from_shared_db = Mock(return_value=None)
-        Soledad._assert_keys_in_shared_db = Mock(return_value=None)
+        Soledad._get_secrets_from_shared_db = Mock(return_value=None)
+        Soledad._put_secrets_in_shared_db = Mock(return_value=None)
 
         self._soledad = Soledad(
             "leap@leap.se",
             "123456",
-            secret_path=self.tempdir+"/secret.gpg",
-            local_db_path=self.tempdir+"/soledad.u1db",
-            server_url='',
-            cert_file=None,
+            self.tempdir+"/secret.gpg",
+            self.tempdir+"/soledad.u1db",
+            '',
+            None,
+            auth_token=None,
         )
 
     def tearDown(self):
