@@ -34,6 +34,30 @@ from leap.common.check import leap_assert
 
 
 #
+# Dictionary keys used for storing cryptographic keys.
+#
+
+KEY_ADDRESS_KEY = 'address'
+KEY_TYPE_KEY = 'type'
+KEY_ID_KEY = 'key_id'
+KEY_FINGERPRINT_KEY = 'fingerprint'
+KEY_DATA_KEY = 'key_data'
+KEY_PRIVATE_KEY = 'private'
+KEY_LENGTH_KEY = 'length'
+KEY_EXPIRY_DATE_KEY = 'expiry_date'
+KEY_FIRST_SEEN_AT_KEY = 'first_seen_at'
+KEY_LAST_AUDITED_AT_KEY = 'last_audited_at'
+KEY_VALIDATION_KEY = 'validation'
+KEY_TAGS_KEY = 'tags'
+
+
+#
+# Key storage constants
+#
+
+KEYMANAGER_KEY_TAG = 'keymanager-key'
+
+#
 # Key handling utilities
 #
 
@@ -60,18 +84,20 @@ def build_key_from_dict(kClass, address, kdict):
     @return: An instance of the key.
     @rtype: C{kClass}
     """
-    leap_assert(address == kdict['address'], 'Wrong address in key data.')
+    leap_assert(
+        address == kdict[KEY_ADDRESS_KEY],
+        'Wrong address in key data.')
     return kClass(
         address,
-        key_id=kdict['key_id'],
-        fingerprint=kdict['fingerprint'],
-        key_data=kdict['key_data'],
-        private=kdict['private'],
-        length=kdict['length'],
-        expiry_date=kdict['expiry_date'],
-        first_seen_at=kdict['first_seen_at'],
-        last_audited_at=kdict['last_audited_at'],
-        validation=kdict['validation'],  # TODO: verify for validation.
+        key_id=kdict[KEY_ID_KEY],
+        fingerprint=kdict[KEY_FINGERPRINT_KEY],
+        key_data=kdict[KEY_DATA_KEY],
+        private=kdict[KEY_PRIVATE_KEY],
+        length=kdict[KEY_LENGTH_KEY],
+        expiry_date=kdict[KEY_EXPIRY_DATE_KEY],
+        first_seen_at=kdict[KEY_FIRST_SEEN_AT_KEY],
+        last_audited_at=kdict[KEY_LAST_AUDITED_AT_KEY],
+        validation=kdict[KEY_VALIDATION_KEY],  # TODO: verify for validation.
     )
 
 
@@ -92,7 +118,7 @@ def keymanager_doc_id(ktype, address, private=False):
     """
     leap_assert(is_address(address), "Wrong address format: %s" % address)
     ktype = str(ktype)
-    visibility = 'private' if private else 'public'
+    visibility = KEY_PRIVATE_KEY if private else 'public'
     return sha256('keymanager-'+address+'-'+ktype+'-'+visibility).hexdigest()
 
 
@@ -141,18 +167,18 @@ class EncryptionKey(object):
         @rtype: str
         """
         return json.dumps({
-            'address': self.address,
-            'type': str(self.__class__),
-            'key_id': self.key_id,
-            'fingerprint': self.fingerprint,
-            'key_data': self.key_data,
-            'private': self.private,
-            'length': self.length,
-            'expiry_date': self.expiry_date,
-            'validation': self.validation,
-            'first_seen_at': self.first_seen_at,
-            'last_audited_at': self.last_audited_at,
-            'tags': ['keymanager-key'],
+            KEY_ADDRESS_KEY: self.address,
+            KEY_TYPE_KEY: str(self.__class__),
+            KEY_ID_KEY: self.key_id,
+            KEY_FINGERPRINT_KEY: self.fingerprint,
+            KEY_DATA_KEY: self.key_data,
+            KEY_PRIVATE_KEY: self.private,
+            KEY_LENGTH_KEY: self.length,
+            KEY_EXPIRY_DATE_KEY: self.expiry_date,
+            KEY_VALIDATION_KEY: self.validation,
+            KEY_FIRST_SEEN_AT_KEY: self.first_seen_at,
+            KEY_LAST_AUDITED_AT_KEY: self.last_audited_at,
+            KEY_TAGS_KEY: [KEYMANAGER_KEY_TAG],
         })
 
     def __repr__(self):

@@ -419,73 +419,106 @@ class KeyManagerKeyManagementTestCase(KeyManagerWithSoledadTestCase):
         km = self._key_manager()
         self.assertRaises(
             KeyNotFound,
-            km.send_key, OpenPGPKey, send_private=False)
+            km.send_key, OpenPGPKey)
 
-    def test_send_private_key_raises_key_not_found(self):
-        km = self._key_manager()
-        km._wrapper_map[OpenPGPKey].put_ascii_key(PUBLIC_KEY)
-        self.assertRaises(
-            KeyNotFound,
-            km.send_key, OpenPGPKey, send_private=True,
-            password='123')
-
-    def test_send_private_key_without_password_raises(self):
-        km = self._key_manager()
-        km._wrapper_map[OpenPGPKey].put_ascii_key(PUBLIC_KEY)
-        self.assertRaises(
-            NoPasswordGiven,
-            km.send_key, OpenPGPKey, send_private=True)
-
-    def test_send_public_key(self):
+    def test_send_key(self):
+        """
+        Test that request is well formed when sending keys to server.
+        """
         km = self._key_manager()
         km._wrapper_map[OpenPGPKey].put_ascii_key(PUBLIC_KEY)
         km._fetcher.put = Mock()
-        km.token = '123'
-        km.send_key(OpenPGPKey, send_private=False)
-        # setup args
+        # the following data will be used on the send
+        km.ca_cert_path = 'capath'
+        km.session_id = 'sessionid'
+        km.uid = 'myuid'
+        km.api_uri = 'apiuri'
+        km.api_version = 'apiver'
+        km.send_key(OpenPGPKey)
+        # setup expected args
         data = {
-            'address': km._address,
-            'keys': [
-                json.loads(
-                    km.get_key(
-                        km._address, OpenPGPKey).get_json()),
-            ]
+            km.PUBKEY_KEY: km.get_key(km._address, OpenPGPKey).key_data,
         }
-        url = km._nickserver_url + '/key/' + km._address
-
+        url = '%s/%s/users/%s.json' % ('apiuri', 'apiver', 'myuid')
         km._fetcher.put.assert_called_once_with(
-            url, data=data, auth=(km._address, '123')
+            url, data=data, verify='capath',
+            cookies={'_session_id': 'sessionid'},
         )
 
-    def test_fetch_keys_from_server(self):
-        km = self._key_manager()
-        # setup mock
+    def test__fetch_keys_from_server(self):
+        """
+        Test that the request is well formed when fetching keys from server.
+        """
+        km = self._key_manager(url='http://nickserver.domain')
 
         class Response(object):
             status_code = 200
             headers = {'content-type': 'application/json'}
 
             def json(self):
-                return {'address': ADDRESS_2, 'keys': []}
+                return {'address': ADDRESS_2, 'openpgp': PUBLIC_KEY_2}
 
+            def raise_for_status(self):
+                pass
+
+        # mock the fetcher so it returns the key for ADDRESS_2
         km._fetcher.get = Mock(
             return_value=Response())
+        km.ca_cert_path = 'cacertpath'
         # do the fetch
-        km.fetch_keys_from_server(ADDRESS_2)
+        km._fetch_keys_from_server(ADDRESS_2)
         # and verify the call
         km._fetcher.get.assert_called_once_with(
-            km._nickserver_url + '/key/' + ADDRESS_2,
+            'http://nickserver.domain',
+            data={'address': ADDRESS_2},
+            verify='cacertpath',
         )
 
-    def test_refresh_keys(self):
-        # TODO: maybe we should not attempt to refresh our own public key?
+    def test_refresh_keys_does_not_refresh_own_key(self):
+        """
+        Test that refreshing keys will not attempt to refresh our own key.
+        """
         km = self._key_manager()
+        # we add 2 keys but we expect it to only refresh the second one.
         km._wrapper_map[OpenPGPKey].put_ascii_key(PUBLIC_KEY)
-        km.fetch_keys_from_server = Mock(return_value=[])
+        km._wrapper_map[OpenPGPKey].put_ascii_key(PUBLIC_KEY_2)
+        # mock the key fetching
+        km._fetch_keys_from_server = Mock(return_value=[])
+        km.ca_cert_path = ''  # some bogus path so the km does not complain.
+        # do the refreshing
         km.refresh_keys()
-        km.fetch_keys_from_server.assert_called_once_with(
-            ADDRESS
+        km._fetch_keys_from_server.assert_called_once_with(
+            ADDRESS_2
         )
+
+    def test_get_key_fetches_from_server(self):
+        """
+        Test that getting a key successfuly fetches from server.
+        """
+        km = self._key_manager(url='http://nickserver.domain')
+
+        class Response(object):
+            status_code = 200
+            headers = {'content-type': 'application/json'}
+
+            def json(self):
+                return {'address': ADDRESS_2, 'openpgp': PUBLIC_KEY_2}
+
+            def raise_for_status(self):
+                pass
+
+        # mock the fetcher so it returns the key for ADDRESS_2
+        km._fetcher.get = Mock(return_value=Response())
+        km.ca_cert_path = 'cacertpath'
+        # try to key get without fetching from server
+        self.assertRaises(
+            KeyNotFound, km.get_key, ADDRESS_2, OpenPGPKey,
+            fetch_remote=False
+        )
+        # try to get key fetching from server.
+        key = km.get_key(ADDRESS_2, OpenPGPKey)
+        self.assertIsInstance(key, OpenPGPKey)
+        self.assertEqual(ADDRESS_2, key.address)
 
 
 # Key material for testing
