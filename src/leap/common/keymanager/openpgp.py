@@ -271,70 +271,6 @@ class TempGPGWrapper(object):
 #
 
 @with_temporary_gpg
-def encrypt_sym(data, passphrase=None, sign=None):
-    """
-    Encrypt C{data} with C{passphrase} and sign with C{sign} private key.
-
-    @param data: The data to be encrypted.
-    @type data: str
-    @param passphrase: The passphrase used to encrypt C{data}.
-    @type passphrase: str
-    @param sign: The private key used for signing.
-    @type sign: OpenPGPKey
-
-    @return: The encrypted data.
-    @rtype: str
-    """
-    leap_assert_type(passphrase, str)
-    if sign is not None:
-        leap_assert_type(sign, OpenPGPKey)
-        leap_assert(sign.private is True)
-
-    # Here we cannot assert for correctness of sig because the sig is in
-    # the ciphertext.
-    # result.ok    - (bool) indicates if the operation succeeded
-    # result.data  - (bool) contains the result of the operation
-
-    return lambda gpg: gpg.encrypt(
-        data, None,
-        sign=sign.key_id if sign else None,
-        passphrase=passphrase, symmetric=True)
-
-
-@with_temporary_gpg
-def decrypt_sym(data, passphrase=None, verify=None):
-    """
-    Decrypt C{data} with C{passphrase} and verify with C{verify} public
-    key.
-
-    @param data: The data to be decrypted.
-    @type data: str
-    @param passphrase: The passphrase used to decrypt C{data}.
-    @type passphrase: str
-    @param verify: The key used to verify a signature.
-    @type verify: OpenPGPKey
-
-    @return: The decrypted data.
-    @rtype: str
-
-    @raise InvalidSignature: Raised if unable to verify the signature with
-        C{verify} key.
-    """
-    leap_assert_type(passphrase, str)
-    if verify is not None:
-        leap_assert_type(verify, OpenPGPKey)
-        leap_assert(verify.private is False)
-
-    # result.ok    - (bool) indicates if the operation succeeded
-    # result.valid - (bool) indicates if the signature was verified
-    # result.data  - (bool) contains the result of the operation
-    # result.pubkey_fingerpring  - (str) contains the fingerprint of the
-    #                              public key that signed this data.
-    return lambda gpg: gpg.decrypt(
-        data, passphrase=passphrase)
-
-
-@with_temporary_gpg
 def encrypt_asym(data, key, passphrase=None, sign=None):
     """
     Encrypt C{data} using public @{key} and sign with C{sign} key.
@@ -405,20 +341,6 @@ def is_encrypted(data):
     @rtype: bool
     """
     return lambda gpg: gpg.is_encrypted(data)
-
-
-@with_temporary_gpg
-def is_encrypted_sym(data):
-    """
-    Return whether C{data} was encrypted using a public OpenPGP key.
-
-    @param data: The data we want to know about.
-    @type data: str
-
-    @return: Whether C{data} was encrypted using this wrapper.
-    @rtype: bool
-    """
-    return lambda gpg: gpg.is_encrypted_sym(data)
 
 
 @with_temporary_gpg

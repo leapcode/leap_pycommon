@@ -223,7 +223,6 @@ class OpenPGPCryptoTestCase(KeyManagerWithSoledadTestCase):
         self.assertTrue(cyphertext != '')
         self.assertTrue(cyphertext != 'data')
         self.assertTrue(openpgp.is_encrypted_asym(cyphertext))
-        self.assertFalse(openpgp.is_encrypted_sym(cyphertext))
         self.assertTrue(openpgp.is_encrypted(cyphertext))
         # decrypt
         self.assertRaises(
@@ -237,19 +236,6 @@ class OpenPGPCryptoTestCase(KeyManagerWithSoledadTestCase):
             KeyNotFound, pgp.get_key, ADDRESS, private=False)
         self.assertRaises(
             KeyNotFound, pgp.get_key, ADDRESS, private=True)
-
-    def test_openpgp_encrypt_decrypt_sym(self):
-        cyphertext = openpgp.encrypt_sym(
-            'data', passphrase='pass')
-        self.assertTrue(cyphertext is not None)
-        self.assertTrue(cyphertext != '')
-        self.assertTrue(cyphertext != 'data')
-        self.assertTrue(openpgp.is_encrypted_sym(cyphertext))
-        self.assertFalse(openpgp.is_encrypted_asym(cyphertext))
-        self.assertTrue(openpgp.is_encrypted(cyphertext))
-        plaintext = openpgp.decrypt_sym(
-            cyphertext, passphrase='pass')
-        self.assertEqual('data', plaintext)
 
     def test_verify_with_private_raises(self):
         pgp = openpgp.OpenPGPScheme(self._soledad)
@@ -292,15 +278,6 @@ class OpenPGPCryptoTestCase(KeyManagerWithSoledadTestCase):
             AssertionError,
             openpgp.encrypt_asym, data, privkey, sign=pubkey)
 
-    def test_encrypt_sym_sign_with_public_raises(self):
-        pgp = openpgp.OpenPGPScheme(self._soledad)
-        pgp.put_ascii_key(PUBLIC_KEY)
-        data = 'data'
-        pubkey = pgp.get_key(ADDRESS, private=False)
-        self.assertRaises(
-            AssertionError,
-            openpgp.encrypt_sym, data, passphrase='123', sign=pubkey)
-
     def test_decrypt_asym_verify_with_private_raises(self):
         pgp = openpgp.OpenPGPScheme(self._soledad)
         pgp.put_ascii_key(PRIVATE_KEY)
@@ -321,18 +298,6 @@ class OpenPGPCryptoTestCase(KeyManagerWithSoledadTestCase):
         privkey = pgp.get_key(ADDRESS, private=True)
         pubkey = pgp.get_key(ADDRESS, private=False)
         encrypted_and_signed = openpgp.encrypt_asym(data, pubkey, sign=privkey)
-        pgp.put_ascii_key(PUBLIC_KEY_2)
-        wrongkey = pgp.get_key(ADDRESS_2)
-        self.assertRaises(
-            errors.InvalidSignature,
-            openpgp.verify, encrypted_and_signed, wrongkey)
-
-    def test_decrypt_sym_verify_with_private_raises(self):
-        pgp = openpgp.OpenPGPScheme(self._soledad)
-        pgp.put_ascii_key(PRIVATE_KEY)
-        data = 'data'
-        privkey = pgp.get_key(ADDRESS, private=True)
-        encrypted_and_signed = openpgp.encrypt_sym(data, '123', sign=privkey)
         pgp.put_ascii_key(PUBLIC_KEY_2)
         wrongkey = pgp.get_key(ADDRESS_2)
         self.assertRaises(
@@ -362,17 +327,6 @@ class OpenPGPCryptoTestCase(KeyManagerWithSoledadTestCase):
         res = openpgp.decrypt_asym(
             encrypted_and_signed, privkey2, verify=pubkey)
         self.assertTrue(data, res)
-
-    def test_encrypt_sym_sign_decrypt_verify(self):
-        pgp = openpgp.OpenPGPScheme(self._soledad)
-        pgp.put_ascii_key(PRIVATE_KEY)
-        data = 'data'
-        privkey = pgp.get_key(ADDRESS, private=True)
-        pubkey = pgp.get_key(ADDRESS, private=False)
-        encrypted_and_signed = openpgp.encrypt_sym(data, '123', sign=privkey)
-        res = openpgp.decrypt_sym(
-            encrypted_and_signed, '123', verify=pubkey)
-        self.assertEqual(data, res)
 
 
 class KeyManagerKeyManagementTestCase(KeyManagerWithSoledadTestCase):

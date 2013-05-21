@@ -39,7 +39,6 @@ from leap.common.keymanager.keys import (
 from leap.common.keymanager.openpgp import (
     OpenPGPKey,
     OpenPGPScheme,
-    encrypt_sym,
 )
 
 

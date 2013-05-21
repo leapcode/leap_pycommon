@@ -83,14 +83,14 @@ def decrypt_sym(data, key, method=EncryptionMethods.AES_256_CTR, **kwargs):
     """
     Decrypt C{data} with C{key} using C{method} encryption method.
 
-    @param data: The data to be decrypted with prepended IV.
+    @param data: The data to be decrypted.
     @type data: str
     @param key: The key used to decrypt C{data} (must be 256 bits long).
     @type key: str
     @param method: The encryption method to use.
     @type method: str
     @param kwargs: Other parameters specific to each encryption method.
-    @type kwargs: long
+    @type kwargs: dict
 
     @return: The decrypted data.
     @rtype: str
