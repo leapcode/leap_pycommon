@@ -88,7 +88,7 @@ class EventsServerService(proto.EventsServerService):
         @param done: callback to be called when done
         @type done: protobuf.socketrpc.server.Callback
         """
-        logger.info("Received registration request: %s" % str(request))
+        logger.info("Received registration request: %s..." % str(request)[:40])
         # add component port to signal list
         if request.event not in registered_components:
             registered_components[request.event] = set([])
@@ -112,7 +112,7 @@ class EventsServerService(proto.EventsServerService):
         @param done: callback to be called when done
         @type done: protobuf.socketrpc.server.Callback
         """
-        logger.info('Received signal from component: %s', str(request))
+        logger.info('Received signal from component: %s...', str(request)[:40])
         # send signal to all registered components
         # TODO: verify signal auth
         if request.event in registered_components:
