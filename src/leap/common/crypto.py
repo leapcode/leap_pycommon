@@ -15,12 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import os
+import binascii
 
 from Crypto.Cipher import AES
-from Crypto.Random import random
 from Crypto.Util import Counter
 from leap.common.check import leap_assert, leap_assert_type
-
 
 #
 # encryption methods
@@ -70,10 +70,10 @@ def encrypt_sym(data, key, method=EncryptionMethods.AES_256_CTR):
         leap_assert(
             len(key) == 32,  # 32 x 8 = 256 bits.
             'Wrong key size: %s bits (must be 256 bits long).' % (len(key)*8))
-        iv = random.getrandbits(256)
-        ctr = Counter.new(128, initial_value=iv)
+        iv = os.urandom(8)
+        ctr = Counter.new(64, prefix=iv)
         cipher = AES.new(key=key, mode=AES.MODE_CTR, counter=ctr)
-        return iv, cipher.encrypt(data)
+        return binascii.b2a_base64(iv), cipher.encrypt(data)
 
     # raise if method is unknown
     raise UnknownEncryptionMethod('Unkwnown method: %s' % method)
@@ -106,8 +106,8 @@ def decrypt_sym(data, key, method=EncryptionMethods.AES_256_CTR, **kwargs):
         leap_assert(
             'iv' in kwargs,
             'AES-256-CTR needs an initial value given as.')
-        ctr = Counter.new(128, initial_value=kwargs['iv'])
-        cipher = AES.new(key, AES.MODE_CTR, counter=ctr)
+        ctr = Counter.new(64, prefix=binascii.a2b_base64(kwargs['iv']))
+        cipher = AES.new(key=key, mode=AES.MODE_CTR, counter=ctr)
         return cipher.decrypt(data)
 
     # raise if method is unknown
