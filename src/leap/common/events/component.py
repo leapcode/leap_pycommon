@@ -137,7 +137,7 @@ def register(signal, callback, uid=None, replace=False, reqcbk=None,
     logger.info(
         "Sending registration request to server on port %s: %s",
         server.SERVER_PORT,
-        str(request))
+        str(request)[:40])
     return service.register(request, callback=reqcbk, timeout=timeout)
 
 
@@ -178,7 +178,7 @@ def signal(signal, content="", mac_method="", mac="", reqcbk=None,
     request.mac = mac
     service = RpcService(proto.EventsServerService_Stub, server.SERVER_PORT,
                          'localhost')
-    logger.info("Sending signal to server: %s", str(request))
+    logger.info("Sending signal to server: %s", str(request)[:40])
     return service.signal(request, callback=reqcbk, timeout=timeout)
 
 
@@ -204,7 +204,7 @@ class EventsComponentService(proto.EventsComponentService):
         @param done: callback to be called when done
         @type done: protobuf.socketrpc.server.Callback
         """
-        logger.info('Received signal from server: %s' % str(request))
+        logger.info('Received signal from server: %s...' % str(request)[:40])
 
         # run registered callbacks
         # TODO: verify authentication using mac in incoming message
