@@ -35,23 +35,12 @@ from leap.common.keymanager.errors import (
 from leap.common.keymanager.keys import (
     build_key_from_dict,
     KEYMANAGER_KEY_TAG,
+    TAGS_PRIVATE_INDEX,
 )
 from leap.common.keymanager.openpgp import (
     OpenPGPKey,
     OpenPGPScheme,
 )
-
-
-#
-# key indexing constants.
-#
-
-TAGS_INDEX = 'by-tags'
-TAGS_AND_PRIVATE_INDEX = 'by-tags-and-private'
-INDEXES = {
-    TAGS_INDEX: ['tags'],
-    TAGS_AND_PRIVATE_INDEX: ['tags', 'bool(private)'],
-}
 
 
 #
@@ -103,8 +92,6 @@ class KeyManager(object):
             OpenPGPKey: OpenPGPScheme(soledad),
             # other types of key will be added to this mapper.
         }
-        # initialize the indexes needed to query the database
-        self._init_indexes()
         # the following are used to perform https requests
         self._fetcher = requests
         self._session = self._fetcher.session()
@@ -120,26 +107,6 @@ class KeyManager(object):
         return filter(
             lambda klass: str(klass) == ktype,
             self._wrapper_map).pop()
-
-    def _init_indexes(self):
-        """
-        Initialize the database indexes.
-        """
-        # Ask the database for currently existing indexes.
-        db_indexes = dict(self._soledad.list_indexes())
-        # Loop through the indexes we expect to find.
-        for name, expression in INDEXES.items():
-            if name not in db_indexes:
-                # The index does not yet exist.
-                self._soledad.create_index(name, *expression)
-                continue
-            if expression == db_indexes[name]:
-                # The index exists and is up to date.
-                continue
-            # The index exists but the definition is not what expected, so we
-            # delete it and add the proper index expression.
-            self._soledad.delete_index(name)
-            self._soledad.create_index(name, *expression)
 
     def _get(self, uri, data=None):
         """
@@ -294,7 +261,7 @@ class KeyManager(object):
                 doc.content['address'],
                 doc.content),
             self._soledad.get_from_index(
-                TAGS_AND_PRIVATE_INDEX,
+                TAGS_PRIVATE_INDEX,
                 KEYMANAGER_KEY_TAG,
                 '1' if private else '0'))
 

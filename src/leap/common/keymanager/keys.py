@@ -28,7 +28,6 @@ except ImportError:
 import re
 
 
-from hashlib import sha256
 from abc import ABCMeta, abstractmethod
 from leap.common.check import leap_assert
 
@@ -56,6 +55,26 @@ KEY_TAGS_KEY = 'tags'
 #
 
 KEYMANAGER_KEY_TAG = 'keymanager-key'
+
+
+#
+# key indexing constants.
+#
+
+TAGS_PRIVATE_INDEX = 'by-tags-private'
+TAGS_ADDRESS_PRIVATE_INDEX = 'by-tags-address-private'
+INDEXES = {
+    TAGS_PRIVATE_INDEX: [
+        KEY_TAGS_KEY,
+        'bool(%s)' % KEY_PRIVATE_KEY,
+    ],
+    TAGS_ADDRESS_PRIVATE_INDEX: [
+        KEY_TAGS_KEY,
+        KEY_ADDRESS_KEY,
+        'bool(%s)' % KEY_PRIVATE_KEY,
+    ]
+}
+
 
 #
 # Key handling utilities
@@ -99,27 +118,6 @@ def build_key_from_dict(kClass, address, kdict):
         last_audited_at=kdict[KEY_LAST_AUDITED_AT_KEY],
         validation=kdict[KEY_VALIDATION_KEY],  # TODO: verify for validation.
     )
-
-
-def keymanager_doc_id(ktype, address, private=False):
-    """
-    Return the document id for the document containing a key for
-    C{address}.
-
-    @param address: The type of the key.
-    @type address: KeyType
-    @param address: The address bound to the key.
-    @type address: str
-    @param private: Whether the key is private or not.
-    @type private: bool
-    @return: The document id for the document that stores a key bound to
-        C{address}.
-    @rtype: str
-    """
-    leap_assert(is_address(address), "Wrong address format: %s" % address)
-    ktype = str(ktype)
-    visibility = KEY_PRIVATE_KEY if private else 'public'
-    return sha256('keymanager-'+address+'-'+ktype+'-'+visibility).hexdigest()
 
 
 #
@@ -215,6 +213,27 @@ class EncryptionScheme(object):
         @type soledad: leap.soledad.Soledad
         """
         self._soledad = soledad
+        self._init_indexes()
+
+    def _init_indexes(self):
+        """
+        Initialize the database indexes.
+        """
+        # Ask the database for currently existing indexes.
+        db_indexes = dict(self._soledad.list_indexes())
+        # Loop through the indexes we expect to find.
+        for name, expression in INDEXES.items():
+            if name not in db_indexes:
+                # The index does not yet exist.
+                self._soledad.create_index(name, *expression)
+                continue
+            if expression == db_indexes[name]:
+                # The index exists and is up to date.
+                continue
+            # The index exists but the definition is not what expected, so we
+            # delete it and add the proper index expression.
+            self._soledad.delete_index(name)
+            self._soledad.create_index(name, *expression)
 
     @abstractmethod
     def get_key(self, address, private=False):

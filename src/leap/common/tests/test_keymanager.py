@@ -44,7 +44,6 @@ from leap.common.keymanager.openpgp import OpenPGPKey
 from leap.common.keymanager.keys import (
     is_address,
     build_key_from_dict,
-    keymanager_doc_id,
 )
 from leap.common.keymanager import errors
 
@@ -119,22 +118,6 @@ class KeyManagerUtilTestCase(BaseLeapTest):
         self.assertEqual(
             kdict['validation'], key.validation,
             'Wrong data in key.')
-
-    def test_keymanager_doc_id(self):
-        doc_id1 = keymanager_doc_id(
-            OpenPGPKey, ADDRESS, private=False)
-        doc_id2 = keymanager_doc_id(
-            OpenPGPKey, ADDRESS, private=True)
-        doc_id3 = keymanager_doc_id(
-            OpenPGPKey, 'user@leap.se', private=False)
-        doc_id4 = keymanager_doc_id(
-            OpenPGPKey, 'user@leap.se', private=True)
-        self.assertFalse(doc_id1 == doc_id2, 'Doc ids are equal!')
-        self.assertFalse(doc_id1 == doc_id3, 'Doc ids are equal!')
-        self.assertFalse(doc_id1 == doc_id4, 'Doc ids are equal!')
-        self.assertFalse(doc_id2 == doc_id3, 'Doc ids are equal!')
-        self.assertFalse(doc_id2 == doc_id4, 'Doc ids are equal!')
-        self.assertFalse(doc_id3 == doc_id4, 'Doc ids are equal!')
 
 
 class KeyManagerWithSoledadTestCase(BaseLeapTest):

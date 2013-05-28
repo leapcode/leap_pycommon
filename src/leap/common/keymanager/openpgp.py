@@ -26,13 +26,13 @@ import tempfile
 
 from leap.common.check import leap_assert, leap_assert_type
 from leap.common.keymanager import errors
-
 from leap.common.keymanager.keys import (
     EncryptionKey,
     EncryptionScheme,
     is_address,
-    keymanager_doc_id,
     build_key_from_dict,
+    KEYMANAGER_KEY_TAG,
+    TAGS_ADDRESS_PRIVATE_INDEX,
 )
 from leap.common.keymanager.gpg import GPGWrapper
 
@@ -588,10 +588,7 @@ class OpenPGPScheme(EncryptionScheme):
         """
         doc = self._get_key_doc(key.address, private=key.private)
         if doc is None:
-            self._soledad.create_doc_from_json(
-                key.get_json(),
-                doc_id=keymanager_doc_id(
-                    OpenPGPKey, key.address, key.private))
+            self._soledad.create_doc_from_json(key.get_json())
         else:
             doc.set_json(key.get_json())
             self._soledad.put_doc(doc)
@@ -609,8 +606,18 @@ class OpenPGPScheme(EncryptionScheme):
         @return: The document with the key or None if it does not exist.
         @rtype: leap.soledad.backends.leap_backend.LeapDocument
         """
-        return self._soledad.get_doc(
-            keymanager_doc_id(OpenPGPKey, address, private))
+        doclist = self._soledad.get_from_index(
+            TAGS_ADDRESS_PRIVATE_INDEX,
+            KEYMANAGER_KEY_TAG,
+            address,
+            '1' if private else '0')
+        if len(doclist) is 0:
+            return None
+        leap_assert(
+            len(doclist) is 1,
+            'Found more than one %s key for address!' %
+            'private' if private else 'public')
+        return doclist.pop()
 
     def delete_key(self, key):
         """
@@ -625,6 +632,5 @@ class OpenPGPScheme(EncryptionScheme):
             raise errors.KeyNotFound(key)
         if stored_key.__dict__ != key.__dict__:
             raise errors.KeyAttributesDiffer(key)
-        doc = self._soledad.get_doc(
-            keymanager_doc_id(OpenPGPKey, key.address, key.private))
+        doc = self._get_key_doc(key.address, key.private)
         self._soledad.delete_doc(doc)
