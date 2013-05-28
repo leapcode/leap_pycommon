@@ -63,8 +63,8 @@ def ensure_component_daemon():
     Ensure the component daemon is running and listening for incoming
     messages.
 
-    @return: the daemon instance
-    @rtype: EventsComponentDaemon
+    :return: the daemon instance
+    :rtype: EventsComponentDaemon
     """
     import time
     daemon = EventsComponentDaemon.ensure(0)
@@ -91,28 +91,28 @@ def register(signal, callback, uid=None, replace=False, reqcbk=None,
     returned for a synch request but nothing will be returned for an asynch
     request.
 
-    @param signal: the signal that causes the callback to be launched
-    @type signal: int (see the `events.proto` file)
-    @param callback: the callback to be called when the signal is received
-    @type callback: function
+    :param signal: the signal that causes the callback to be launched
+    :type signal: int (see the `events.proto` file)
+    :param callback: the callback to be called when the signal is received
+    :type callback: function
         callback(leap.common.events.events_pb2.SignalRequest)
-    @param uid: a unique id for the callback
-    @type uid: int
-    @param replace: should an existent callback with same uid be replaced?
-    @type replace: bool
-    @param reqcbk: a callback to be called when a response from server is
+    :param uid: a unique id for the callback
+    :type uid: int
+    :param replace: should an existent callback with same uid be replaced?
+    :type replace: bool
+    :param reqcbk: a callback to be called when a response from server is
         received
-    @type reqcbk: function
+    :type reqcbk: function
         callback(leap.common.events.events_pb2.EventResponse)
-    @param timeout: the timeout for synch calls
-    @type timeout: int
+    :param timeout: the timeout for synch calls
+    :type timeout: int
 
     Might raise a CallbackAlreadyRegistered exception if there's already a
     callback identified by the given uid and replace is False.
 
-    @return: the response from server for synch calls or nothing for asynch
+    :return: the response from server for synch calls or nothing for asynch
         calls
-    @rtype: leap.common.events.events_pb2.EventsResponse or None
+    :rtype: leap.common.events.events_pb2.EventsResponse or None
     """
     ensure_component_daemon()  # so we can receive registered signals
     # register callback locally
@@ -152,24 +152,24 @@ def signal(signal, content="", mac_method="", mac="", reqcbk=None,
     returned for a synch request but nothing will be returned for an asynch
     request.
 
-    @param signal: the signal that causes the callback to be launched
-    @type signal: int (see the `events.proto` file)
-    @param content: the contents of the event signal
-    @type content: str
-    @param mac_method: the method used for auth mac
-    @type mac_method: str
-    @param mac: the content of the auth mac
-    @type mac: str
-    @param reqcbk: a callback to be called when a response from server is
+    :param signal: the signal that causes the callback to be launched
+    :type signal: int (see the `events.proto` file)
+    :param content: the contents of the event signal
+    :type content: str
+    :param mac_method: the method used for auth mac
+    :type mac_method: str
+    :param mac: the content of the auth mac
+    :type mac: str
+    :param reqcbk: a callback to be called when a response from server is
         received
-    @type reqcbk: function
+    :type reqcbk: function
         callback(leap.common.events.events_pb2.EventResponse)
-    @param timeout: the timeout for synch calls
-    @type timeout: int
+    :param timeout: the timeout for synch calls
+    :type timeout: int
 
-    @return: the response from server for synch calls or nothing for asynch
+    :return: the response from server for synch calls or nothing for asynch
         calls
-    @rtype: leap.common.events.events_pb2.EventsResponse or None
+    :rtype: leap.common.events.events_pb2.EventsResponse or None
     """
     request = proto.SignalRequest()
     request.event = signal
@@ -197,12 +197,12 @@ class EventsComponentService(proto.EventsComponentService):
         This method is called whenever a signal request is received from
         server.
 
-        @param controller: used to mediate a single method call
-        @type controller: protobuf.socketrpc.controller.SocketRpcController
-        @param request: the request received from the component
-        @type request: leap.common.events.events_pb2.SignalRequest
-        @param done: callback to be called when done
-        @type done: protobuf.socketrpc.server.Callback
+        :param controller: used to mediate a single method call
+        :type controller: protobuf.socketrpc.controller.SocketRpcController
+        :param request: the request received from the component
+        :type request: leap.common.events.events_pb2.SignalRequest
+        :param done: callback to be called when done
+        :type done: protobuf.socketrpc.server.Callback
         """
         logger.info('Received signal from server: %s' % str(request))
 
@@ -230,10 +230,10 @@ class EventsComponentDaemon(daemon.EventsSingletonDaemon):
         """
         Make sure the daemon is running on the given port.
 
-        @param port: the port in which the daemon should listen
-        @type port: int
+        :param port: the port in which the daemon should listen
+        :type port: int
 
-        @return: a daemon instance
-        @rtype: EventsComponentDaemon
+        :return: a daemon instance
+        :rtype: EventsComponentDaemon
         """
         return cls.ensure_service(port, EventsComponentService())

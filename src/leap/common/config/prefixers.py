@@ -39,10 +39,10 @@ class Prefixer:
         """
         Returns the platform dependant path prefixer
 
-        @param standalone: if True it will return the prefix for a
+        :param standalone: if True it will return the prefix for a
         standalone application. Otherwise, it will return the system
         default for configuration storage.
-        @type standalone: bool
+        :type standalone: bool
         """
         return ""
 
@@ -65,10 +65,10 @@ class LinuxPrefixer(Prefixer):
         This method expects an env variable named LEAP_CLIENT_PATH if
         standalone is used.
 
-        @param standalone: if True it will return the prefix for a
+        :param standalone: if True it will return the prefix for a
         standalone application. Otherwise, it will return the system
         default for configuration storage.
-        @type standalone: bool
+        :type standalone: bool
         """
         config_dir = BaseDirectory.xdg_config_home
         if not standalone:
@@ -87,10 +87,10 @@ class DarwinPrefixer(Prefixer):
         This method expects an env variable named LEAP_CLIENT_PATH if
         standalone is used.
 
-        @param standalone: if True it will return the prefix for a
+        :param standalone: if True it will return the prefix for a
         standalone application. Otherwise, it will return the system
         default for configuration storage.
-        @type standalone: bool
+        :type standalone: bool
         """
         config_dir = BaseDirectory.xdg_config_home
         if not standalone:
@@ -109,10 +109,10 @@ class WindowsPrefixer(Prefixer):
         This method expects an env variable named LEAP_CLIENT_PATH if
         standalone is used.
 
-        @param standalone: if True it will return the prefix for a
+        :param standalone: if True it will return the prefix for a
         standalone application. Otherwise, it will return the system
         default for configuration storage.
-        @type standalone: bool
+        :type standalone: bool
         """
         config_dir = BaseDirectory.xdg_config_home
 

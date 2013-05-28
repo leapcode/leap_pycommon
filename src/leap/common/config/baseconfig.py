@@ -67,8 +67,8 @@ class BaseConfig:
         """
         Tries to return a value only if the config has already been loaded.
 
-        @rtype: depends on the config structure, dict, str, array, int
-        @return: returns the value for the specified key in the config
+        :rtype: depends on the config structure, dict, str, array, int
+        :return: returns the value for the specified key in the config
         """
         leap_assert(self._config_checker, "Load the config first")
         return self._config_checker.config.get(key, None)

@@ -55,11 +55,11 @@ def ensure_server(port=SERVER_PORT):
     Attempt to connect to given local port. Upon success, assume that the
     events server has already been started. Upon failure, start events server.
 
-    @param port: the port in which server should be listening
-    @type port: int
+    :param port: the port in which server should be listening
+    :type port: int
 
-    @return: the daemon instance or nothing
-    @rtype: EventsServerDaemon or None
+    :return: the daemon instance or nothing
+    :rtype: EventsServerDaemon or None
     """
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -81,12 +81,12 @@ class EventsServerService(proto.EventsServerService):
         """
         Register a component port to be signaled when specific events come in.
 
-        @param controller: used to mediate a single method call
-        @type controller: protobuf.socketrpc.controller.SocketRpcController
-        @param request: the request received from the component
-        @type request: leap.common.events.events_pb2.RegisterRequest
-        @param done: callback to be called when done
-        @type done: protobuf.socketrpc.server.Callback
+        :param controller: used to mediate a single method call
+        :type controller: protobuf.socketrpc.controller.SocketRpcController
+        :param request: the request received from the component
+        :type request: leap.common.events.events_pb2.RegisterRequest
+        :param done: callback to be called when done
+        :type done: protobuf.socketrpc.server.Callback
         """
         logger.info("Received registration request: %s" % str(request))
         # add component port to signal list
@@ -105,12 +105,12 @@ class EventsServerService(proto.EventsServerService):
         Perform an RPC call to signal all components registered to receive a
         specific signal.
 
-        @param controller: used to mediate a single method call
-        @type controller: protobuf.socketrpc.controller.SocketRpcController
-        @param request: the request received from the component
-        @type request: leap.common.events.events_pb2.SignalRequest
-        @param done: callback to be called when done
-        @type done: protobuf.socketrpc.server.Callback
+        :param controller: used to mediate a single method call
+        :type controller: protobuf.socketrpc.controller.SocketRpcController
+        :param request: the request received from the component
+        :type request: leap.common.events.events_pb2.SignalRequest
+        :param done: callback to be called when done
+        :type done: protobuf.socketrpc.server.Callback
         """
         logger.info('Received signal from component: %s', str(request))
         # send signal to all registered components
@@ -140,10 +140,10 @@ class EventsServerDaemon(daemon.EventsSingletonDaemon):
         """
         Make sure the daemon is running on the given port.
 
-        @param port: the port in which the daemon should listen
-        @type port: int
+        :param port: the port in which the daemon should listen
+        :type port: int
 
-        @return: a daemon instance
-        @rtype: EventsServerDaemon
+        :return: a daemon instance
+        :rtype: EventsServerDaemon
         """
         return cls.ensure_service(port, EventsServerService())

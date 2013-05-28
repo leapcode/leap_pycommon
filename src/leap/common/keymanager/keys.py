@@ -65,10 +65,10 @@ def is_address(address):
     """
     Return whether the given C{address} is in the form user@provider.
 
-    @param address: The address to be tested.
-    @type address: str
-    @return: Whether C{address} is in the form user@provider.
-    @rtype: bool
+    :param address: The address to be tested.
+    :type address: str
+    :return: Whether C{address} is in the form user@provider.
+    :rtype: bool
     """
     return bool(re.match('[\w.-]+@[\w.-]+', address))
 
@@ -77,12 +77,12 @@ def build_key_from_dict(kClass, address, kdict):
     """
     Build an C{kClass} key bound to C{address} based on info in C{kdict}.
 
-    @param address: The address bound to the key.
-    @type address: str
-    @param kdict: Dictionary with key data.
-    @type kdict: dict
-    @return: An instance of the key.
-    @rtype: C{kClass}
+    :param address: The address bound to the key.
+    :type address: str
+    :param kdict: Dictionary with key data.
+    :type kdict: dict
+    :return: An instance of the key.
+    :rtype: C{kClass}
     """
     leap_assert(
         address == kdict[KEY_ADDRESS_KEY],
@@ -106,15 +106,15 @@ def keymanager_doc_id(ktype, address, private=False):
     Return the document id for the document containing a key for
     C{address}.
 
-    @param address: The type of the key.
-    @type address: KeyType
-    @param address: The address bound to the key.
-    @type address: str
-    @param private: Whether the key is private or not.
-    @type private: bool
-    @return: The document id for the document that stores a key bound to
+    :param address: The type of the key.
+    :type address: KeyType
+    :param address: The address bound to the key.
+    :type address: str
+    :param private: Whether the key is private or not.
+    :type private: bool
+    :return: The document id for the document that stores a key bound to
         C{address}.
-    @rtype: str
+    :rtype: str
     """
     leap_assert(is_address(address), "Wrong address format: %s" % address)
     ktype = str(ktype)
@@ -163,8 +163,8 @@ class EncryptionKey(object):
         """
         Return a JSON string describing this key.
 
-        @return: The JSON string describing this key.
-        @rtype: str
+        :return: The JSON string describing this key.
+        :rtype: str
         """
         return json.dumps({
             KEY_ADDRESS_KEY: self.address,
@@ -211,8 +211,8 @@ class EncryptionScheme(object):
         """
         Initialize this Encryption Scheme.
 
-        @param soledad: A Soledad instance for local storage of keys.
-        @type soledad: leap.soledad.Soledad
+        :param soledad: A Soledad instance for local storage of keys.
+        :type soledad: leap.soledad.Soledad
         """
         self._soledad = soledad
 
@@ -221,13 +221,13 @@ class EncryptionScheme(object):
         """
         Get key from local storage.
 
-        @param address: The address bound to the key.
-        @type address: str
-        @param private: Look for a private key instead of a public one?
-        @type private: bool
+        :param address: The address bound to the key.
+        :type address: str
+        :param private: Look for a private key instead of a public one?
+        :type private: bool
 
-        @return: The key bound to C{address}.
-        @rtype: EncryptionKey
+        :return: The key bound to C{address}.
+        :rtype: EncryptionKey
         @raise KeyNotFound: If the key was not found on local storage.
         """
         pass
@@ -237,8 +237,8 @@ class EncryptionScheme(object):
         """
         Put a key in local storage.
 
-        @param key: The key to be stored.
-        @type key: EncryptionKey
+        :param key: The key to be stored.
+        :type key: EncryptionKey
         """
         pass
 
@@ -247,11 +247,11 @@ class EncryptionScheme(object):
         """
         Generate a new key.
 
-        @param address: The address bound to the key.
-        @type address: str
+        :param address: The address bound to the key.
+        :type address: str
 
-        @return: The key bound to C{address}.
-        @rtype: EncryptionKey
+        :return: The key bound to C{address}.
+        :rtype: EncryptionKey
         """
         pass
 
@@ -260,7 +260,7 @@ class EncryptionScheme(object):
         """
         Remove C{key} from storage.
 
-        @param key: The key to be removed.
-        @type key: EncryptionKey
+        :param key: The key to be removed.
+        :type key: EncryptionKey
         """
         pass

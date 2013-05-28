@@ -33,8 +33,8 @@ def check_and_fix_urw_only(cert):
 
     Might raise OSError
 
-    @param cert: Certificate path
-    @type cert: str
+    :param cert: Certificate path
+    :type cert: str
     """
     mode = stat.S_IMODE(os.stat(cert).st_mode)
 
@@ -53,10 +53,10 @@ def get_mtime(filename):
     """
     Returns the modified time or None if the file doesn't exist
 
-    @param filename: path to check
-    @type filename: str
+    :param filename: path to check
+    :type filename: str
 
-    @rtype: str
+    :rtype: str
     """
     try:
         mtime = time.ctime(os.path.getmtime(filename)) + " GMT"
@@ -72,8 +72,8 @@ def mkdir_p(path):
 
     Might raise OSError
 
-    @param path: path to create
-    @type path: str
+    :param path: path to create
+    :type path: str
     """
     try:
         os.makedirs(path)
@@ -97,14 +97,14 @@ def which(name, flags=os.X_OK, path_extension="/usr/sbin:/sbin"):
     On MS-Windows the only flag that has any meaning is os.F_OK. Any other
     flags will be ignored.
 
-    @type name: C{str}
-    @param name: The name for which to search.
+    :type name: C{str}
+    :param name: The name for which to search.
 
-    @type flags: C{int}
-    @param flags: Arguments to L{os.access}.
+    :type flags: C{int}
+    :param flags: Arguments to L{os.access}.
 
-    @rtype: C{list}
-    @param: A list of the full paths to files found, in the
+    :rtype: C{list}
+    :param: A list of the full paths to files found, in the
     order in which they were found.
     """
 

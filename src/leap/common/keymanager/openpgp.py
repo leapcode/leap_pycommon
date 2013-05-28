@@ -48,11 +48,11 @@ def temporary_gpgwrapper(keys=None):
     Returns a unitary gpg wrapper that implements context manager
     protocol.
 
-    @param key_data: ASCII armored key data.
-    @type key_data: str
+    :param key_data: ASCII armored key data.
+    :type key_data: str
 
-    @return: a GPGWrapper instance
-    @rtype: GPGWrapper
+    :return: a GPGWrapper instance
+    :rtype: GPGWrapper
     """
     # TODO do here checks on key_data
     return TempGPGWrapper(keys=keys)
@@ -168,8 +168,8 @@ class TempGPGWrapper(object):
     """
     def __init__(self, keys=None):
         """
-        @param keys: OpenPGP key, or list of.
-        @type keys: OpenPGPKey or list of OpenPGPKeys
+        :param keys: OpenPGP key, or list of.
+        :type keys: OpenPGPKey or list of OpenPGPKeys
         """
         self._gpg = None
         if not keys:
@@ -184,8 +184,8 @@ class TempGPGWrapper(object):
         """
         Calls the unitary gpgwrapper initializer
 
-        @return: A GPG wrapper with a unitary keyring.
-        @rtype: gnupg.GPG
+        :return: A GPG wrapper with a unitary keyring.
+        :rtype: gnupg.GPG
         """
         self._build_keyring()
         return self._gpg
@@ -201,11 +201,11 @@ class TempGPGWrapper(object):
         """
         Create an empty GPG keyring and import C{keys} into it.
 
-        @param keys: List of keys to add to the keyring.
-        @type keys: list of OpenPGPKey
+        :param keys: List of keys to add to the keyring.
+        :type keys: list of OpenPGPKey
 
-        @return: A GPG wrapper with a unitary keyring.
-        @rtype: gnupg.GPG
+        :return: A GPG wrapper with a unitary keyring.
+        :rtype: gnupg.GPG
         """
         privkeys = [key for key in self._keys if key and key.private is True]
         publkeys = [key for key in self._keys if key and key.private is False]
@@ -275,15 +275,15 @@ def encrypt_asym(data, key, passphrase=None, sign=None):
     """
     Encrypt C{data} using public @{key} and sign with C{sign} key.
 
-    @param data: The data to be encrypted.
-    @type data: str
-    @param pubkey: The key used to encrypt.
-    @type pubkey: OpenPGPKey
-    @param sign: The key used for signing.
-    @type sign: OpenPGPKey
+    :param data: The data to be encrypted.
+    :type data: str
+    :param pubkey: The key used to encrypt.
+    :type pubkey: OpenPGPKey
+    :param sign: The key used for signing.
+    :type sign: OpenPGPKey
 
-    @return: The encrypted data.
-    @rtype: str
+    :return: The encrypted data.
+    :rtype: str
     """
     leap_assert_type(key, OpenPGPKey)
     leap_assert(key.private is False, 'Key is not public.')
@@ -307,15 +307,15 @@ def decrypt_asym(data, key, passphrase=None, verify=None):
     """
     Decrypt C{data} using private @{key} and verify with C{verify} key.
 
-    @param data: The data to be decrypted.
-    @type data: str
-    @param privkey: The key used to decrypt.
-    @type privkey: OpenPGPKey
-    @param verify: The key used to verify a signature.
-    @type verify: OpenPGPKey
+    :param data: The data to be decrypted.
+    :type data: str
+    :param privkey: The key used to decrypt.
+    :type privkey: OpenPGPKey
+    :param verify: The key used to verify a signature.
+    :type verify: OpenPGPKey
 
-    @return: The decrypted data.
-    @rtype: str
+    :return: The decrypted data.
+    :rtype: str
 
     @raise InvalidSignature: Raised if unable to verify the signature with
         C{verify} key.
@@ -334,11 +334,11 @@ def is_encrypted(data):
     """
     Return whether C{data} was encrypted using OpenPGP.
 
-    @param data: The data we want to know about.
-    @type data: str
+    :param data: The data we want to know about.
+    :type data: str
 
-    @return: Whether C{data} was encrypted using this wrapper.
-    @rtype: bool
+    :return: Whether C{data} was encrypted using this wrapper.
+    :rtype: bool
     """
     return lambda gpg: gpg.is_encrypted(data)
 
@@ -348,11 +348,11 @@ def is_encrypted_asym(data):
     """
     Return whether C{data} was asymmetrically encrypted using OpenPGP.
 
-    @param data: The data we want to know about.
-    @type data: str
+    :param data: The data we want to know about.
+    :type data: str
 
-    @return: Whether C{data} was encrypted using this wrapper.
-    @rtype: bool
+    :return: Whether C{data} was encrypted using this wrapper.
+    :rtype: bool
     """
     return lambda gpg: gpg.is_encrypted_asym(data)
 
@@ -362,14 +362,14 @@ def sign(data, privkey):
     """
     Sign C{data} with C{privkey}.
 
-    @param data: The data to be signed.
-    @type data: str
+    :param data: The data to be signed.
+    :type data: str
 
-    @param privkey: The private key to be used to sign.
-    @type privkey: OpenPGPKey
+    :param privkey: The private key to be used to sign.
+    :type privkey: OpenPGPKey
 
-    @return: The ascii-armored signed data.
-    @rtype: str
+    :return: The ascii-armored signed data.
+    :rtype: str
     """
     leap_assert_type(privkey, OpenPGPKey)
     leap_assert(privkey.private is True)
@@ -384,14 +384,14 @@ def verify(data, key):
     """
     Verify signed C{data} with C{pubkey}.
 
-    @param data: The data to be verified.
-    @type data: str
+    :param data: The data to be verified.
+    :type data: str
 
-    @param pubkey: The public key to be used on verification.
-    @type pubkey: OpenPGPKey
+    :param pubkey: The public key to be used on verification.
+    :type pubkey: OpenPGPKey
 
-    @return: The ascii-armored signed data.
-    @rtype: str
+    :return: The ascii-armored signed data.
+    :rtype: str
     """
     leap_assert_type(key, OpenPGPKey)
     leap_assert(key.private is False)
@@ -412,14 +412,14 @@ def _build_key_from_gpg(address, key, key_data):
     ASCII armored GPG key data has to be queried independently in this
     wrapper, so we receive it in C{key_data}.
 
-    @param address: The address bound to the key.
-    @type address: str
-    @param key: Key obtained from GPG storage.
-    @type key: dict
-    @param key_data: Key data obtained from GPG storage.
-    @type key_data: str
-    @return: An instance of the key.
-    @rtype: OpenPGPKey
+    :param address: The address bound to the key.
+    :type address: str
+    :param key: Key obtained from GPG storage.
+    :type key: dict
+    :param key_data: Key data obtained from GPG storage.
+    :type key_data: str
+    :return: An instance of the key.
+    :rtype: OpenPGPKey
     """
     return OpenPGPKey(
         address,
@@ -452,8 +452,8 @@ class OpenPGPScheme(EncryptionScheme):
         """
         Initialize the OpenPGP wrapper.
 
-        @param soledad: A Soledad instance for key storage.
-        @type soledad: leap.soledad.Soledad
+        :param soledad: A Soledad instance for key storage.
+        :type soledad: leap.soledad.Soledad
         """
         EncryptionScheme.__init__(self, soledad)
 
@@ -461,10 +461,10 @@ class OpenPGPScheme(EncryptionScheme):
         """
         Generate an OpenPGP keypair bound to C{address}.
 
-        @param address: The address bound to the key.
-        @type address: str
-        @return: The key bound to C{address}.
-        @rtype: OpenPGPKey
+        :param address: The address bound to the key.
+        :type address: str
+        :return: The key bound to C{address}.
+        :rtype: OpenPGPKey
         @raise KeyAlreadyExists: If key already exists in local database.
         """
         # make sure the key does not already exist
@@ -513,13 +513,13 @@ class OpenPGPScheme(EncryptionScheme):
         """
         Get key bound to C{address} from local storage.
 
-        @param address: The address bound to the key.
-        @type address: str
-        @param private: Look for a private key instead of a public one?
-        @type private: bool
+        :param address: The address bound to the key.
+        :type address: str
+        :param private: Look for a private key instead of a public one?
+        :type private: bool
 
-        @return: The key bound to C{address}.
-        @rtype: OpenPGPKey
+        :return: The key bound to C{address}.
+        :rtype: OpenPGPKey
         @raise KeyNotFound: If the key was not found on local storage.
         """
         leap_assert(is_address(address), 'Not an user address: %s' % address)
@@ -532,8 +532,8 @@ class OpenPGPScheme(EncryptionScheme):
         """
         Put key contained in ascii-armored C{key_data} in local storage.
 
-        @param key_data: The key data to be stored.
-        @type key_data: str
+        :param key_data: The key data to be stored.
+        :type key_data: str
         """
         leap_assert_type(key_data, str)
         # TODO: add more checks for correct key data.
@@ -583,8 +583,8 @@ class OpenPGPScheme(EncryptionScheme):
         """
         Put C{key} in local storage.
 
-        @param key: The key to be stored.
-        @type key: OpenPGPKey
+        :param key: The key to be stored.
+        :type key: OpenPGPKey
         """
         doc = self._get_key_doc(key.address, private=key.private)
         if doc is None:
@@ -602,12 +602,12 @@ class OpenPGPScheme(EncryptionScheme):
 
         If C{private} is True, looks for a private key instead of a public.
 
-        @param address: The address bound to the key.
-        @type address: str
-        @param private: Whether to look for a private key.
-        @type private: bool
-        @return: The document with the key or None if it does not exist.
-        @rtype: leap.soledad.backends.leap_backend.LeapDocument
+        :param address: The address bound to the key.
+        :type address: str
+        :param private: Whether to look for a private key.
+        :type private: bool
+        :return: The document with the key or None if it does not exist.
+        :rtype: leap.soledad.backends.leap_backend.LeapDocument
         """
         return self._soledad.get_doc(
             keymanager_doc_id(OpenPGPKey, address, private))
@@ -616,8 +616,8 @@ class OpenPGPScheme(EncryptionScheme):
         """
         Remove C{key} from storage.
 
-        @param key: The key to be removed.
-        @type key: EncryptionKey
+        :param key: The key to be removed.
+        :type key: EncryptionKey
         """
         leap_assert(key.__class__ is OpenPGPKey, 'Wrong key type.')
         stored_key = self.get_key(key.address, private=key.private)

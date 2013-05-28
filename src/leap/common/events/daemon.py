@@ -50,10 +50,10 @@ class EventsRpcServer(SocketRpcServer):
         """
         Initialize a RPC server.
 
-        @param port: the port in which to listen for incoming messages
-        @type port: int
-        @param host: the address to bind to
-        @type host: str
+        :param port: the port in which to listen for incoming messages
+        :type port: int
+        :param host: the address to bind to
+        :type host: str
         """
         SocketRpcServer.__init__(self, port, host)
         self._server = None
@@ -111,10 +111,10 @@ class EventsSingletonDaemon(threading.Thread):
         This is a static method disguised as instance method that actually
         does the initialization of the daemon instance.
 
-        @param port: the port in which to listen for incoming messages
-        @type port: int
-        @param service: the service to provide in this daemon
-        @type service: google.protobuf.service.Service
+        :param port: the port in which to listen for incoming messages
+        :type port: int
+        :param service: the service to provide in this daemon
+        :type service: google.protobuf.service.Service
         """
         threading.Thread.__init__(self)
         self._port = port
@@ -141,11 +141,11 @@ class EventsSingletonDaemon(threading.Thread):
         with the appropriate service from the `events.proto` definitions, and
         return the daemon instance.
 
-        @param port: the port in which the daemon should be listening
-        @type port: int
+        :param port: the port in which the daemon should be listening
+        :type port: int
 
-        @return: a daemon instance
-        @rtype: EventsSingletonDaemon
+        :return: a daemon instance
+        :rtype: EventsSingletonDaemon
         """
         raise NotImplementedError(self.ensure)
 
@@ -156,11 +156,11 @@ class EventsSingletonDaemon(threading.Thread):
 
         Might return ServiceAlreadyRunningException
 
-        @param port: the port in which the daemon should be listening
-        @type port: int
+        :param port: the port in which the daemon should be listening
+        :type port: int
 
-        @return: a daemon instance
-        @rtype: EventsSingletonDaemon
+        :return: a daemon instance
+        :rtype: EventsSingletonDaemon
         """
         daemon = cls(port, service)
         if not daemon.is_alive():
@@ -178,8 +178,8 @@ class EventsSingletonDaemon(threading.Thread):
         """
         Retrieve singleton instance of this daemon.
 
-        @return: a daemon instance
-        @rtype: EventsSingletonDaemon
+        :return: a daemon instance
+        :rtype: EventsSingletonDaemon
         """
         return cls.__instance
 
@@ -200,8 +200,8 @@ class EventsSingletonDaemon(threading.Thread):
         Retrieve the value of the port to which the service running in this
         daemon is binded to.
 
-        @return: the port to which the daemon is binded to
-        @rtype: int
+        :return: the port to which the daemon is binded to
+        :rtype: int
         """
         if self._port is 0:
             self._port = self._server.port

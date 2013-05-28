@@ -53,15 +53,15 @@ def encrypt_sym(data, key, method=EncryptionMethods.AES_256_CTR):
     """
     Encrypt C{data} with C{key}, using C{method} encryption method.
 
-    @param data: The data to be encrypted.
-    @type data: str
-    @param key: The key used to encrypt C{data} (must be 256 bits long).
-    @type key: str
-    @param method: The encryption method to use.
-    @type method: str
+    :param data: The data to be encrypted.
+    :type data: str
+    :param key: The key used to encrypt C{data} (must be 256 bits long).
+    :type key: str
+    :param method: The encryption method to use.
+    :type method: str
 
-    @return: A tuple with the initial value and the encrypted data.
-    @rtype: (long, str)
+    :return: A tuple with the initial value and the encrypted data.
+    :rtype: (long, str)
     """
     leap_assert_type(key, str)
 
@@ -83,17 +83,17 @@ def decrypt_sym(data, key, method=EncryptionMethods.AES_256_CTR, **kwargs):
     """
     Decrypt C{data} with C{key} using C{method} encryption method.
 
-    @param data: The data to be decrypted.
-    @type data: str
-    @param key: The key used to decrypt C{data} (must be 256 bits long).
-    @type key: str
-    @param method: The encryption method to use.
-    @type method: str
-    @param kwargs: Other parameters specific to each encryption method.
-    @type kwargs: dict
+    :param data: The data to be decrypted.
+    :type data: str
+    :param key: The key used to decrypt C{data} (must be 256 bits long).
+    :type key: str
+    :param method: The encryption method to use.
+    :type method: str
+    :param kwargs: Other parameters specific to each encryption method.
+    :type kwargs: dict
 
-    @return: The decrypted data.
-    @rtype: str
+    :return: The decrypted data.
+    :rtype: str
     """
     leap_assert_type(key, str)
 
