@@ -36,18 +36,19 @@ logger = logging.getLogger(__name__)
 
 class BaseConfig:
     """
-    Abstract base class for any JSON based configuration
+    Abstract base class for any JSON based configuration.
     """
 
     __metaclass__ = ABCMeta
 
     """
-    Standalone is a class wide parameter
+    Standalone is a class wide parameter.
 
-    @param standalone: if True it will return the prefix for a
-    standalone application. Otherwise, it will return the system
-    default for configuration storage.
-    @type standalone: bool
+    :param standalone: if True it will return the prefix for a
+                       standalone application. Otherwise, it will
+                       return the system
+                       default for configuration storage.
+    :type standalone: bool
     """
     standalone = False
 
@@ -58,16 +59,16 @@ class BaseConfig:
     @abstractmethod
     def _get_spec(self):
         """
-        Returns the spec object for the specific configuration
+        Returns the spec object for the specific configuration.
         """
         return None
 
     def _safe_get_value(self, key):
         """
-        Tries to return a value only if the config has already been loaded
+        Tries to return a value only if the config has already been loaded.
 
-        @rtype: depends on the config structure, dict, str, array, int
-        @return: returns the value for the specified key in the config
+        :rtype: depends on the config structure, dict, str, array, int
+        :return: returns the value for the specified key in the config
         """
         leap_assert(self._config_checker, "Load the config first")
         return self._config_checker.config.get(key, None)
@@ -88,14 +89,14 @@ class BaseConfig:
 
     def save(self, path_list):
         """
-        Saves the current configuration to disk
+        Saves the current configuration to disk.
 
-        @param path_list: list of components that form the relative
-        path to configuration. The absolute path will be calculated
-        depending on the platform.
-        @type path_list: list
+        :param path_list: list of components that form the relative
+                          path to configuration. The absolute path
+                          will be calculated depending on the platform.
+        :type path_list: list
 
-        @return: True if saved to disk correctly, False otherwise
+        :return: True if saved to disk correctly, False otherwise
         """
         config_path = os.path.join(self.get_path_prefix(), *(path_list[:-1]))
         mkdir_p(config_path)
@@ -108,19 +109,27 @@ class BaseConfig:
             raise
         return True
 
-    def load(self, path="", data=None, mtime=None):
+    def load(self, path="", data=None, mtime=None, relative=True):
         """
-        Loads the configuration from disk
+        Loads the configuration from disk.
 
-        @type path: str
-        @param path: relative path to configuration. The absolute path
-        will be calculated depending on the platform
+        :param path: if relative=True, this is a relative path
+                     to configuration. The absolute path
+                     will be calculated depending on the platform
+        :type path: str
 
-        @return: True if loaded from disk correctly, False otherwise
+        :param relative: if True, path is relative. If False, it's absolute.
+        :type relative: bool
+
+        :return: True if loaded from disk correctly, False otherwise
+        :rtype: bool
         """
 
-        config_path = os.path.join(self.get_path_prefix(),
-                                   path)
+        if relative is True:
+            config_path = os.path.join(
+                self.get_path_prefix(), path)
+        else:
+            config_path = path
 
         self._config_checker = PluggableConfig(format="json")
         self._config_checker.options = copy.deepcopy(self._get_spec())
@@ -131,8 +140,8 @@ class BaseConfig:
             else:
                 self._config_checker.load(data, mtime=mtime)
         except Exception as e:
-            logger.warning("Something went wrong while loading " +
-                           "the config from %s\n%s" % (config_path, e))
+            logger.error("Something went wrong while loading " +
+                         "the config from %s\n%s" % (config_path, e))
             self._config_checker = None
             return False
         return True
@@ -140,7 +149,7 @@ class BaseConfig:
 
 class LocalizedKey(object):
     """
-    Decorator used for keys that are localized in a configuration
+    Decorator used for keys that are localized in a configuration.
     """
 
     def __init__(self, func, **kwargs):
@@ -149,13 +158,13 @@ class LocalizedKey(object):
     def __call__(self, instance, lang="en"):
         """
         Tries to return the string for the specified language, otherwise
-        informs the problem and returns an empty string
+        informs the problem and returns an empty string.
 
-        @param lang: language code
-        @type lang: str
+        :param lang: language code
+        :type lang: str
 
-        @return: localized value from the possible values returned by
-        self._func
+        :return: localized value from the possible values returned by
+                 self._func
         """
         descriptions = self._func(instance)
         description_lang = ""

@@ -45,24 +45,24 @@ def register(signal, callback, uid=None, replace=False, reqcbk=None,
     returned for a synch request but nothing will be returned for an asynch
     request.
 
-    @param signal: the signal that causes the callback to be launched
-    @type signal: int (see the `events.proto` file)
-    @param callback: the callback to be called when the signal is received
-    @type callback: function
-    @param uid: a unique id for the callback
-    @type uid: int
-    @param replace: should an existent callback with same uid be replaced?
-    @type replace: bool
-    @param reqcbk: a callback to be called when a response from server is
+    :param signal: the signal that causes the callback to be launched
+    :type signal: int (see the `events.proto` file)
+    :param callback: the callback to be called when the signal is received
+    :type callback: function
+    :param uid: a unique id for the callback
+    :type uid: int
+    :param replace: should an existent callback with same uid be replaced?
+    :type replace: bool
+    :param reqcbk: a callback to be called when a response from server is
         received
-    @type reqcbk: function
+    :type reqcbk: function
         callback(leap.common.events.events_pb2.EventResponse)
-    @param timeout: the timeout for synch calls
-    @type timeout: int
+    :param timeout: the timeout for synch calls
+    :type timeout: int
 
-    @return: the response from server for synch calls or nothing for asynch
+    :return: the response from server for synch calls or nothing for asynch
         calls
-    @rtype: leap.common.events.events_pb2.EventsResponse or None
+    :rtype: leap.common.events.events_pb2.EventsResponse or None
     """
     return component.register(signal, callback, uid, replace, reqcbk, timeout)
 
@@ -78,23 +78,23 @@ def signal(signal, content="", mac_method="", mac="", reqcbk=None,
     returned for a synch request but nothing will be returned for an asynch
     request.
 
-    @param signal: the signal that causes the callback to be launched
-    @type signal: int (see the `events.proto` file)
-    @param content: the contents of the event signal
-    @type content: str
-    @param mac_method: the method used to auth mac
-    @type mac_method: str
-    @param mac: the content of the auth mac
-    @type mac: str
-    @param reqcbk: a callback to be called when a response from server is
+    :param signal: the signal that causes the callback to be launched
+    :type signal: int (see the `events.proto` file)
+    :param content: the contents of the event signal
+    :type content: str
+    :param mac_method: the method used to auth mac
+    :type mac_method: str
+    :param mac: the content of the auth mac
+    :type mac: str
+    :param reqcbk: a callback to be called when a response from server is
         received
-    @type reqcbk: function
+    :type reqcbk: function
         callback(leap.common.events.events_pb2.EventResponse)
-    @param timeout: the timeout for synch calls
-    @type timeout: int
+    :param timeout: the timeout for synch calls
+    :type timeout: int
 
-    @return: the response from server for synch calls or nothing for asynch
+    :return: the response from server for synch calls or nothing for asynch
         calls
-    @rtype: leap.common.events.events_pb2.EventsResponse or None
+    :rtype: leap.common.events.events_pb2.EventsResponse or None
     """
     return component.signal(signal, content, mac_method, mac, reqcbk, timeout)

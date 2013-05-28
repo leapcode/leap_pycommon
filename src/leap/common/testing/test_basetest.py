@@ -38,8 +38,8 @@ class _TestCaseRunner(object):
         """
         Runs a given TestCase
 
-        @param testcase: the testcase
-        @type testcase: unittest.TestCase
+        :param testcase: the testcase
+        :type testcase: unittest.TestCase
         """
         if not testcase:
             return None

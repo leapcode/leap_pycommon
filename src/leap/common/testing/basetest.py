@@ -94,8 +94,8 @@ class BaseLeapTest(unittest.TestCase):
         Raises NotImplementedError for this platform
         if do_raise is True
 
-        @param do_raise: flag to actually raise exception
-        @type do_raise: bool
+        :param do_raise: flag to actually raise exception
+        :type do_raise: bool
         """
         if do_raise:
             raise NotImplementedError(
@@ -109,8 +109,8 @@ class BaseLeapTest(unittest.TestCase):
         prepending the temporal dir associated with this
         TestCase
 
-        @param filename: the filename
-        @type filename: str
+        :param filename: the filename
+        :type filename: str
         """
         return os.path.join(self.tempdir, filename)
 
@@ -119,8 +119,8 @@ class BaseLeapTest(unittest.TestCase):
         Touches a filepath, creating folders along
         the way if needed.
 
-        @param filepath: path to be touched
-        @type filepath: str
+        :param filepath: path to be touched
+        :type filepath: str
         """
         folder, filename = os.path.split(filepath)
         if not os.path.isdir(folder):
@@ -134,7 +134,7 @@ class BaseLeapTest(unittest.TestCase):
         """
         Chmods 600 a file
 
-        @param filepath: filepath to be chmodded
-        @type filepath: str
+        :param filepath: filepath to be chmodded
+        :type filepath: str
         """
         check_and_fix_urw_only(filepath)

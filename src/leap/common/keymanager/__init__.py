@@ -73,22 +73,22 @@ class KeyManager(object):
         Initialize a Key Manager for user's C{address} with provider's
         nickserver reachable in C{url}.
 
-        @param address: The address of the user of this Key Manager.
-        @type address: str
-        @param url: The URL of the nickserver.
-        @type url: str
-        @param soledad: A Soledad instance for local storage of keys.
-        @type soledad: leap.soledad.Soledad
-        @param session_id: The session ID for interacting with the webapp API.
-        @type session_id: str
-        @param ca_cert_path: The path to the CA certificate.
-        @type ca_cert_path: str
-        @param api_uri: The URI of the webapp API.
-        @type api_uri: str
-        @param api_version: The version of the webapp API.
-        @type api_version: str
-        @param uid: The users' UID.
-        @type uid: str
+        :param address: The address of the user of this Key Manager.
+        :type address: str
+        :param url: The URL of the nickserver.
+        :type url: str
+        :param soledad: A Soledad instance for local storage of keys.
+        :type soledad: leap.soledad.Soledad
+        :param session_id: The session ID for interacting with the webapp API.
+        :type session_id: str
+        :param ca_cert_path: The path to the CA certificate.
+        :type ca_cert_path: str
+        :param api_uri: The URI of the webapp API.
+        :type api_uri: str
+        :param api_version: The version of the webapp API.
+        :type api_version: str
+        :param uid: The users' UID.
+        :type uid: str
         """
         self._address = address
         self._nickserver_uri = nickserver_uri
@@ -145,13 +145,13 @@ class KeyManager(object):
         """
         Send a GET request to C{uri} containing C{data}.
 
-        @param uri: The URI of the request.
-        @type uri: str
-        @param data: The body of the request.
-        @type data: dict, str or file
+        :param uri: The URI of the request.
+        :type uri: str
+        :param data: The body of the request.
+        :type data: dict, str or file
 
-        @return: The response to the request.
-        @rtype: requests.Response
+        :return: The response to the request.
+        :rtype: requests.Response
         """
         leap_assert(
             self._ca_cert_path is not None,
@@ -172,13 +172,13 @@ class KeyManager(object):
         verify the server certificate and the configured session id for
         authentication.
 
-        @param uri: The URI of the request.
-        @type uri: str
-        @param data: The body of the request.
-        @type data: dict, str or file
+        :param uri: The URI of the request.
+        :type uri: str
+        :param data: The body of the request.
+        :type data: dict, str or file
 
-        @return: The response to the request.
-        @rtype: requests.Response
+        :return: The response to the request.
+        :rtype: requests.Response
         """
         leap_assert(
             self._ca_cert_path is not None,
@@ -198,8 +198,8 @@ class KeyManager(object):
         Fetch keys bound to C{address} from nickserver and insert them in
         local database.
 
-        @param address: The address bound to the keys.
-        @type address: str
+        :param address: The address bound to the keys.
+        :type address: str
 
         @raise KeyNotFound: If the key was not found on nickserver.
         """
@@ -228,8 +228,8 @@ class KeyManager(object):
         will be saved in the server in a way it is publicly retrievable
         through the hash string.
 
-        @param ktype: The type of the key.
-        @type ktype: KeyType
+        :param ktype: The type of the key.
+        :type ktype: KeyType
 
         @raise KeyNotFound: If the key was not found in local database.
         """
@@ -255,15 +255,15 @@ class KeyManager(object):
         First, search for the key in local storage. If it is not available,
         then try to fetch from nickserver.
 
-        @param address: The address bound to the key.
-        @type address: str
-        @param ktype: The type of the key.
-        @type ktype: KeyType
-        @param private: Look for a private key instead of a public one?
-        @type private: bool
+        :param address: The address bound to the key.
+        :type address: str
+        :param ktype: The type of the key.
+        :type ktype: KeyType
+        :param private: Look for a private key instead of a public one?
+        :type private: bool
 
-        @return: A key of type C{ktype} bound to C{address}.
-        @rtype: EncryptionKey
+        :return: A key of type C{ktype} bound to C{address}.
+        :rtype: EncryptionKey
         @raise KeyNotFound: If the key was not found both locally and in
             keyserver.
         """
@@ -285,8 +285,8 @@ class KeyManager(object):
         """
         Return all keys stored in local database.
 
-        @return: A list with all keys in local db.
-        @rtype: list
+        :return: A list with all keys in local db.
+        :rtype: list
         """
         return map(
             lambda doc: build_key_from_dict(
@@ -315,11 +315,11 @@ class KeyManager(object):
         """
         Generate a key of type C{ktype} bound to the user's address.
 
-        @param ktype: The type of the key.
-        @type ktype: KeyType
+        :param ktype: The type of the key.
+        :type ktype: KeyType
 
-        @return: The generated key.
-        @rtype: EncryptionKey
+        :return: The generated key.
+        :rtype: EncryptionKey
         """
         return self._wrapper_map[ktype].gen_key(self._address)
 

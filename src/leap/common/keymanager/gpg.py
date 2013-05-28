@@ -43,8 +43,8 @@ class ListPackets():
         """
         Initialize the packet listing handling class.
 
-        @param gpg: GPG object instance.
-        @type gpg: gnupg.GPG
+        :param gpg: GPG object instance.
+        :type gpg: gnupg.GPG
         """
         self.gpg = gpg
         self.nodata = None
@@ -57,10 +57,10 @@ class ListPackets():
         """
         Handle one line of the --list-packets status message.
 
-        @param key: The status message key.
-        @type key: str
-        @param value: The status message value.
-        @type value: str
+        :param key: The status message key.
+        :type key: str
+        :param value: The status message value.
+        :type value: str
         """
         # TODO: write tests for handle_status
         if key == 'NODATA':
@@ -91,21 +91,21 @@ class GPGWrapper(gnupg.GPG):
         """
         Initialize a GnuPG process wrapper.
 
-        @param gpgbinary: Name for GnuPG binary executable.
-        @type gpgbinary: C{str}
-        @param gpghome: Full pathname to directory containing the public and
+        :param gpgbinary: Name for GnuPG binary executable.
+        :type gpgbinary: C{str}
+        :param gpghome: Full pathname to directory containing the public and
             private keyrings.
-        @type gpghome: C{str}
-        @param keyring: Name of alternative keyring file to use. If specified,
+        :type gpghome: C{str}
+        :param keyring: Name of alternative keyring file to use. If specified,
             the default keyring is not used.
-        @param verbose: Should some verbose info be output?
-        @type verbose: bool
-        @param use_agent: Should pass `--use-agent` to GPG binary?
-        @type use_agent: bool
-        @param keyring: Path for the keyring to use.
-        @type keyring: str
+        :param verbose: Should some verbose info be output?
+        :type verbose: bool
+        :param use_agent: Should pass `--use-agent` to GPG binary?
+        :type use_agent: bool
+        :param keyring: Path for the keyring to use.
+        :type keyring: str
         @options: A list of additional options to pass to the GPG binary.
-        @type options: list
+        :type options: list
 
         @raise: RuntimeError with explanation message if there is a problem
             invoking gpg.
@@ -119,13 +119,13 @@ class GPGWrapper(gnupg.GPG):
         """
         Find user's key based on their email.
 
-        @param email: Email address of key being searched for.
-        @type email: str
-        @param secret: Should we search for a secret key?
-        @type secret: bool
+        :param email: Email address of key being searched for.
+        :type email: str
+        :param secret: Should we search for a secret key?
+        :type secret: bool
 
-        @return: The fingerprint of the found key.
-        @rtype: str
+        :return: The fingerprint of the found key.
+        :rtype: str
         """
         for key in self.list_keys(secret=secret):
             for uid in key['uids']:
@@ -137,13 +137,13 @@ class GPGWrapper(gnupg.GPG):
         """
         Find user's key based on a subkey fingerprint.
 
-        @param email: Subkey fingerprint of the key being searched for.
-        @type email: str
-        @param secret: Should we search for a secret key?
-        @type secret: bool
+        :param email: Subkey fingerprint of the key being searched for.
+        :type email: str
+        :param secret: Should we search for a secret key?
+        :type secret: bool
 
-        @return: The fingerprint of the found key.
-        @rtype: str
+        :return: The fingerprint of the found key.
+        :rtype: str
         """
         for key in self.list_keys(secret=secret):
             for sub in key['subkeys']:
@@ -156,13 +156,13 @@ class GPGWrapper(gnupg.GPG):
         """
         Find user's key based on the key ID.
 
-        @param email: The key ID of the key being searched for.
-        @type email: str
-        @param secret: Should we search for a secret key?
-        @type secret: bool
+        :param email: The key ID of the key being searched for.
+        :type email: str
+        :param secret: Should we search for a secret key?
+        :type secret: bool
 
-        @return: The fingerprint of the found key.
-        @rtype: str
+        :return: The fingerprint of the found key.
+        :rtype: str
         """
         for key in self.list_keys(secret=secret):
             if keyid == key['keyid']:
@@ -174,13 +174,13 @@ class GPGWrapper(gnupg.GPG):
         """
         Find user's key based on the key fingerprint.
 
-        @param email: The fingerprint of the key being searched for.
-        @type email: str
-        @param secret: Should we search for a secret key?
-        @type secret: bool
+        :param email: The fingerprint of the key being searched for.
+        :type email: str
+        :param secret: Should we search for a secret key?
+        :type secret: bool
 
-        @return: The fingerprint of the found key.
-        @rtype: str
+        :return: The fingerprint of the found key.
+        :rtype: str
         """
         for key in self.list_keys(secret=secret):
             if fingerprint == key['fingerprint']:
@@ -193,23 +193,23 @@ class GPGWrapper(gnupg.GPG):
         """
         Encrypt data using GPG.
 
-        @param data: The data to be encrypted.
-        @type data: str
-        @param recipient: The address of the public key to be used.
-        @type recipient: str
-        @param sign: Should the encrypted content be signed?
-        @type sign: bool
-        @param always_trust: Skip key validation and assume that used keys
+        :param data: The data to be encrypted.
+        :type data: str
+        :param recipient: The address of the public key to be used.
+        :type recipient: str
+        :param sign: Should the encrypted content be signed?
+        :type sign: bool
+        :param always_trust: Skip key validation and assume that used keys
             are always fully trusted?
-        @type always_trust: bool
-        @param passphrase: The passphrase to be used if symmetric encryption
+        :type always_trust: bool
+        :param passphrase: The passphrase to be used if symmetric encryption
             is desired.
-        @type passphrase: str
-        @param symmetric: Should we encrypt to a password?
-        @type symmetric: bool
+        :type passphrase: str
+        :param symmetric: Should we encrypt to a password?
+        :type symmetric: bool
 
-        @return: An object with encrypted result in the `data` field.
-        @rtype: gnupg.Crypt
+        :return: An object with encrypted result in the `data` field.
+        :rtype: gnupg.Crypt
         """
         # TODO: devise a way so we don't need to "always trust".
         return gnupg.GPG.encrypt(self, data, recipient, sign=sign,
@@ -222,17 +222,17 @@ class GPGWrapper(gnupg.GPG):
         """
         Decrypt data using GPG.
 
-        @param data: The data to be decrypted.
-        @type data: str
-        @param always_trust: Skip key validation and assume that used keys
+        :param data: The data to be decrypted.
+        :type data: str
+        :param always_trust: Skip key validation and assume that used keys
             are always fully trusted?
-        @type always_trust: bool
-        @param passphrase: The passphrase to be used if symmetric encryption
+        :type always_trust: bool
+        :param passphrase: The passphrase to be used if symmetric encryption
             is desired.
-        @type passphrase: str
+        :type passphrase: str
 
-        @return: An object with decrypted result in the `data` field.
-        @rtype: gnupg.Crypt
+        :return: An object with decrypted result in the `data` field.
+        :rtype: gnupg.Crypt
         """
         # TODO: devise a way so we don't need to "always trust".
         return gnupg.GPG.decrypt(self, data, always_trust=always_trust,
@@ -242,13 +242,13 @@ class GPGWrapper(gnupg.GPG):
         """
         Send keys to a keyserver
 
-        @param keyserver: The keyserver to send the keys to.
-        @type keyserver: str
-        @param keyids: The key ids to send.
-        @type keyids: list
+        :param keyserver: The keyserver to send the keys to.
+        :type keyserver: str
+        :param keyids: The key ids to send.
+        :type keyids: list
 
-        @return: A list of keys sent to server.
-        @rtype: gnupg.ListKeys
+        :return: A list of keys sent to server.
+        :rtype: gnupg.ListKeys
         """
         # TODO: write tests for this.
         # TODO: write a SendKeys class to handle status for this.
@@ -269,29 +269,29 @@ class GPGWrapper(gnupg.GPG):
         """
         Encrypt the message read from the file-like object 'file'.
 
-        @param file: The file to be encrypted.
-        @type data: file
-        @param recipient: The address of the public key to be used.
-        @type recipient: str
-        @param sign: Should the encrypted content be signed?
-        @type sign: bool
-        @param always_trust: Skip key validation and assume that used keys
+        :param file: The file to be encrypted.
+        :type data: file
+        :param recipient: The address of the public key to be used.
+        :type recipient: str
+        :param sign: Should the encrypted content be signed?
+        :type sign: bool
+        :param always_trust: Skip key validation and assume that used keys
             are always fully trusted?
-        @type always_trust: bool
-        @param passphrase: The passphrase to be used if symmetric encryption
+        :type always_trust: bool
+        :param passphrase: The passphrase to be used if symmetric encryption
             is desired.
-        @type passphrase: str
-        @param armor: Create ASCII armored output?
-        @type armor: bool
-        @param output: Path of file to write results in.
-        @type output: str
-        @param symmetric: Should we encrypt to a password?
-        @type symmetric: bool
-        @param cipher_algo: Algorithm to use.
-        @type cipher_algo: str
+        :type passphrase: str
+        :param armor: Create ASCII armored output?
+        :type armor: bool
+        :param output: Path of file to write results in.
+        :type output: str
+        :param symmetric: Should we encrypt to a password?
+        :type symmetric: bool
+        :param cipher_algo: Algorithm to use.
+        :type cipher_algo: str
 
-        @return: An object with encrypted result in the `data` field.
-        @rtype: gnupg.Crypt
+        :return: An object with encrypted result in the `data` field.
+        :rtype: gnupg.Crypt
         """
         args = ['--encrypt']
         if symmetric:
@@ -323,11 +323,11 @@ class GPGWrapper(gnupg.GPG):
         """
         List the sequence of packets.
 
-        @param data: The data to extract packets from.
-        @type data: str
+        :param data: The data to extract packets from.
+        :type data: str
 
-        @return: An object with packet info.
-        @rtype ListPackets
+        :return: An object with packet info.
+        :rtype ListPackets
         """
         args = ["--list-packets"]
         result = self.result_map['list-packets'](self)
@@ -342,11 +342,11 @@ class GPGWrapper(gnupg.GPG):
         """
         Return the key to which data is encrypted to.
 
-        @param data: The data to be examined.
-        @type data: str
+        :param data: The data to be examined.
+        :type data: str
 
-        @return: The fingerprint of the key to which data is encrypted to.
-        @rtype: str
+        :return: The fingerprint of the key to which data is encrypted to.
+        :rtype: str
         """
         # TODO: make this support multiple keys.
         result = self.list_packets(data)
@@ -362,11 +362,11 @@ class GPGWrapper(gnupg.GPG):
         """
         Say whether some chunk of data is encrypted to a symmetric key.
 
-        @param data: The data to be examined.
-        @type data: str
+        :param data: The data to be examined.
+        :type data: str
 
-        @return: Whether data is encrypted to a symmetric key.
-        @rtype: bool
+        :return: Whether data is encrypted to a symmetric key.
+        :rtype: bool
         """
         result = self.list_packets(data)
         return bool(result.need_passphrase_sym)
@@ -375,11 +375,11 @@ class GPGWrapper(gnupg.GPG):
         """
         Say whether some chunk of data is encrypted to a private key.
 
-        @param data: The data to be examined.
-        @type data: str
+        :param data: The data to be examined.
+        :type data: str
 
-        @return: Whether data is encrypted to a private key.
-        @rtype: bool
+        :return: Whether data is encrypted to a private key.
+        :rtype: bool
         """
         result = self.list_packets(data)
         return bool(result.key)
@@ -388,10 +388,10 @@ class GPGWrapper(gnupg.GPG):
         """
         Say whether some chunk of data is encrypted to a key.
 
-        @param data: The data to be examined.
-        @type data: str
+        :param data: The data to be examined.
+        :type data: str
 
-        @return: Whether data is encrypted to a key.
-        @rtype: bool
+        :return: Whether data is encrypted to a key.
+        :rtype: bool
         """
         return self.is_encrypted_asym(data) or self.is_encrypted_sym(data)
