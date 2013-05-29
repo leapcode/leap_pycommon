@@ -21,6 +21,10 @@ Tests for the crypto submodule.
 """
 
 
+import os
+import binascii
+
+
 from leap.common.testing.basetest import BaseLeapTest
 from leap.common import crypto
 from Crypto import Random
@@ -56,9 +60,13 @@ class CryptoTestCase(BaseLeapTest):
         self.assertTrue(cyphertext is not None)
         self.assertTrue(cyphertext != '')
         self.assertTrue(cyphertext != 'data')
-        iv += 1
+        # get a different iv by changing the first byte
+        rawiv = binascii.a2b_base64(iv)
+        wrongiv = rawiv
+        while wrongiv == rawiv:
+            wrongiv = os.urandom(1) + rawiv[1:]
         plaintext = crypto.decrypt_sym(
-            cyphertext, key, iv=iv,
+            cyphertext, key, iv=binascii.b2a_base64(wrongiv),
             method=crypto.EncryptionMethods.AES_256_CTR)
         self.assertNotEqual('data', plaintext)
 
