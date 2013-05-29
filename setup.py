@@ -32,31 +32,42 @@ requirements = [
     "PyCrypto",
 ]
 
-
-dependency_links = [
-    "https://protobuf-socket-rpc.googlecode.com/files/protobuf.socketrpc-1.3.2.tar.gz#egg=protobuf.socketrpc"
-]
+#dependency_links = [
+    #"https://protobuf-socket-rpc.googlecode.com/files/protobuf.socketrpc-1.3.2.tar.gz#egg=protobuf.socketrpc"
+#]
 
 tests_requirements = [
     'mock',
 ]
 
-
-# XXX add classifiers, docs
+trove_classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    ("License :: OSI Approved :: GNU General "
+     "Public License v3 or later (GPLv3+)"),
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 2.6",
+    "Programming Language :: Python :: 2.7",
+    "Topic :: Communications",
+    "Topic :: Security",
+    "Topic :: Utilities"
+]
 
 setup(
     name='leap.common',
     # If you change version, do it also in
     # src/leap/common/__init__.py
-    version='0.2.4',
+    version='0.2.5',
     url='https://leap.se/',
     license='GPLv3+',
     author='The LEAP Encryption Access Project',
     author_email='info@leap.se',
-    description='Common files used by the LEAP Client project.',
+    description='Common files used by the LEAP project.',
     long_description=(
         "Common files used by the LEAP Client project."
     ),
+    classifiers=trove_classifiers,
     namespace_packages=["leap"],
     package_dir={'': 'src'},
     # For now, we do not exclude tests because of the circular dependency
@@ -65,6 +76,7 @@ setup(
     packages=find_packages('src'),
     test_suite='leap.common.tests',
     install_requires=requirements,
-    dependency_links=dependency_links,
+    #dependency_links=dependency_links,
     tests_require=tests_requirements,
+    include_package_data=True
 )
