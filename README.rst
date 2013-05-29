@@ -1,5 +1,9 @@
 leap.common
 ===========
+
+.. image:: https://pypip.in/v/leap.common/badge.png
+        :target: https://crate.io/packages/leap.common
+
 A collection of shared utils used by the several python LEAP subprojects.
 
 * leap.common.cert
