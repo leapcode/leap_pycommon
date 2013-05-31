@@ -1,1 +1,0 @@
-../../../../../../share/pyshared/leap/common/config/__init__.py
