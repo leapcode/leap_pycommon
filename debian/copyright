@@ -4,7 +4,7 @@ Upstream-Contact: kali@leap.se
 Source: <git://code.leap.se/leap_pycommon/>
 
 Files: *
-    Copyright (C) 2013 LEAP
+Copyright: Copyright (C) 2013 LEAP
 License: GPL-3+
 
 Files: debian/*
