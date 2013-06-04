@@ -3,5 +3,3 @@
 %:
 	dh $@ --with python2 --buildsystem=python_distutils
 
-# FIXME: need to insert an extra build step to generate from the inputs the proto (and build dep on protobuf-c-compiler)
-
