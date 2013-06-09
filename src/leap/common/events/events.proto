@@ -49,6 +49,13 @@ message RegisterRequest {
   required bytes mac = 4;
 }
 
+message UnregisterRequest {
+  required Event event = 1;
+  required int32 port = 2;
+  required string mac_method = 3;
+  required bytes mac = 4;
+}
+
 message EventResponse {
 
   enum Status {
@@ -63,6 +70,7 @@ message EventResponse {
 
 service EventsServerService {
   rpc register(RegisterRequest) returns (EventResponse);
+  rpc unregister(UnregisterRequest) returns (EventResponse);
   rpc signal(SignalRequest) returns (EventResponse);
 }
 

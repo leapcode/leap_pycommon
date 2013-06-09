@@ -100,6 +100,33 @@ class EventsServerService(proto.EventsServerService):
         response.status = proto.EventResponse.OK
         done.run(response)
 
+    def unregister(self, controller, request, done):
+        """
+        Unregister a component port so it will not be signaled when specific
+        events come in.
+
+        :param controller: used to mediate a single method call
+        :type controller: protobuf.socketrpc.controller.SocketRpcController
+        :param request: the request received from the component
+        :type request: leap.common.events.events_pb2.RegisterRequest
+        :param done: callback to be called when done
+        :type done: protobuf.socketrpc.server.Callback
+        """
+        logger.info(
+            "Received unregistration request: %s..." % str(request)[:40])
+        # remove component port from signal list
+        response = proto.EventResponse()
+        if request.event in registered_components:
+            try:
+                registered_components[request.event].remove(request.port)
+                response.status = proto.EventResponse.OK
+            except KeyError:
+                response.status = proto.EventsResponse.ERROR
+                response.result = 'Port %d not registered.' % request.port
+        # send response back to component
+        logger.debug('sending response back')
+        done.run(response)
+
     def signal(self, controller, request, done):
         """
         Perform an RPC call to signal all components registered to receive a
