@@ -24,7 +24,7 @@ import socket
 
 
 from leap.common.events import (
-    events_pb2,
+    events_pb2 as proto,
     server,
     component,
     daemon,
@@ -61,10 +61,35 @@ def register(signal, callback, uid=None, replace=False, reqcbk=None,
     :type timeout: int
 
     :return: the response from server for synch calls or nothing for asynch
-        calls
+        calls.
     :rtype: leap.common.events.events_pb2.EventsResponse or None
     """
     return component.register(signal, callback, uid, replace, reqcbk, timeout)
+
+
+def unregister(signal, uid=None, reqcbk=None, timeout=1000):
+    """
+    Unregister a callback.
+
+    If C{uid} is specified, unregisters only the callback identified by that
+    unique id. Otherwise, unregisters all callbacks registered for C{signal}.
+
+    :param signal: the signal that causes the callback to be launched
+    :type signal: int (see the `events.proto` file)
+    :param uid: a unique id for the callback
+    :type uid: int
+    :param reqcbk: a callback to be called when a response from server is
+        received
+    :type reqcbk: function
+        callback(leap.common.events.events_pb2.EventResponse)
+    :param timeout: the timeout for synch calls
+    :type timeout: int
+
+    :return: the response from server for synch calls or nothing for asynch
+        calls.
+    :rtype: leap.common.events.events_pb2.EventsResponse or None
+    """
+    return component.unregister(signal, uid, reqcbk, timeout)
 
 
 def signal(signal, content="", mac_method="", mac="", reqcbk=None,
@@ -94,7 +119,7 @@ def signal(signal, content="", mac_method="", mac="", reqcbk=None,
     :type timeout: int
 
     :return: the response from server for synch calls or nothing for asynch
-        calls
+        calls.
     :rtype: leap.common.events.events_pb2.EventsResponse or None
     """
     return component.signal(signal, content, mac_method, mac, reqcbk, timeout)

@@ -198,3 +198,36 @@ class EventsTestCase(unittest.TestCase):
         response = events.signal(sig)
         self.assertTrue(response.status == response.OK,
                         'Received wrong response status when signaling.')
+
+    def test_component_unregister_all(self):
+        """
+        Test that the component can unregister all events for one signal.
+        """
+        sig = CLIENT_UID
+        complist = server.registered_components
+        events.register(sig, lambda x: True)
+        events.register(sig, lambda x: True)
+        time.sleep(0.1)
+        events.unregister(sig)
+        time.sleep(0.1)
+        port = component.EventsComponentDaemon.get_instance().get_port()
+        self.assertFalse(bool(complist[sig]))
+        self.assertTrue(port not in complist[sig])
+
+    def test_component_unregister_by_uid(self):
+        """
+        Test that the component can unregister an event by uid.
+        """
+        sig = CLIENT_UID
+        complist = server.registered_components
+        events.register(sig, lambda x: True, uid='cbkuid')
+        events.register(sig, lambda x: True, uid='cbkuid2')
+        time.sleep(0.1)
+        events.unregister(sig, uid='cbkuid')
+        time.sleep(0.1)
+        port = component.EventsComponentDaemon.get_instance().get_port()
+        self.assertTrue(sig in complist)
+        self.assertTrue(len(complist[sig]) == 1)
+        self.assertTrue(
+            component.registered_callbacks[sig].pop()[0] == 'cbkuid2')
+        self.assertTrue(port in complist[sig])
