@@ -155,26 +155,39 @@ class LocalizedKey(object):
     def __init__(self, func, **kwargs):
         self._func = func
 
-    def __call__(self, instance, lang="en"):
+    def __call__(self, instance, lang=None):
         """
         Tries to return the string for the specified language, otherwise
-        informs the problem and returns an empty string.
+        returns the default language string.
 
         :param lang: language code
         :type lang: str
 
         :return: localized value from the possible values returned by
                  self._func
+                 It returns None in case that the provider does not provides
+                 a matching pair of default_language and string for
+                 that language.
+                 e.g.:
+                     'default_language': 'es',
+                     'description': {'en': 'test description'}
+                Note that the json schema can't check that.
         """
         descriptions = self._func(instance)
-        description_lang = ""
-        config_lang = "en"
+        config_lang = instance.get_default_language()
+        if lang is None:
+            lang = config_lang
+
         for key in descriptions.keys():
             if lang.startswith(key):
                 config_lang = key
                 break
 
-        description_lang = descriptions[config_lang]
+        description_lang = descriptions.get(config_lang)
+        if description_lang is None:
+            logger.error("There is a misconfiguration in the "
+                         "provider's language strings.")
+
         return description_lang
 
     def __get__(self, instance, instancetype):
