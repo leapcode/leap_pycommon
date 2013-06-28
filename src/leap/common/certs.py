@@ -35,10 +35,10 @@ def get_cert_from_string(string):
     """
     Returns the x509 from the contents of this string
 
-    @param string: certificate contents as downloaded
-    @type string: str
+    :param string: certificate contents as downloaded
+    :type string: str
 
-    @return: x509 or None
+    :return: x509 or None
     """
     leap_assert(string, "We need something to load")
 
@@ -55,10 +55,10 @@ def get_privatekey_from_string(string):
     """
     Returns the private key from the contents of this string
 
-    @param string: private key contents as downloaded
-    @type string: str
+    :param string: private key contents as downloaded
+    :type string: str
 
-    @return: private key or None
+    :return: private key or None
     """
     leap_assert(string, "We need something to load")
 
@@ -75,12 +75,12 @@ def get_digest(cert_data, method):
     """
     Returns the digest for the cert_data using the method specified
 
-    @param cert_data: certificate data in string form
-    @type cert_data: str
-    @param method: method to be used for digest
-    @type method: str
+    :param cert_data: certificate data in string form
+    :type cert_data: str
+    :param method: method to be used for digest
+    :type method: str
 
-    @rtype: str
+    :rtype: str
     """
     x509 = get_cert_from_string(cert_data)
     digest = x509.digest(method).replace(":", "").lower()
@@ -93,10 +93,10 @@ def can_load_cert_and_pkey(string):
     Loads certificate and private key from a buffer, returns True if
     everything went well, False otherwise
 
-    @param string: buffer containing the cert and private key
-    @type string: str or any kind of buffer
+    :param string: buffer containing the cert and private key
+    :type string: str or any kind of buffer
 
-    @rtype: bool
+    :rtype: bool
     """
     can_load = True
 
@@ -118,10 +118,10 @@ def is_valid_pemfile(cert):
     """
     Checks that the passed string is a valid pem certificate
 
-    @param cert: String containing pem content
-    @type cert: str
+    :param cert: String containing pem content
+    :type cert: str
 
-    @rtype: bool
+    :rtype: bool
     """
     leap_assert(cert, "We need a cert to load")
 
@@ -132,10 +132,10 @@ def get_cert_time_boundaries(certfile):
     """
     Returns the time boundaries for the certificate saved in certfile
 
-    @param certfile: path to certificate
-    @type certfile: str
+    :param certfile: path to certificate
+    :type certfile: str
 
-    @rtype: tuple (from, to)
+    :rtype: tuple (from, to)
     """
     cert = get_cert_from_string(certfile)
     leap_assert(cert, 'There was a problem loading the certificate')
@@ -151,11 +151,11 @@ def should_redownload(certfile, now=time.gmtime):
     """
     Returns True if any of the checks don't pass, False otherwise
 
-    @param certfile: path to certificate
-    @type certfile: str
-    @param now: current date function, ONLY USED FOR TESTING
+    :param certfile: path to certificate
+    :type certfile: str
+    :param now: current date function, ONLY USED FOR TESTING
 
-    @rtype: bool
+    :rtype: bool
     """
     exists = os.path.isfile(certfile)
 

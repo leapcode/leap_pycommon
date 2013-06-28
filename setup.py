@@ -19,25 +19,62 @@ setup file for leap.common
 """
 from setuptools import setup, find_packages
 
+# XXX parse pkg/requirements.pip
 requirements = [
+    "jsonschema",
+    "pyxdg",
+    'protobuf',
+    'protobuf.socketrpc',
+    "PyOpenSSL",
+    "python-dateutil",
+    "PyCrypto",
 ]
 
-# XXX add classifiers, docs
+#dependency_links = [
+    #"https://protobuf-socket-rpc.googlecode.com/files/protobuf.socketrpc-1.3.2.tar.gz#egg=protobuf.socketrpc"
+#]
+
+tests_requirements = [
+    'mock',
+]
+
+trove_classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    ("License :: OSI Approved :: GNU General "
+     "Public License v3 or later (GPLv3+)"),
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 2.6",
+    "Programming Language :: Python :: 2.7",
+    "Topic :: Communications",
+    "Topic :: Security",
+    "Topic :: Utilities"
+]
 
 setup(
     name='leap.common',
-    version='0.2.0-dev',
+    # If you change version, do it also in
+    # src/leap/common/__init__.py
+    version='0.2.5',
     url='https://leap.se/',
     license='GPLv3+',
     author='The LEAP Encryption Access Project',
     author_email='info@leap.se',
-    description='Common files used by the LEAP Client project.',
+    description='Common files used by the LEAP project.',
     long_description=(
         "Common files used by the LEAP Client project."
     ),
+    classifiers=trove_classifiers,
     namespace_packages=["leap"],
     package_dir={'': 'src'},
+    # For now, we do not exclude tests because of the circular dependency
+    # between leap.common and leap.soledad.
+    #packages=find_packages('src', exclude=['leap.common.tests']),
     packages=find_packages('src'),
-    #test_suite='leap.common.tests',
-    #install_requires=requirements,
+    test_suite='leap.common.tests',
+    install_requires=requirements,
+    #dependency_links=dependency_links,
+    tests_require=tests_requirements,
+    include_package_data=True
 )

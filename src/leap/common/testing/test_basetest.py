@@ -25,7 +25,7 @@ except ImportError:
 import os
 import StringIO
 
-from leap.testing.basetest import BaseLeapTest
+from leap.common.testing.basetest import BaseLeapTest
 
 _tempdir = None  # global for tempdir checking
 
@@ -38,8 +38,8 @@ class _TestCaseRunner(object):
         """
         Runs a given TestCase
 
-        @param testcase: the testcase
-        @type testcase: unittest.TestCase
+        :param testcase: the testcase
+        :type testcase: unittest.TestCase
         """
         if not testcase:
             return None

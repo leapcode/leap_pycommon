@@ -31,10 +31,10 @@ def leap_assert(condition, message=""):
     Asserts the condition and displays the message if that's not
     met. It also logs the error and its backtrace.
 
-    @param condition: condition to check
-    @type condition: bool
-    @param message: message to display if the condition isn't met
-    @type message: str
+    :param condition: condition to check
+    :type condition: bool
+    :param message: message to display if the condition isn't met
+    :type message: str
     """
     if not condition:
         logger.error("Bug: %s" % (message,))
@@ -51,10 +51,10 @@ def leap_assert_type(var, expectedType):
     """
     Helper assert check for a variable's expected type
 
-    @param var: variable to check
-    @type var: any
-    @param expectedType: type to check agains
-    @type expectedType: type
+    :param var: variable to check
+    :type var: any
+    :param expectedType: type to check agains
+    :type expectedType: type
     """
     leap_assert(isinstance(var, expectedType),
                 "Expected type %r instead of %r" %

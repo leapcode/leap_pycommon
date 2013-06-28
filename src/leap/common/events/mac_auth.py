@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Makefile
+# mac_auth.py
 # Copyright (C) 2013 LEAP
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,17 +15,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-# This file is used to generate protobuf python files that are used for IPC:
-#
-#   https://developers.google.com/protocol-buffers/docs/pythontutorial
+"""
+Authentication system for events.
 
-PROTOC = protoc
+This is not implemented yet.
+"""
 
-all: events_pb2.py
 
-%_pb2.py: %.proto
-	$(PROTOC) --python_out=./ $<
-	autopep8 --in-place --aggressive $@
+class MacMethod(object):
+    """
+    Representation of possible MAC authentication methods.
+    """
 
-clean:
-	rm -f *_pb2.py
+    MAC_NONE = 'none'
+    MAC_HMAC = 'hmac'
