@@ -1,2 +1,0 @@
-  o Bugfix: use the provider's default language as default string. Also take care (and note) a possible case with a problematic provider
-misconfiguration. Closes #3029.

@@ -1,0 +1,21 @@
+0.2.2 Jun 28:
+  o Bugfix: use the provider's default language as default
+    string. Also take care (and note) a possible case with a
+    problematic provider misconfiguration. Closes #3029.
+  o Add data files to setup and manifest (certificates for tests)
+  o Allow absolute paths in baseconfig.load
+  o Fix deprecation warnings
+  o Fix attempt to fetch private keys from server.
+  o Fix missing imports
+  o Add possibility of unregistering callbacks for a signal.
+  o Add a mechanism for events signaling between components.
+  o Prioritize the path_extension in the which method so it finds our
+    bundled app before the system one, if any.
+  o Move the Key Manager to leap client repository.
+  o Move symmetric encryption code to leap.soledad.
+  o Refactor opengpg utility functions implementation so it uses a
+    context manager.
+  o Add OpenPGP sign/verify
+  o Add RAISE_WINDOW event
+  o Add AES-256 (CTR mode) encrypting/decrypting functions using
+    PyCrypto.
