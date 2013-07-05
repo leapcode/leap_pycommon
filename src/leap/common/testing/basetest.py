@@ -68,7 +68,8 @@ class BaseLeapTest(unittest.TestCase):
         # safety check! please do not wipe my home...
         # XXX needs to adapt to non-linuces
         leap_assert(
-            cls.tempdir.startswith('/tmp/leap_tests-'),
+            cls.tempdir.startswith('/tmp/leap_tests-') or
+            cls.tempdir.startswith('/var/folder'),
             "beware! tried to remove a dir which does not "
             "live in temporal folder!")
         shutil.rmtree(cls.tempdir)
