@@ -1,0 +1,2 @@
+  o Improve leap_assert so that it only prints the traceback from the
+    leap_assert call up. Closes #2895
