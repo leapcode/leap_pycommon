@@ -56,7 +56,7 @@ setup(
     name='leap.common',
     # If you change version, do it also in
     # src/leap/common/__init__.py
-    version='0.2.5',
+    version='0.2.6',
     url='https://leap.se/',
     license='GPLv3+',
     author='The LEAP Encryption Access Project',
