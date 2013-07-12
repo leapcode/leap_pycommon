@@ -18,7 +18,6 @@
 Set of functions to help checking situations
 """
 
-import inspect
 import logging
 import traceback
 
@@ -39,9 +38,11 @@ def leap_assert(condition, message=""):
     if not condition:
         logger.error("Bug: %s" % (message,))
         try:
-            frame = inspect.currentframe()
-            stack_trace = traceback.format_stack(frame)
-            logger.error(''.join(stack_trace))
+            for formatted_line in traceback.format_list(
+                    traceback.extract_stack()[:-1]):
+                for line in formatted_line.split("\n"):
+                    if len(line.strip()) > 0:
+                        logger.error(line)
         except Exception as e:
             logger.error("Bug in leap_assert: %r" % (e,))
     assert condition, message
