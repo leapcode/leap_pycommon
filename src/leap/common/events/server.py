@@ -69,7 +69,7 @@ def ensure_server(port=SERVER_PORT):
     :rtype: EventsServerDaemon or None
 
     :raise PortAlreadyTaken: Raised if C{port} is already taken by something
-        that is not an events server.
+                             that is not an events server.
     """
     try:
         # check if port is available
@@ -97,11 +97,14 @@ def ping(port=SERVER_PORT, reqcbk=None, timeout=1000):
     :param port: the port in which server should be listening
     :type port: int
     :param reqcbk: a callback to be called when a response from server is
-        received
-    :type reqcbk: function
-        callback(leap.common.events.events_pb2.EventResponse)
+                   received
+    :type reqcbk: function(leap.common.events.events_pb2.EventResponse)
     :param timeout: the timeout for synch calls
     :type timeout: int
+
+    :return: the response from server for synch calls or nothing for asynch
+             calls.
+    :rtype: leap.common.events.events_pb2.EventsResponse or None
     """
     request = proto.PingRequest()
     service = RpcService(

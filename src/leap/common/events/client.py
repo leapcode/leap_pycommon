@@ -95,16 +95,14 @@ def register(signal, callback, uid=None, replace=False, reqcbk=None,
     :param signal: the signal that causes the callback to be launched
     :type signal: int (see the `events.proto` file)
     :param callback: the callback to be called when the signal is received
-    :type callback: function
-        callback(leap.common.events.events_pb2.SignalRequest)
+    :type callback: function(leap.common.events.events_pb2.SignalRequest)
     :param uid: a unique id for the callback
     :type uid: int
     :param replace: should an existent callback with same uid be replaced?
     :type replace: bool
     :param reqcbk: a callback to be called when a response from server is
-        received
-    :type reqcbk: function
-        callback(leap.common.events.events_pb2.EventResponse)
+                   received
+    :type reqcbk: function(leap.common.events.events_pb2.EventResponse)
     :param timeout: the timeout for synch calls
     :type timeout: int
 
@@ -112,7 +110,7 @@ def register(signal, callback, uid=None, replace=False, reqcbk=None,
     callback identified by the given uid and replace is False.
 
     :return: the response from server for synch calls or nothing for asynch
-        calls.
+             calls.
     :rtype: leap.common.events.events_pb2.EventsResponse or None
     """
     ensure_client_daemon()  # so we can receive registered signals
@@ -153,14 +151,14 @@ def unregister(signal, uid=None, reqcbk=None, timeout=1000):
     :param uid: a unique id for the callback
     :type uid: int
     :param reqcbk: a callback to be called when a response from server is
-        received
-    :type reqcbk: function
-        callback(leap.common.events.events_pb2.EventResponse)
+                   received
+    :type reqcbk: function(leap.common.events.events_pb2.EventResponse)
     :param timeout: the timeout for synch calls
     :type timeout: int
 
     :return: the response from server for synch calls or nothing for asynch
-        calls or None if no callback is registered for that signal or uid.
+             calls or None if no callback is registered for that signal or
+             uid.
     :rtype: leap.common.events.events_pb2.EventsResponse or None
     """
     if signal not in registered_callbacks or not registered_callbacks[signal]:
@@ -212,14 +210,13 @@ def signal(signal, content="", mac_method="", mac="", reqcbk=None,
     :param mac: the content of the auth mac
     :type mac: str
     :param reqcbk: a callback to be called when a response from server is
-        received
-    :type reqcbk: function
-        callback(leap.common.events.events_pb2.EventResponse)
+                   received
+    :type reqcbk: function(leap.common.events.events_pb2.EventResponse)
     :param timeout: the timeout for synch calls
     :type timeout: int
 
     :return: the response from server for synch calls or nothing for asynch
-        calls.
+             calls.
     :rtype: leap.common.events.events_pb2.EventsResponse or None
     """
     request = proto.SignalRequest()
@@ -240,11 +237,14 @@ def ping(port, reqcbk=None, timeout=1000):
     :param port: the port in which the client should be listening
     :type port: int
     :param reqcbk: a callback to be called when a response from client is
-        received
-    :type reqcbk: function
-        callback(leap.common.events.events_pb2.EventResponse)
+                   received
+    :type reqcbk: function(leap.common.events.events_pb2.EventResponse)
     :param timeout: the timeout for synch calls
     :type timeout: int
+
+    :return: the response from client for synch calls or nothing for asynch
+             calls.
+    :rtype: leap.common.events.events_pb2.EventsResponse or None
     """
     request = proto.PingRequest()
     service = RpcService(

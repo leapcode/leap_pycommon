@@ -337,3 +337,92 @@ class EventsTestCase(unittest.TestCase):
         time.sleep(1)  # wait for thread to start.
         self.assertRaises(
             server.PortAlreadyTaken, server.ensure_server, port)
+
+    def test_async_register(self):
+        """
+        Test asynchronous registering of callbacks.
+        """
+        flag = Mock()
+
+        # executed after async register, when response is received from server
+        def reqcbk(request, response):
+            flag(request.event)
+
+        # callback registered by application
+        def callback(request):
+            pass
+
+        # passing a callback as reqcbk param makes the call asynchronous
+        result = events.register(CLIENT_UID, callback, reqcbk=reqcbk)
+        self.assertIsNone(result)
+        events.signal(CLIENT_UID)
+        time.sleep(1)  # wait for signal to arrive from server
+        flag.assert_called_once_with(CLIENT_UID)
+
+    def test_async_signal(self):
+        """
+        Test asynchronous registering of callbacks.
+        """
+        flag = Mock()
+
+        # executed after async signal, when response is received from server
+        def reqcbk(request, response):
+            flag(request.event)
+
+        # passing a callback as reqcbk param makes the call asynchronous
+        result = events.signal(CLIENT_UID, reqcbk=reqcbk)
+        self.assertIsNone(result)
+        time.sleep(1)  # wait for signal to arrive from server
+        flag.assert_called_once_with(CLIENT_UID)
+
+    def test_async_unregister(self):
+        """
+        Test asynchronous unregistering of callbacks.
+        """
+        flag = Mock()
+
+        # executed after async signal, when response is received from server
+        def reqcbk(request, response):
+            flag(request.event)
+
+        # callback registered by application
+        def callback(request):
+            pass
+
+        # passing a callback as reqcbk param makes the call asynchronous
+        events.register(CLIENT_UID, callback)
+        result = events.unregister(CLIENT_UID, reqcbk=reqcbk)
+        self.assertIsNone(result)
+        time.sleep(1)  # wait for signal to arrive from server
+        flag.assert_called_once_with(CLIENT_UID)
+
+    def test_async_ping_server(self):
+        """
+        Test asynchronous pinging of server.
+        """
+        flag = Mock()
+
+        # executed after async signal, when response is received from server
+        def reqcbk(request, response):
+            flag()
+
+        result = events.ping_server(reqcbk=reqcbk)
+        self.assertIsNone(result)
+        time.sleep(1)  # wait for response to arrive from server.
+        flag.assert_called_once_with()
+
+    def test_async_ping_client(self):
+        """
+        Test asynchronous pinging of client.
+        """
+        flag = Mock()
+
+        # executed after async signal, when response is received from server
+        def reqcbk(request, response):
+            flag()
+
+        daemon = client.ensure_client_daemon()
+        result = events.ping_client(daemon.get_port(), reqcbk=reqcbk)
+        self.assertIsNone(result)
+        time.sleep(1)  # wait for response to arrive from server.
+        flag.assert_called_once_with()
