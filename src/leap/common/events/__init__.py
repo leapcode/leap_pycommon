@@ -123,3 +123,34 @@ def signal(signal, content="", mac_method="", mac="", reqcbk=None,
     :rtype: leap.common.events.events_pb2.EventsResponse or None
     """
     return client.signal(signal, content, mac_method, mac, reqcbk, timeout)
+
+def ping_client(port, reqcbk=None, timeout=1000):
+    """
+    Ping a client running in C{port}.
+
+    :param port: the port in which the client should be listening
+    :type port: int
+    :param reqcbk: a callback to be called when a response from client is
+        received
+    :type reqcbk: function
+        callback(leap.common.events.events_pb2.EventResponse)
+    :param timeout: the timeout for synch calls
+    :type timeout: int
+    """
+    return client.ping(port, reqcbk=reqcbk, timeout=timeout)
+
+
+def ping_server(port=server.SERVER_PORT, reqcbk=None, timeout=1000):
+    """
+    Ping the server.
+
+    :param port: the port in which server should be listening
+    :type port: int
+    :param reqcbk: a callback to be called when a response from server is
+        received
+    :type reqcbk: function
+        callback(leap.common.events.events_pb2.EventResponse)
+    :param timeout: the timeout for synch calls
+    :type timeout: int
+    """
+    return server.ping(port, reqcbk=reqcbk, timeout=timeout)

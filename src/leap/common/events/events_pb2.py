@@ -14,7 +14,7 @@ from google.protobuf import descriptor_pb2
 DESCRIPTOR = _descriptor.FileDescriptor(
     name='events.proto',
     package='leap.common.events',
-    serialized_pb='\n\x0c\x65vents.proto\x12\x12leap.common.events\"\x97\x01\n\rSignalRequest\x12(\n\x05\x65vent\x18\x01 \x02(\x0e\x32\x19.leap.common.events.Event\x12\x0f\n\x07\x63ontent\x18\x02 \x02(\t\x12\x12\n\nmac_method\x18\x03 \x02(\t\x12\x0b\n\x03mac\x18\x04 \x02(\x0c\x12\x12\n\nenc_method\x18\x05 \x01(\t\x12\x16\n\x0e\x65rror_occurred\x18\x06 \x01(\x08\"j\n\x0fRegisterRequest\x12(\n\x05\x65vent\x18\x01 \x02(\x0e\x32\x19.leap.common.events.Event\x12\x0c\n\x04port\x18\x02 \x02(\x05\x12\x12\n\nmac_method\x18\x03 \x02(\t\x12\x0b\n\x03mac\x18\x04 \x02(\x0c\"l\n\x11UnregisterRequest\x12(\n\x05\x65vent\x18\x01 \x02(\x0e\x32\x19.leap.common.events.Event\x12\x0c\n\x04port\x18\x02 \x02(\x05\x12\x12\n\nmac_method\x18\x03 \x02(\t\x12\x0b\n\x03mac\x18\x04 \x02(\x0c\"\x82\x01\n\rEventResponse\x12\x38\n\x06status\x18\x01 \x02(\x0e\x32(.leap.common.events.EventResponse.Status\x12\x0e\n\x06result\x18\x02 \x01(\t\"\'\n\x06Status\x12\x06\n\x02OK\x10\x01\x12\n\n\x06UNAUTH\x10\x02\x12\t\n\x05\x45RROR\x10\x03*\xe7\x02\n\x05\x45vent\x12\x15\n\x11\x43LIENT_SESSION_ID\x10\x01\x12\x0e\n\nCLIENT_UID\x10\x02\x12\x19\n\x15SOLEDAD_CREATING_KEYS\x10\x03\x12\x1e\n\x1aSOLEDAD_DONE_CREATING_KEYS\x10\x04\x12\x1a\n\x16SOLEDAD_UPLOADING_KEYS\x10\x05\x12\x1f\n\x1bSOLEDAD_DONE_UPLOADING_KEYS\x10\x06\x12\x1c\n\x18SOLEDAD_DOWNLOADING_KEYS\x10\x07\x12!\n\x1dSOLEDAD_DONE_DOWNLOADING_KEYS\x10\x08\x12\x1c\n\x18SOLEDAD_NEW_DATA_TO_SYNC\x10\t\x12\x1a\n\x16SOLEDAD_DONE_DATA_SYNC\x10\n\x12\x17\n\x13UPDATER_NEW_UPDATES\x10\x0b\x12\x19\n\x15UPDATER_DONE_UPDATING\x10\x0c\x12\x10\n\x0cRAISE_WINDOW\x10\r2\x91\x02\n\x13\x45ventsServerService\x12R\n\x08register\x12#.leap.common.events.RegisterRequest\x1a!.leap.common.events.EventResponse\x12V\n\nunregister\x12%.leap.common.events.UnregisterRequest\x1a!.leap.common.events.EventResponse\x12N\n\x06signal\x12!.leap.common.events.SignalRequest\x1a!.leap.common.events.EventResponse2e\n\x13\x45ventsClientService\x12N\n\x06signal\x12!.leap.common.events.SignalRequest\x1a!.leap.common.events.EventResponseB\x03\x90\x01\x01')
+    serialized_pb='\n\x0c\x65vents.proto\x12\x12leap.common.events\"\x97\x01\n\rSignalRequest\x12(\n\x05\x65vent\x18\x01 \x02(\x0e\x32\x19.leap.common.events.Event\x12\x0f\n\x07\x63ontent\x18\x02 \x02(\t\x12\x12\n\nmac_method\x18\x03 \x02(\t\x12\x0b\n\x03mac\x18\x04 \x02(\x0c\x12\x12\n\nenc_method\x18\x05 \x01(\t\x12\x16\n\x0e\x65rror_occurred\x18\x06 \x01(\x08\"j\n\x0fRegisterRequest\x12(\n\x05\x65vent\x18\x01 \x02(\x0e\x32\x19.leap.common.events.Event\x12\x0c\n\x04port\x18\x02 \x02(\x05\x12\x12\n\nmac_method\x18\x03 \x02(\t\x12\x0b\n\x03mac\x18\x04 \x02(\x0c\"l\n\x11UnregisterRequest\x12(\n\x05\x65vent\x18\x01 \x02(\x0e\x32\x19.leap.common.events.Event\x12\x0c\n\x04port\x18\x02 \x02(\x05\x12\x12\n\nmac_method\x18\x03 \x02(\t\x12\x0b\n\x03mac\x18\x04 \x02(\x0c\"\r\n\x0bPingRequest\"\x82\x01\n\rEventResponse\x12\x38\n\x06status\x18\x01 \x02(\x0e\x32(.leap.common.events.EventResponse.Status\x12\x0e\n\x06result\x18\x02 \x01(\t\"\'\n\x06Status\x12\x06\n\x02OK\x10\x01\x12\n\n\x06UNAUTH\x10\x02\x12\t\n\x05\x45RROR\x10\x03*\xe7\x02\n\x05\x45vent\x12\x15\n\x11\x43LIENT_SESSION_ID\x10\x01\x12\x0e\n\nCLIENT_UID\x10\x02\x12\x19\n\x15SOLEDAD_CREATING_KEYS\x10\x03\x12\x1e\n\x1aSOLEDAD_DONE_CREATING_KEYS\x10\x04\x12\x1a\n\x16SOLEDAD_UPLOADING_KEYS\x10\x05\x12\x1f\n\x1bSOLEDAD_DONE_UPLOADING_KEYS\x10\x06\x12\x1c\n\x18SOLEDAD_DOWNLOADING_KEYS\x10\x07\x12!\n\x1dSOLEDAD_DONE_DOWNLOADING_KEYS\x10\x08\x12\x1c\n\x18SOLEDAD_NEW_DATA_TO_SYNC\x10\t\x12\x1a\n\x16SOLEDAD_DONE_DATA_SYNC\x10\n\x12\x17\n\x13UPDATER_NEW_UPDATES\x10\x0b\x12\x19\n\x15UPDATER_DONE_UPDATING\x10\x0c\x12\x10\n\x0cRAISE_WINDOW\x10\r2\xdd\x02\n\x13\x45ventsServerService\x12J\n\x04ping\x12\x1f.leap.common.events.PingRequest\x1a!.leap.common.events.EventResponse\x12R\n\x08register\x12#.leap.common.events.RegisterRequest\x1a!.leap.common.events.EventResponse\x12V\n\nunregister\x12%.leap.common.events.UnregisterRequest\x1a!.leap.common.events.EventResponse\x12N\n\x06signal\x12!.leap.common.events.SignalRequest\x1a!.leap.common.events.EventResponse2\xb1\x01\n\x13\x45ventsClientService\x12J\n\x04ping\x12\x1f.leap.common.events.PingRequest\x1a!.leap.common.events.EventResponse\x12N\n\x06signal\x12!.leap.common.events.SignalRequest\x1a!.leap.common.events.EventResponseB\x03\x90\x01\x01')
 
 _EVENT = _descriptor.EnumDescriptor(
     name='Event',
@@ -77,8 +77,8 @@ _EVENT = _descriptor.EnumDescriptor(
     ],
     containing_type=None,
     options=None,
-    serialized_start=542,
-    serialized_end=901,
+    serialized_start=557,
+    serialized_end=916,
 )
 
 Event = enum_type_wrapper.EnumTypeWrapper(_EVENT)
@@ -118,8 +118,8 @@ _EVENTRESPONSE_STATUS = _descriptor.EnumDescriptor(
     ],
     containing_type=None,
     options=None,
-    serialized_start=500,
-    serialized_end=539,
+    serialized_start=515,
+    serialized_end=554,
 )
 
 
@@ -284,6 +284,27 @@ _UNREGISTERREQUEST = _descriptor.Descriptor(
 )
 
 
+_PINGREQUEST = _descriptor.Descriptor(
+    name='PingRequest',
+    full_name='leap.common.events.PingRequest',
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    fields=[
+    ],
+    extensions=[
+    ],
+    nested_types=[],
+    enum_types=[
+    ],
+    options=None,
+    is_extendable=False,
+    extension_ranges=[],
+    serialized_start=408,
+    serialized_end=421,
+)
+
+
 _EVENTRESPONSE = _descriptor.Descriptor(
     name='EventResponse',
     full_name='leap.common.events.EventResponse',
@@ -315,8 +336,8 @@ _EVENTRESPONSE = _descriptor.Descriptor(
     options=None,
     is_extendable=False,
     extension_ranges=[],
-    serialized_start=409,
-    serialized_end=539,
+    serialized_start=424,
+    serialized_end=554,
 )
 
 _SIGNALREQUEST.fields_by_name['event'].enum_type = _EVENT
@@ -327,6 +348,7 @@ _EVENTRESPONSE_STATUS.containing_type = _EVENTRESPONSE
 DESCRIPTOR.message_types_by_name['SignalRequest'] = _SIGNALREQUEST
 DESCRIPTOR.message_types_by_name['RegisterRequest'] = _REGISTERREQUEST
 DESCRIPTOR.message_types_by_name['UnregisterRequest'] = _UNREGISTERREQUEST
+DESCRIPTOR.message_types_by_name['PingRequest'] = _PINGREQUEST
 DESCRIPTOR.message_types_by_name['EventResponse'] = _EVENTRESPONSE
 
 
@@ -351,6 +373,13 @@ class UnregisterRequest(_message.Message):
     # @@protoc_insertion_point(class_scope:leap.common.events.UnregisterRequest)
 
 
+class PingRequest(_message.Message):
+    __metaclass__ = _reflection.GeneratedProtocolMessageType
+    DESCRIPTOR = _PINGREQUEST
+
+    # @@protoc_insertion_point(class_scope:leap.common.events.PingRequest)
+
+
 class EventResponse(_message.Message):
     __metaclass__ = _reflection.GeneratedProtocolMessageType
     DESCRIPTOR = _EVENTRESPONSE
@@ -368,13 +397,22 @@ _EVENTSSERVERSERVICE = _descriptor.ServiceDescriptor(
     file=DESCRIPTOR,
     index=0,
     options=None,
-    serialized_start=904,
-    serialized_end=1177,
+    serialized_start=919,
+    serialized_end=1268,
     methods=[
+        _descriptor.MethodDescriptor(
+            name='ping',
+            full_name='leap.common.events.EventsServerService.ping',
+            index=0,
+            containing_service=None,
+            input_type=_PINGREQUEST,
+            output_type=_EVENTRESPONSE,
+            options=None,
+        ),
         _descriptor.MethodDescriptor(
             name='register',
             full_name='leap.common.events.EventsServerService.register',
-            index=0,
+            index=1,
             containing_service=None,
             input_type=_REGISTERREQUEST,
             output_type=_EVENTRESPONSE,
@@ -383,7 +421,7 @@ _EVENTSSERVERSERVICE = _descriptor.ServiceDescriptor(
         _descriptor.MethodDescriptor(
             name='unregister',
             full_name='leap.common.events.EventsServerService.unregister',
-            index=1,
+            index=2,
             containing_service=None,
             input_type=_UNREGISTERREQUEST,
             output_type=_EVENTRESPONSE,
@@ -392,7 +430,7 @@ _EVENTSSERVERSERVICE = _descriptor.ServiceDescriptor(
         _descriptor.MethodDescriptor(
             name='signal',
             full_name='leap.common.events.EventsServerService.signal',
-            index=2,
+            index=3,
             containing_service=None,
             input_type=_SIGNALREQUEST,
             output_type=_EVENTRESPONSE,
@@ -417,13 +455,22 @@ _EVENTSCLIENTSERVICE = _descriptor.ServiceDescriptor(
     file=DESCRIPTOR,
     index=1,
     options=None,
-    serialized_start=1179,
-    serialized_end=1280,
+    serialized_start=1271,
+    serialized_end=1448,
     methods=[
+        _descriptor.MethodDescriptor(
+            name='ping',
+            full_name='leap.common.events.EventsClientService.ping',
+            index=0,
+            containing_service=None,
+            input_type=_PINGREQUEST,
+            output_type=_EVENTRESPONSE,
+            options=None,
+        ),
         _descriptor.MethodDescriptor(
             name='signal',
             full_name='leap.common.events.EventsClientService.signal',
-            index=0,
+            index=1,
             containing_service=None,
             input_type=_SIGNALREQUEST,
             output_type=_EVENTRESPONSE,

@@ -233,6 +233,28 @@ def signal(signal, content="", mac_method="", mac="", reqcbk=None,
     return service.signal(request, callback=reqcbk, timeout=timeout)
 
 
+def ping(port, reqcbk=None, timeout=1000):
+    """
+    Ping a client running in C{port}.
+
+    :param port: the port in which the client should be listening
+    :type port: int
+    :param reqcbk: a callback to be called when a response from client is
+        received
+    :type reqcbk: function
+        callback(leap.common.events.events_pb2.EventResponse)
+    :param timeout: the timeout for synch calls
+    :type timeout: int
+    """
+    request = proto.PingRequest()
+    service = RpcService(
+        proto.EventsClientService_Stub,
+        port,
+        'localhost')
+    logger.info("Pinging a client in port %d..." % port)
+    return service.ping(request, callback=reqcbk, timeout=timeout)
+
+
 class EventsClientService(proto.EventsClientService):
     """
     Service for receiving signal events in clients.
@@ -266,6 +288,22 @@ class EventsClientService(proto.EventsClientService):
                 cbk(request)
 
         # send response back to server
+        response = proto.EventResponse()
+        response.status = proto.EventResponse.OK
+        done.run(response)
+
+    def ping(self, controller, request, done):
+        """
+        Reply to a ping request.
+
+        :param controller: used to mediate a single method call
+        :type controller: protobuf.socketrpc.controller.SocketRpcController
+        :param request: the request received from the client
+        :type request: leap.common.events.events_pb2.RegisterRequest
+        :param done: callback to be called when done
+        :type done: protobuf.socketrpc.server.Callback
+        """
+        logger.info("Received ping request, sending response.")
         response = proto.EventResponse()
         response.status = proto.EventResponse.OK
         done.run(response)

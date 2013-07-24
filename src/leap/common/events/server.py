@@ -48,6 +48,13 @@ SERVER_PORT = 8090
 registered_clients = {}
 
 
+class PortAlreadyTaken(Exception):
+    """
+    Raised when trying to open a server in a port that is already taken.
+    """
+    pass
+
+
 def ensure_server(port=SERVER_PORT):
     """
     Make sure the server is running on the given port.
@@ -60,16 +67,49 @@ def ensure_server(port=SERVER_PORT):
 
     :return: the daemon instance or nothing
     :rtype: EventsServerDaemon or None
+
+    :raise PortAlreadyTaken: Raised if C{port} is already taken by something
+        that is not an events server.
     """
     try:
+        # check if port is available
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect(('localhost', port))
         s.close()
-        logger.info('Server is already running on port %d.', port)
-        return None
+        # port is taken, check if there's a server running there
+        response = ping(port)
+        if response is not None and response.status == proto.EventResponse.OK:
+            logger.info('A server is already running on port %d.', port)
+            return None
+        # port is taken, and not by an events server
+        logger.info('Port %d is taken by something not an events server.', port)
+        raise PortAlreadyTaken(port)
     except socket.error:
+        # port is available, run a server
         logger.info('Launching server on port %d.', port)
         return EventsServerDaemon.ensure(port)
+
+
+def ping(port=SERVER_PORT, reqcbk=None, timeout=1000):
+    """
+    Ping the server.
+
+    :param port: the port in which server should be listening
+    :type port: int
+    :param reqcbk: a callback to be called when a response from server is
+        received
+    :type reqcbk: function
+        callback(leap.common.events.events_pb2.EventResponse)
+    :param timeout: the timeout for synch calls
+    :type timeout: int
+    """
+    request = proto.PingRequest()
+    service = RpcService(
+        proto.EventsServerService_Stub,
+        port,
+        'localhost')
+    logger.info("Pinging server in port %d..." % port)
+    return service.ping(request, callback=reqcbk, timeout=timeout)
 
 
 class EventsServerService(proto.EventsServerService):
@@ -152,6 +192,22 @@ class EventsServerService(proto.EventsServerService):
                                      port, 'localhost')
                 service.signal(request, callback=callback)
         # send response back to client
+        response = proto.EventResponse()
+        response.status = proto.EventResponse.OK
+        done.run(response)
+
+    def ping(self, controller, request, done):
+        """
+        Reply to a ping request.
+
+        :param controller: used to mediate a single method call
+        :type controller: protobuf.socketrpc.controller.SocketRpcController
+        :param request: the request received from the client
+        :type request: leap.common.events.events_pb2.RegisterRequest
+        :param done: callback to be called when done
+        :type done: protobuf.socketrpc.server.Callback
+        """
+        logger.info("Received ping request, sending response.")
         response = proto.EventResponse()
         response.status = proto.EventResponse.OK
         done.run(response)
