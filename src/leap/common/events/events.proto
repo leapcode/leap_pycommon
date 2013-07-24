@@ -74,6 +74,6 @@ service EventsServerService {
   rpc signal(SignalRequest) returns (EventResponse);
 }
 
-service EventsComponentService {
+service EventsClientService {
   rpc signal(SignalRequest) returns (EventResponse);
 }

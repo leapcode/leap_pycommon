@@ -22,7 +22,7 @@ from protobuf.socketrpc import RpcService
 from leap.common import events
 from leap.common.events import (
     server,
-    component,
+    client,
     mac_auth,
 )
 from leap.common.events.events_pb2 import (
@@ -51,7 +51,7 @@ class EventsTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         server.EventsServerDaemon.ensure(8090)
-        cls.callbacks = events.component.registered_callbacks
+        cls.callbacks = events.client.registered_callbacks
 
     @classmethod
     def tearDownClass(cls):
@@ -62,8 +62,8 @@ class EventsTestCase(unittest.TestCase):
         super(EventsTestCase, self).setUp()
 
     def tearDown(self):
-        #events.component.registered_callbacks = {}
-        server.registered_components = {}
+        #events.client.registered_callbacks = {}
+        server.registered_clients = {}
         super(EventsTestCase, self).tearDown()
 
     def test_service_singleton(self):
@@ -76,24 +76,24 @@ class EventsTestCase(unittest.TestCase):
         self.assertEqual(service1, service2,
                          "Can't get singleton class for service.")
 
-    def test_component_register(self):
+    def test_client_register(self):
         """
-        Ensure components can register callbacks.
+        Ensure clients can register callbacks.
         """
         self.assertTrue(1 not in self.callbacks,
                         'There should should be no callback for this signal.')
         events.register(1, lambda x: True)
         self.assertTrue(1 in self.callbacks,
-                        'Could not register signal in local component.')
+                        'Could not register signal in local client.')
         events.register(2, lambda x: True)
         self.assertTrue(1 in self.callbacks,
-                        'Could not register signal in local component.')
+                        'Could not register signal in local client.')
         self.assertTrue(2 in self.callbacks,
-                        'Could not register signal in local component.')
+                        'Could not register signal in local client.')
 
     def test_register_signal_replace(self):
         """
-        Make sure components can replace already registered callbacks.
+        Make sure clients can replace already registered callbacks.
         """
         sig = 3
         cbk = lambda x: True
@@ -134,7 +134,7 @@ class EventsTestCase(unittest.TestCase):
 
     def test_events_server_service_register(self):
         """
-        Ensure the server can register components to be signaled.
+        Ensure the server can register clients to be signaled.
         """
         sig = 5
         request = RegisterRequest()
@@ -143,34 +143,34 @@ class EventsTestCase(unittest.TestCase):
         request.mac_method = mac_auth.MacMethod.MAC_NONE
         request.mac = ""
         service = RpcService(EventsServerService_Stub, port, 'localhost')
-        complist = server.registered_components
+        complist = server.registered_clients
         self.assertEqual({}, complist,
                          'There should be no registered_ports when '
                          'server has just been created.')
         response = service.register(request, timeout=1000)
         self.assertTrue(sig in complist, "Signal not registered succesfully.")
         self.assertTrue(8091 in complist[sig],
-                        'Failed registering component port.')
+                        'Failed registering client port.')
 
-    def test_component_request_register(self):
+    def test_client_request_register(self):
         """
-        Ensure components can register themselves with server.
+        Ensure clients can register themselves with server.
         """
         sig = 6
-        complist = server.registered_components
+        complist = server.registered_clients
         self.assertTrue(sig not in complist,
-                        'There should be no registered components for this '
+                        'There should be no registered clients for this '
                         'signal.')
         events.register(sig, lambda x: True)
         time.sleep(0.1)
-        port = component.EventsComponentDaemon.get_instance().get_port()
-        self.assertTrue(sig in complist, 'Failed registering component.')
+        port = client.EventsClientDaemon.get_instance().get_port()
+        self.assertTrue(sig in complist, 'Failed registering client.')
         self.assertTrue(port in complist[sig],
-                        'Failed registering component port.')
+                        'Failed registering client port.')
 
-    def test_component_receives_signal(self):
+    def test_client_receives_signal(self):
         """
-        Ensure components can receive signals.
+        Ensure clients can receive signals.
         """
         sig = 7
 
@@ -190,44 +190,44 @@ class EventsTestCase(unittest.TestCase):
         time.sleep(0.5)
         self.assertTrue(received, 'Did not receive signal back.')
 
-    def test_component_send_signal(self):
+    def test_client_send_signal(self):
         """
-        Ensure components can send signals.
+        Ensure clients can send signals.
         """
         sig = 8
         response = events.signal(sig)
         self.assertTrue(response.status == response.OK,
                         'Received wrong response status when signaling.')
 
-    def test_component_unregister_all(self):
+    def test_client_unregister_all(self):
         """
-        Test that the component can unregister all events for one signal.
+        Test that the client can unregister all events for one signal.
         """
         sig = CLIENT_UID
-        complist = server.registered_components
+        complist = server.registered_clients
         events.register(sig, lambda x: True)
         events.register(sig, lambda x: True)
         time.sleep(0.1)
         events.unregister(sig)
         time.sleep(0.1)
-        port = component.EventsComponentDaemon.get_instance().get_port()
+        port = client.EventsClientDaemon.get_instance().get_port()
         self.assertFalse(bool(complist[sig]))
         self.assertTrue(port not in complist[sig])
 
-    def test_component_unregister_by_uid(self):
+    def test_client_unregister_by_uid(self):
         """
-        Test that the component can unregister an event by uid.
+        Test that the client can unregister an event by uid.
         """
         sig = CLIENT_UID
-        complist = server.registered_components
+        complist = server.registered_clients
         events.register(sig, lambda x: True, uid='cbkuid')
         events.register(sig, lambda x: True, uid='cbkuid2')
         time.sleep(0.1)
         events.unregister(sig, uid='cbkuid')
         time.sleep(0.1)
-        port = component.EventsComponentDaemon.get_instance().get_port()
+        port = client.EventsClientDaemon.get_instance().get_port()
         self.assertTrue(sig in complist)
         self.assertTrue(len(complist[sig]) == 1)
         self.assertTrue(
-            component.registered_callbacks[sig].pop()[0] == 'cbkuid2')
+            client.registered_callbacks[sig].pop()[0] == 'cbkuid2')
         self.assertTrue(port in complist[sig])

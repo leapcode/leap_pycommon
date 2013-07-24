@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# component.py
+# client.py
 # Copyright (C) 2013 LEAP
 #
 # This program is free software: you can redistribute it and/or modify
@@ -16,15 +16,15 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-The component end point of the events mechanism.
+The client end point of the events mechanism.
 
-Components are the communicating parties of the events mechanism. They
+Clients are the communicating parties of the events mechanism. They
 communicate by sending messages to a server, which in turn redistributes
-messages to other components.
+messages to other clients.
 
-When a component registers a callback for a given signal, it also tells the
+When a client registers a callback for a given signal, it also tells the
 server that it wants to be notified whenever signals of that type are sent by
-some other component.
+some other client.
 """
 
 
@@ -59,23 +59,23 @@ class CallbackAlreadyRegistered(Exception):
     pass
 
 
-def ensure_component_daemon():
+def ensure_client_daemon():
     """
-    Ensure the component daemon is running and listening for incoming
+    Ensure the client daemon is running and listening for incoming
     messages.
 
     :return: the daemon instance
-    :rtype: EventsComponentDaemon
+    :rtype: EventsClientDaemon
     """
     import time
-    daemon = EventsComponentDaemon.ensure(0)
-    logger.debug('ensure component daemon')
+    daemon = EventsClientDaemon.ensure(0)
+    logger.debug('ensure client daemon')
 
     # Because we use a random port we want to wait until a port is assigned to
-    # local component daemon.
+    # local client daemon.
 
-    while not (EventsComponentDaemon.get_instance() and
-               EventsComponentDaemon.get_instance().get_port()):
+    while not (EventsClientDaemon.get_instance() and
+               EventsClientDaemon.get_instance().get_port()):
         time.sleep(0.1)
     return daemon
 
@@ -115,7 +115,7 @@ def register(signal, callback, uid=None, replace=False, reqcbk=None,
         calls.
     :rtype: leap.common.events.events_pb2.EventsResponse or None
     """
-    ensure_component_daemon()  # so we can receive registered signals
+    ensure_client_daemon()  # so we can receive registered signals
     # register callback locally
     if signal not in registered_callbacks:
         registered_callbacks[signal] = []
@@ -130,7 +130,7 @@ def register(signal, callback, uid=None, replace=False, reqcbk=None,
     # register callback on server
     request = proto.RegisterRequest()
     request.event = signal
-    request.port = EventsComponentDaemon.get_instance().get_port()
+    request.port = EventsClientDaemon.get_instance().get_port()
     request.mac_method = mac_auth.MacMethod.MAC_NONE
     request.mac = ""
     service = RpcService(proto.EventsServerService_Stub,
@@ -180,7 +180,7 @@ def unregister(signal, uid=None, reqcbk=None, timeout=1000):
     if not registered_callbacks[signal]:
         request = proto.UnregisterRequest()
         request.event = signal
-        request.port = EventsComponentDaemon.get_instance().get_port()
+        request.port = EventsClientDaemon.get_instance().get_port()
         request.mac_method = mac_auth.MacMethod.MAC_NONE
         request.mac = ""
         service = RpcService(proto.EventsServerService_Stub,
@@ -233,13 +233,13 @@ def signal(signal, content="", mac_method="", mac="", reqcbk=None,
     return service.signal(request, callback=reqcbk, timeout=timeout)
 
 
-class EventsComponentService(proto.EventsComponentService):
+class EventsClientService(proto.EventsClientService):
     """
-    Service for receiving signal events in components.
+    Service for receiving signal events in clients.
     """
 
     def __init__(self):
-        proto.EventsComponentService.__init__(self)
+        proto.EventsClientService.__init__(self)
 
     def signal(self, controller, request, done):
         """
@@ -250,7 +250,7 @@ class EventsComponentService(proto.EventsComponentService):
 
         :param controller: used to mediate a single method call
         :type controller: protobuf.socketrpc.controller.SocketRpcController
-        :param request: the request received from the component
+        :param request: the request received from the client
         :type request: leap.common.events.events_pb2.SignalRequest
         :param done: callback to be called when done
         :type done: protobuf.socketrpc.server.Callback
@@ -271,7 +271,7 @@ class EventsComponentService(proto.EventsComponentService):
         done.run(response)
 
 
-class EventsComponentDaemon(daemon.EventsSingletonDaemon):
+class EventsClientDaemon(daemon.EventsSingletonDaemon):
     """
     A daemon that listens for incoming events from server.
     """
@@ -285,6 +285,6 @@ class EventsComponentDaemon(daemon.EventsSingletonDaemon):
         :type port: int
 
         :return: a daemon instance
-        :rtype: EventsComponentDaemon
+        :rtype: EventsClientDaemon
         """
-        return cls.ensure_service(port, EventsComponentService())
+        return cls.ensure_service(port, EventsClientService())

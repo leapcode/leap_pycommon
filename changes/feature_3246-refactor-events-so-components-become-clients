@@ -1,0 +1,1 @@
+  o Refactor events so components are now called clients. Closes #3246.

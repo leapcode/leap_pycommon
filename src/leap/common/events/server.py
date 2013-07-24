@@ -17,12 +17,12 @@
 """
 A server for the events mechanism.
 
-A server can receive different kinds of requests from components:
+A server can receive different kinds of requests from clients:
 
-  1. Registration request: store component port number to be notified when
+  1. Registration request: store client port number to be notified when
      a specific signal arrives.
 
-  2. Signal request: redistribute the signal to registered components.
+  2. Signal request: redistribute the signal to registered clients.
 """
 import logging
 import socket
@@ -40,12 +40,12 @@ logger = logging.getLogger(__name__)
 
 SERVER_PORT = 8090
 
-# the `registered_components` dictionary below should have the following
+# the `registered_clients` dictionary below should have the following
 # format:
 #
 #     { event_signal: [ port, ... ], ... }
 #
-registered_components = {}
+registered_clients = {}
 
 
 def ensure_server(port=SERVER_PORT):
@@ -74,26 +74,26 @@ def ensure_server(port=SERVER_PORT):
 
 class EventsServerService(proto.EventsServerService):
     """
-    Service for receiving events in components.
+    Service for receiving events in clients.
     """
 
     def register(self, controller, request, done):
         """
-        Register a component port to be signaled when specific events come in.
+        Register a client port to be signaled when specific events come in.
 
         :param controller: used to mediate a single method call
         :type controller: protobuf.socketrpc.controller.SocketRpcController
-        :param request: the request received from the component
+        :param request: the request received from the client
         :type request: leap.common.events.events_pb2.RegisterRequest
         :param done: callback to be called when done
         :type done: protobuf.socketrpc.server.Callback
         """
         logger.info("Received registration request: %s..." % str(request)[:40])
-        # add component port to signal list
-        if request.event not in registered_components:
-            registered_components[request.event] = set([])
-        registered_components[request.event].add(request.port)
-        # send response back to component
+        # add client port to signal list
+        if request.event not in registered_clients:
+            registered_clients[request.event] = set([])
+        registered_clients[request.event].add(request.port)
+        # send response back to client
 
         logger.debug('sending response back')
         response = proto.EventResponse()
@@ -102,56 +102,56 @@ class EventsServerService(proto.EventsServerService):
 
     def unregister(self, controller, request, done):
         """
-        Unregister a component port so it will not be signaled when specific
+        Unregister a client port so it will not be signaled when specific
         events come in.
 
         :param controller: used to mediate a single method call
         :type controller: protobuf.socketrpc.controller.SocketRpcController
-        :param request: the request received from the component
+        :param request: the request received from the client
         :type request: leap.common.events.events_pb2.RegisterRequest
         :param done: callback to be called when done
         :type done: protobuf.socketrpc.server.Callback
         """
         logger.info(
             "Received unregistration request: %s..." % str(request)[:40])
-        # remove component port from signal list
+        # remove client port from signal list
         response = proto.EventResponse()
-        if request.event in registered_components:
+        if request.event in registered_clients:
             try:
-                registered_components[request.event].remove(request.port)
+                registered_clients[request.event].remove(request.port)
                 response.status = proto.EventResponse.OK
             except KeyError:
                 response.status = proto.EventsResponse.ERROR
                 response.result = 'Port %d not registered.' % request.port
-        # send response back to component
+        # send response back to client
         logger.debug('sending response back')
         done.run(response)
 
     def signal(self, controller, request, done):
         """
-        Perform an RPC call to signal all components registered to receive a
+        Perform an RPC call to signal all clients registered to receive a
         specific signal.
 
         :param controller: used to mediate a single method call
         :type controller: protobuf.socketrpc.controller.SocketRpcController
-        :param request: the request received from the component
+        :param request: the request received from the client
         :type request: leap.common.events.events_pb2.SignalRequest
         :param done: callback to be called when done
         :type done: protobuf.socketrpc.server.Callback
         """
-        logger.info('Received signal from component: %s...', str(request)[:40])
-        # send signal to all registered components
+        logger.info('Received signal from client: %s...', str(request)[:40])
+        # send signal to all registered clients
         # TODO: verify signal auth
-        if request.event in registered_components:
-            for port in registered_components[request.event]:
+        if request.event in registered_clients:
+            for port in registered_clients[request.event]:
 
                 def callback(req, resp):
                     logger.info("Signal received by " + str(port))
 
-                service = RpcService(proto.EventsComponentService_Stub,
+                service = RpcService(proto.EventsClientService_Stub,
                                      port, 'localhost')
                 service.signal(request, callback=callback)
-        # send response back to component
+        # send response back to client
         response = proto.EventResponse()
         response.status = proto.EventResponse.OK
         done.run(response)

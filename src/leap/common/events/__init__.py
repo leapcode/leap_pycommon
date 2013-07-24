@@ -16,7 +16,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-An events mechanism that allows for signaling of events between components.
+An events mechanism that allows for signaling of events between clients.
 """
 
 import logging
@@ -26,7 +26,7 @@ import socket
 from leap.common.events import (
     events_pb2 as proto,
     server,
-    component,
+    client,
     daemon,
 )
 
@@ -64,7 +64,7 @@ def register(signal, callback, uid=None, replace=False, reqcbk=None,
         calls.
     :rtype: leap.common.events.events_pb2.EventsResponse or None
     """
-    return component.register(signal, callback, uid, replace, reqcbk, timeout)
+    return client.register(signal, callback, uid, replace, reqcbk, timeout)
 
 
 def unregister(signal, uid=None, reqcbk=None, timeout=1000):
@@ -89,7 +89,7 @@ def unregister(signal, uid=None, reqcbk=None, timeout=1000):
         calls.
     :rtype: leap.common.events.events_pb2.EventsResponse or None
     """
-    return component.unregister(signal, uid, reqcbk, timeout)
+    return client.unregister(signal, uid, reqcbk, timeout)
 
 
 def signal(signal, content="", mac_method="", mac="", reqcbk=None,
@@ -122,4 +122,4 @@ def signal(signal, content="", mac_method="", mac="", reqcbk=None,
         calls.
     :rtype: leap.common.events.events_pb2.EventsResponse or None
     """
-    return component.signal(signal, content, mac_method, mac, reqcbk, timeout)
+    return client.signal(signal, content, mac_method, mac, reqcbk, timeout)
