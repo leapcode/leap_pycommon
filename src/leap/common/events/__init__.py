@@ -130,7 +130,7 @@ def unregister(signal, uid=None, reqcbk=None, timeout=1000):
     :type uid: int
     :param reqcbk: a callback to be called when a response from server is
                    received
-    :type reqcbk: function(leap.common.events.events_pb2.EventResponse)
+    :type reqcbk: function(proto.UnregisterRequest, proto.EventResponse)
     :param timeout: the timeout for synch calls
     :type timeout: int
 
@@ -162,7 +162,7 @@ def signal(signal, content="", mac_method="", mac="", reqcbk=None,
     :type mac: str
     :param reqcbk: a callback to be called when a response from server is
                    received
-    :type reqcbk: function(leap.common.events.events_pb2.EventResponse)
+    :type reqcbk: function(proto.SignalRequest, proto.EventResponse)
     :param timeout: the timeout for synch calls
     :type timeout: int
 
@@ -180,7 +180,7 @@ def ping_client(port, reqcbk=None, timeout=1000):
     :type port: int
     :param reqcbk: a callback to be called when a response from client is
                    received
-    :type reqcbk: function(leap.common.events.events_pb2.EventResponse)
+    :type reqcbk: function(proto.PingRequest, proto.EventResponse)
     :param timeout: the timeout for synch calls
     :type timeout: int
     """
@@ -195,7 +195,7 @@ def ping_server(port=server.SERVER_PORT, reqcbk=None, timeout=1000):
     :type port: int
     :param reqcbk: a callback to be called when a response from server is
                    received
-    :type reqcbk: function(leap.common.events.events_pb2.EventResponse)
+    :type reqcbk: function(proto.PingRequest, proto.EventResponse)
     :param timeout: the timeout for synch calls
     :type timeout: int
     """

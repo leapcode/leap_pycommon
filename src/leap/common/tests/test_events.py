@@ -346,7 +346,7 @@ class EventsTestCase(unittest.TestCase):
 
         # executed after async register, when response is received from server
         def reqcbk(request, response):
-            flag(request.event)
+            flag(request.event, response.status)
 
         # callback registered by application
         def callback(request):
@@ -357,7 +357,7 @@ class EventsTestCase(unittest.TestCase):
         self.assertIsNone(result)
         events.signal(CLIENT_UID)
         time.sleep(1)  # wait for signal to arrive from server
-        flag.assert_called_once_with(CLIENT_UID)
+        flag.assert_called_once_with(CLIENT_UID, EventResponse.OK)
 
     def test_async_signal(self):
         """
@@ -367,13 +367,13 @@ class EventsTestCase(unittest.TestCase):
 
         # executed after async signal, when response is received from server
         def reqcbk(request, response):
-            flag(request.event)
+            flag(request.event, response.status)
 
         # passing a callback as reqcbk param makes the call asynchronous
         result = events.signal(CLIENT_UID, reqcbk=reqcbk)
         self.assertIsNone(result)
         time.sleep(1)  # wait for signal to arrive from server
-        flag.assert_called_once_with(CLIENT_UID)
+        flag.assert_called_once_with(CLIENT_UID, EventResponse.OK)
 
     def test_async_unregister(self):
         """
@@ -383,7 +383,7 @@ class EventsTestCase(unittest.TestCase):
 
         # executed after async signal, when response is received from server
         def reqcbk(request, response):
-            flag(request.event)
+            flag(request.event, response.status)
 
         # callback registered by application
         def callback(request):
@@ -394,7 +394,7 @@ class EventsTestCase(unittest.TestCase):
         result = events.unregister(CLIENT_UID, reqcbk=reqcbk)
         self.assertIsNone(result)
         time.sleep(1)  # wait for signal to arrive from server
-        flag.assert_called_once_with(CLIENT_UID)
+        flag.assert_called_once_with(CLIENT_UID, EventResponse.OK)
 
     def test_async_ping_server(self):
         """
@@ -404,12 +404,12 @@ class EventsTestCase(unittest.TestCase):
 
         # executed after async signal, when response is received from server
         def reqcbk(request, response):
-            flag()
+            flag(response.status)
 
         result = events.ping_server(reqcbk=reqcbk)
         self.assertIsNone(result)
         time.sleep(1)  # wait for response to arrive from server.
-        flag.assert_called_once_with()
+        flag.assert_called_once_with(EventResponse.OK)
 
     def test_async_ping_client(self):
         """
@@ -419,10 +419,10 @@ class EventsTestCase(unittest.TestCase):
 
         # executed after async signal, when response is received from server
         def reqcbk(request, response):
-            flag()
+            flag(response.status)
 
         daemon = client.ensure_client_daemon()
         result = events.ping_client(daemon.get_port(), reqcbk=reqcbk)
         self.assertIsNone(result)
         time.sleep(1)  # wait for response to arrive from server.
-        flag.assert_called_once_with()
+        flag.assert_called_once_with(EventResponse.OK)
