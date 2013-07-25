@@ -17,6 +17,9 @@
 package leap.common.events;
 option py_generic_services = true;
 
+
+// These are the events that can be signaled using the events mechanism.
+
 enum Event {
   CLIENT_SESSION_ID = 1;
   CLIENT_UID = 2;
@@ -33,6 +36,10 @@ enum Event {
   RAISE_WINDOW = 13;
 }
 
+
+// A SignalRequest is the type of the message sent from one component to request
+// that a signal be sent to every registered component.
+
 message SignalRequest {
   required Event event = 1;
   required string content = 2;
@@ -42,6 +49,10 @@ message SignalRequest {
   optional bool error_occurred = 6;
 }
 
+
+// A RegisterRequest message tells the server that a component wants to
+// be signaled whenever a specific event occurs.
+
 message RegisterRequest {
   required Event event = 1;
   required int32 port = 2;
@@ -49,12 +60,27 @@ message RegisterRequest {
   required bytes mac = 4;
 }
 
+
+// An UnregisterRequest message tells the server that a component does not
+// want to be signaled when a specific event occurs.
+
 message UnregisterRequest {
   required Event event = 1;
   required int32 port = 2;
   required string mac_method = 3;
   required bytes mac = 4;
 }
+
+
+// A PingRequest message is used to find out if a server or component is
+// alive.
+
+message PingRequest {
+}
+
+
+// The EventResponse is the message sent back by server and components after
+// they receive other kinds of requests.
 
 message EventResponse {
 
@@ -68,12 +94,20 @@ message EventResponse {
   optional string result = 2;
 }
 
+
+// The EventsServerService is the service provided by the server.
+
 service EventsServerService {
+  rpc ping(PingRequest) returns (EventResponse);
   rpc register(RegisterRequest) returns (EventResponse);
   rpc unregister(UnregisterRequest) returns (EventResponse);
   rpc signal(SignalRequest) returns (EventResponse);
 }
 
-service EventsComponentService {
+
+// EventsComponentService is the service provided by components (clients).
+
+service EventsClientService {
+  rpc ping(PingRequest) returns (EventResponse);
   rpc signal(SignalRequest) returns (EventResponse);
 }
