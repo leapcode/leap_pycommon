@@ -1,0 +1,1 @@
+  o Add leap_check helper method, to use whenever leap_assert does not apply. Related to #3007.
