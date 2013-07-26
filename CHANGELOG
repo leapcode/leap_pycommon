@@ -1,3 +1,8 @@
+0.2.7 Jul 26:
+  o Refactor events so components are now called clients. Closes #3246
+  o Add leap_check helper method, to use whenever leap_assert does not
+    apply. Related to #3007.
+
 0.2.6 Jul 12:
   o Improve leap_assert so that it only prints the traceback from the
     leap_assert call up. Closes #2895
