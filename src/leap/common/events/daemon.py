@@ -43,7 +43,7 @@ class ServiceAlreadyRunningException(Exception):
 
 class EventsRpcServer(SocketRpcServer):
     """
-    RPC server used in server and component interfaces to receive messages.
+    RPC server used in server and client interfaces to receive messages.
     """
 
     def __init__(self, port, host='localhost'):

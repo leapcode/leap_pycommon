@@ -1,19 +1,19 @@
 Events mechanism
 ================
 
-The events mechanism allows for "components" to send signal events to each
-other by means of a centralized server. Components can register with the
+The events mechanism allows for clients to send signal events to each
+other by means of a centralized server. Clients can register with the
 server to receive signals of certain types, and they can also send signals to
-the server that will then redistribute these signals to registered components.
+the server that will then redistribute these signals to registered clients.
 
 
 Listening daemons
 -----------------
 
-Both components and the server listen for incoming messages by using a
+Both clients and the server listen for incoming messages by using a
 listening daemon that runs in its own thread. The server daemon has to be
-started explicitly, while components daemon will be started whenever a
-component registers with the server to receive messages.
+started explicitly, while clients daemon will be started whenever a
+client registers with the server to receive messages.
 
 
 How to use it
