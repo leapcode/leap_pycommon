@@ -95,7 +95,7 @@ class DarwinPrefixer(Prefixer):
         config_dir = BaseDirectory.xdg_config_home
         if not standalone:
             return config_dir
-        return os.getenv(os.getcwd(), "config")
+        return os.path.join(os.getcwd(), "config")
 
 
 class WindowsPrefixer(Prefixer):
