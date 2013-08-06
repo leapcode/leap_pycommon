@@ -26,12 +26,18 @@ import os
 
 from abc import ABCMeta, abstractmethod
 
-from leap.common.check import leap_assert
+from leap.common.check import leap_assert, leap_check
 from leap.common.files import mkdir_p
 from leap.common.config.pluggableconfig import PluggableConfig
 from leap.common.config.prefixers import get_platform_prefixer
 
 logger = logging.getLogger(__name__)
+
+
+class NonExistingSchema(Exception):
+    """
+    Raised if the schema needed to verify the config is None.
+    """
 
 
 class BaseConfig:
@@ -112,6 +118,7 @@ class BaseConfig:
     def load(self, path="", data=None, mtime=None, relative=True):
         """
         Loads the configuration from disk.
+        It may raise NonExistingSchema exception.
 
         :param path: if relative=True, this is a relative path
                      to configuration. The absolute path
@@ -131,8 +138,12 @@ class BaseConfig:
         else:
             config_path = path
 
+        schema = self._get_spec()
+        leap_check(schema is not None,
+                   "There is no schema to use.", NonExistingSchema)
+
         self._config_checker = PluggableConfig(format="json")
-        self._config_checker.options = copy.deepcopy(self._get_spec())
+        self._config_checker.options = copy.deepcopy(schema)
 
         try:
             if data is None:
