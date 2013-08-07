@@ -75,6 +75,8 @@ class BaseConfig:
     def _get_spec(self):
         """
         Returns the spec object for the specific configuration.
+
+        :rtype: dict or None if the version is not supported.
         """
         leap_assert(self._api_version is not None,
                     "You should set the API version.")
@@ -99,7 +101,7 @@ class BaseConfig:
         :type api_version: str
         """
         self._api_version = version
-        leap_assert(self._get_schema(self._api_version) is not None,
+        leap_assert(self._get_schema() is not None,
                     "Version %s is not supported." % (version, ))
 
     def get_path_prefix(self):
