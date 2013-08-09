@@ -1,3 +1,9 @@
+0.3.0 Aug 9:
+  o OSX: Fix problem with path prefix not returning the correct
+    value. Fixes #3273.
+  o Check if schema exists before load a config. Related to #3310.
+  o Handle schemas and api versions in base class. Related to #3310.
+
 0.2.7 Jul 26:
   o Refactor events so components are now called clients. Closes #3246
   o Add leap_check helper method, to use whenever leap_assert does not

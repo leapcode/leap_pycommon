@@ -1,2 +1,0 @@
-  o OSX: Fix problem with path prefix not returning the correct
-    value. Fixes #3273.
