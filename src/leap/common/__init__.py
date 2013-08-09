@@ -16,4 +16,4 @@ except ImportError:
 
 __all__ = ["certs", "check", "files", "events"]
 
-__version__ = "0.2.7"
+__version__ = "0.3.0"
