@@ -26,12 +26,18 @@ import os
 
 from abc import ABCMeta, abstractmethod
 
-from leap.common.check import leap_assert
+from leap.common.check import leap_assert, leap_check
 from leap.common.files import mkdir_p
 from leap.common.config.pluggableconfig import PluggableConfig
 from leap.common.config.prefixers import get_platform_prefixer
 
 logger = logging.getLogger(__name__)
+
+
+class NonExistingSchema(Exception):
+    """
+    Raised if the schema needed to verify the config is None.
+    """
 
 
 class BaseConfig:
@@ -55,13 +61,27 @@ class BaseConfig:
     def __init__(self):
         self._data = {}
         self._config_checker = None
+        self._api_version = None
 
     @abstractmethod
+    def _get_schema(self):
+        """
+        Returns the schema corresponding to the version given.
+
+        :rtype: dict or None if the version is not supported.
+        """
+        pass
+
     def _get_spec(self):
         """
         Returns the spec object for the specific configuration.
+
+        :rtype: dict or None if the version is not supported.
         """
-        return None
+        leap_assert(self._api_version is not None,
+                    "You should set the API version.")
+
+        return self._get_schema()
 
     def _safe_get_value(self, key):
         """
@@ -72,6 +92,17 @@ class BaseConfig:
         """
         leap_assert(self._config_checker, "Load the config first")
         return self._config_checker.config.get(key, None)
+
+    def set_api_version(self, version):
+        """
+        Sets the supported api version.
+
+        :param api_version: the version of the api supported by the provider.
+        :type api_version: str
+        """
+        self._api_version = version
+        leap_assert(self._get_schema() is not None,
+                    "Version %s is not supported." % (version, ))
 
     def get_path_prefix(self):
         """
@@ -112,6 +143,7 @@ class BaseConfig:
     def load(self, path="", data=None, mtime=None, relative=True):
         """
         Loads the configuration from disk.
+        It may raise NonExistingSchema exception.
 
         :param path: if relative=True, this is a relative path
                      to configuration. The absolute path
@@ -131,8 +163,12 @@ class BaseConfig:
         else:
             config_path = path
 
+        schema = self._get_spec()
+        leap_check(schema is not None,
+                   "There is no schema to use.", NonExistingSchema)
+
         self._config_checker = PluggableConfig(format="json")
-        self._config_checker.options = copy.deepcopy(self._get_spec())
+        self._config_checker.options = copy.deepcopy(schema)
 
         try:
             if data is None:
@@ -155,26 +191,39 @@ class LocalizedKey(object):
     def __init__(self, func, **kwargs):
         self._func = func
 
-    def __call__(self, instance, lang="en"):
+    def __call__(self, instance, lang=None):
         """
         Tries to return the string for the specified language, otherwise
-        informs the problem and returns an empty string.
+        returns the default language string.
 
         :param lang: language code
         :type lang: str
 
         :return: localized value from the possible values returned by
                  self._func
+                 It returns None in case that the provider does not provides
+                 a matching pair of default_language and string for
+                 that language.
+                 e.g.:
+                     'default_language': 'es',
+                     'description': {'en': 'test description'}
+                Note that the json schema can't check that.
         """
         descriptions = self._func(instance)
-        description_lang = ""
-        config_lang = "en"
+        config_lang = instance.get_default_language()
+        if lang is None:
+            lang = config_lang
+
         for key in descriptions.keys():
             if lang.startswith(key):
                 config_lang = key
                 break
 
-        description_lang = descriptions[config_lang]
+        description_lang = descriptions.get(config_lang)
+        if description_lang is None:
+            logger.error("There is a misconfiguration in the "
+                         "provider's language strings.")
+
         return description_lang
 
     def __get__(self, instance, instancetype):
