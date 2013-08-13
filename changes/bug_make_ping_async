@@ -1,0 +1,2 @@
+  o Make the server ping call be async inside events'
+    ensure_server. Fixes #3355.
