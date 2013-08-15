@@ -23,7 +23,7 @@ from setuptools import setup, find_packages
 requirements = [
     "jsonschema",
     "pyxdg",
-    'protobuf',
+    'protobuf>=2.4.1',
     'protobuf.socketrpc',
     "PyOpenSSL",
     "python-dateutil",
