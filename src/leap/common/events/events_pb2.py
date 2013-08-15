@@ -13,7 +13,7 @@ from google.protobuf import descriptor_pb2
 DESCRIPTOR = descriptor.FileDescriptor(
   name='events.proto',
   package='leap.common.events',
-  serialized_pb='\n\x0c\x65vents.proto\x12\x12leap.common.events\"\x97\x01\n\rSignalRequest\x12(\n\x05\x65vent\x18\x01 \x02(\x0e\x32\x19.leap.common.events.Event\x12\x0f\n\x07\x63ontent\x18\x02 \x02(\t\x12\x12\n\nmac_method\x18\x03 \x02(\t\x12\x0b\n\x03mac\x18\x04 \x02(\x0c\x12\x12\n\nenc_method\x18\x05 \x01(\t\x12\x16\n\x0e\x65rror_occurred\x18\x06 \x01(\x08\"j\n\x0fRegisterRequest\x12(\n\x05\x65vent\x18\x01 \x02(\x0e\x32\x19.leap.common.events.Event\x12\x0c\n\x04port\x18\x02 \x02(\x05\x12\x12\n\nmac_method\x18\x03 \x02(\t\x12\x0b\n\x03mac\x18\x04 \x02(\x0c\"l\n\x11UnregisterRequest\x12(\n\x05\x65vent\x18\x01 \x02(\x0e\x32\x19.leap.common.events.Event\x12\x0c\n\x04port\x18\x02 \x02(\x05\x12\x12\n\nmac_method\x18\x03 \x02(\t\x12\x0b\n\x03mac\x18\x04 \x02(\x0c\"\r\n\x0bPingRequest\"\x82\x01\n\rEventResponse\x12\x38\n\x06status\x18\x01 \x02(\x0e\x32(.leap.common.events.EventResponse.Status\x12\x0e\n\x06result\x18\x02 \x01(\t\"\'\n\x06Status\x12\x06\n\x02OK\x10\x01\x12\n\n\x06UNAUTH\x10\x02\x12\t\n\x05\x45RROR\x10\x03*\xe7\x02\n\x05\x45vent\x12\x15\n\x11\x43LIENT_SESSION_ID\x10\x01\x12\x0e\n\nCLIENT_UID\x10\x02\x12\x19\n\x15SOLEDAD_CREATING_KEYS\x10\x03\x12\x1e\n\x1aSOLEDAD_DONE_CREATING_KEYS\x10\x04\x12\x1a\n\x16SOLEDAD_UPLOADING_KEYS\x10\x05\x12\x1f\n\x1bSOLEDAD_DONE_UPLOADING_KEYS\x10\x06\x12\x1c\n\x18SOLEDAD_DOWNLOADING_KEYS\x10\x07\x12!\n\x1dSOLEDAD_DONE_DOWNLOADING_KEYS\x10\x08\x12\x1c\n\x18SOLEDAD_NEW_DATA_TO_SYNC\x10\t\x12\x1a\n\x16SOLEDAD_DONE_DATA_SYNC\x10\n\x12\x17\n\x13UPDATER_NEW_UPDATES\x10\x0b\x12\x19\n\x15UPDATER_DONE_UPDATING\x10\x0c\x12\x10\n\x0cRAISE_WINDOW\x10\r2\xdd\x02\n\x13\x45ventsServerService\x12J\n\x04ping\x12\x1f.leap.common.events.PingRequest\x1a!.leap.common.events.EventResponse\x12R\n\x08register\x12#.leap.common.events.RegisterRequest\x1a!.leap.common.events.EventResponse\x12V\n\nunregister\x12%.leap.common.events.UnregisterRequest\x1a!.leap.common.events.EventResponse\x12N\n\x06signal\x12!.leap.common.events.SignalRequest\x1a!.leap.common.events.EventResponse2\xb1\x01\n\x13\x45ventsClientService\x12J\n\x04ping\x12\x1f.leap.common.events.PingRequest\x1a!.leap.common.events.EventResponse\x12N\n\x06signal\x12!.leap.common.events.SignalRequest\x1a!.leap.common.events.EventResponseB\x03\x90\x01\x01')
+  serialized_pb='\n\x0c\x65vents.proto\x12\x12leap.common.events\"\x97\x01\n\rSignalRequest\x12(\n\x05\x65vent\x18\x01 \x02(\x0e\x32\x19.leap.common.events.Event\x12\x0f\n\x07\x63ontent\x18\x02 \x02(\t\x12\x12\n\nmac_method\x18\x03 \x02(\t\x12\x0b\n\x03mac\x18\x04 \x02(\x0c\x12\x12\n\nenc_method\x18\x05 \x01(\t\x12\x16\n\x0e\x65rror_occurred\x18\x06 \x01(\x08\"j\n\x0fRegisterRequest\x12(\n\x05\x65vent\x18\x01 \x02(\x0e\x32\x19.leap.common.events.Event\x12\x0c\n\x04port\x18\x02 \x02(\x05\x12\x12\n\nmac_method\x18\x03 \x02(\t\x12\x0b\n\x03mac\x18\x04 \x02(\x0c\"l\n\x11UnregisterRequest\x12(\n\x05\x65vent\x18\x01 \x02(\x0e\x32\x19.leap.common.events.Event\x12\x0c\n\x04port\x18\x02 \x02(\x05\x12\x12\n\nmac_method\x18\x03 \x02(\t\x12\x0b\n\x03mac\x18\x04 \x02(\x0c\"\r\n\x0bPingRequest\"\x82\x01\n\rEventResponse\x12\x38\n\x06status\x18\x01 \x02(\x0e\x32(.leap.common.events.EventResponse.Status\x12\x0e\n\x06result\x18\x02 \x01(\t\"\'\n\x06Status\x12\x06\n\x02OK\x10\x01\x12\n\n\x06UNAUTH\x10\x02\x12\t\n\x05\x45RROR\x10\x03*\xeb\x05\n\x05\x45vent\x12\x15\n\x11\x43LIENT_SESSION_ID\x10\x01\x12\x0e\n\nCLIENT_UID\x10\x02\x12\x19\n\x15SOLEDAD_CREATING_KEYS\x10\x03\x12\x1e\n\x1aSOLEDAD_DONE_CREATING_KEYS\x10\x04\x12\x1a\n\x16SOLEDAD_UPLOADING_KEYS\x10\x05\x12\x1f\n\x1bSOLEDAD_DONE_UPLOADING_KEYS\x10\x06\x12\x1c\n\x18SOLEDAD_DOWNLOADING_KEYS\x10\x07\x12!\n\x1dSOLEDAD_DONE_DOWNLOADING_KEYS\x10\x08\x12\x1c\n\x18SOLEDAD_NEW_DATA_TO_SYNC\x10\t\x12\x1a\n\x16SOLEDAD_DONE_DATA_SYNC\x10\n\x12\x17\n\x13UPDATER_NEW_UPDATES\x10\x0b\x12\x19\n\x15UPDATER_DONE_UPDATING\x10\x0c\x12\x10\n\x0cRAISE_WINDOW\x10\r\x12\x18\n\x14SMTP_SERVICE_STARTED\x10\x0e\x12 \n\x1cSMTP_SERVICE_FAILED_TO_START\x10\x0f\x12%\n!SMTP_RECIPIENT_ACCEPTED_ENCRYPTED\x10\x10\x12\'\n#SMTP_RECIPIENT_ACCEPTED_UNENCRYPTED\x10\x11\x12\x1b\n\x17SMTP_RECIPIENT_REJECTED\x10\x12\x12\x1f\n\x1bSMTP_START_ENCRYPT_AND_SIGN\x10\x13\x12\x1d\n\x19SMTP_END_ENCRYPT_AND_SIGN\x10\x14\x12\x13\n\x0fSMTP_START_SIGN\x10\x15\x12\x11\n\rSMTP_END_SIGN\x10\x16\x12\x1b\n\x17SMTP_SEND_MESSAGE_START\x10\x17\x12\x1d\n\x19SMTP_SEND_MESSAGE_SUCCESS\x10\x18\x12\x1b\n\x17SMTP_SEND_MESSAGE_ERROR\x10\x19\x12\x18\n\x14SMTP_CONNECTION_LOST\x10\x1a\x32\xdd\x02\n\x13\x45ventsServerService\x12J\n\x04ping\x12\x1f.leap.common.events.PingRequest\x1a!.leap.common.events.EventResponse\x12R\n\x08register\x12#.leap.common.events.RegisterRequest\x1a!.leap.common.events.EventResponse\x12V\n\nunregister\x12%.leap.common.events.UnregisterRequest\x1a!.leap.common.events.EventResponse\x12N\n\x06signal\x12!.leap.common.events.SignalRequest\x1a!.leap.common.events.EventResponse2\xb1\x01\n\x13\x45ventsClientService\x12J\n\x04ping\x12\x1f.leap.common.events.PingRequest\x1a!.leap.common.events.EventResponse\x12N\n\x06signal\x12!.leap.common.events.SignalRequest\x1a!.leap.common.events.EventResponseB\x03\x90\x01\x01')
 
 _EVENT = descriptor.EnumDescriptor(
   name='Event',
@@ -73,11 +73,63 @@ _EVENT = descriptor.EnumDescriptor(
       name='RAISE_WINDOW', index=12, number=13,
       options=None,
       type=None),
+    descriptor.EnumValueDescriptor(
+      name='SMTP_SERVICE_STARTED', index=13, number=14,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='SMTP_SERVICE_FAILED_TO_START', index=14, number=15,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='SMTP_RECIPIENT_ACCEPTED_ENCRYPTED', index=15, number=16,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='SMTP_RECIPIENT_ACCEPTED_UNENCRYPTED', index=16, number=17,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='SMTP_RECIPIENT_REJECTED', index=17, number=18,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='SMTP_START_ENCRYPT_AND_SIGN', index=18, number=19,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='SMTP_END_ENCRYPT_AND_SIGN', index=19, number=20,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='SMTP_START_SIGN', index=20, number=21,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='SMTP_END_SIGN', index=21, number=22,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='SMTP_SEND_MESSAGE_START', index=22, number=23,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='SMTP_SEND_MESSAGE_SUCCESS', index=23, number=24,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='SMTP_SEND_MESSAGE_ERROR', index=24, number=25,
+      options=None,
+      type=None),
+    descriptor.EnumValueDescriptor(
+      name='SMTP_CONNECTION_LOST', index=25, number=26,
+      options=None,
+      type=None),
   ],
   containing_type=None,
   options=None,
   serialized_start=557,
-  serialized_end=916,
+  serialized_end=1304,
 )
 
 
@@ -94,6 +146,19 @@ SOLEDAD_DONE_DATA_SYNC = 10
 UPDATER_NEW_UPDATES = 11
 UPDATER_DONE_UPDATING = 12
 RAISE_WINDOW = 13
+SMTP_SERVICE_STARTED = 14
+SMTP_SERVICE_FAILED_TO_START = 15
+SMTP_RECIPIENT_ACCEPTED_ENCRYPTED = 16
+SMTP_RECIPIENT_ACCEPTED_UNENCRYPTED = 17
+SMTP_RECIPIENT_REJECTED = 18
+SMTP_START_ENCRYPT_AND_SIGN = 19
+SMTP_END_ENCRYPT_AND_SIGN = 20
+SMTP_START_SIGN = 21
+SMTP_END_SIGN = 22
+SMTP_SEND_MESSAGE_START = 23
+SMTP_SEND_MESSAGE_SUCCESS = 24
+SMTP_SEND_MESSAGE_ERROR = 25
+SMTP_CONNECTION_LOST = 26
 
 
 _EVENTRESPONSE_STATUS = descriptor.EnumDescriptor(
@@ -387,8 +452,8 @@ _EVENTSSERVERSERVICE = descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   options=None,
-  serialized_start=919,
-  serialized_end=1268,
+  serialized_start=1307,
+  serialized_end=1656,
   methods=[
   descriptor.MethodDescriptor(
     name='ping',
@@ -442,8 +507,8 @@ _EVENTSCLIENTSERVICE = descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=1,
   options=None,
-  serialized_start=1271,
-  serialized_end=1448,
+  serialized_start=1659,
+  serialized_end=1836,
   methods=[
   descriptor.MethodDescriptor(
     name='ping',
