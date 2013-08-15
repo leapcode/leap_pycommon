@@ -1,3 +1,9 @@
+leap-common (0.3.0.1) unstable; urgency=low
+
+  * Regenerate events_pb2.py with protobuf 2.4.1
+
+ -- Micah Anderson <micah@debian.org>  Thu, 15 Aug 2013 10:11:43 -0400
+
 leap-common (0.3.0) unstable; urgency=low
 
   * Update to 0.3.0
