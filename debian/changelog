@@ -1,3 +1,10 @@
+leap-common (0.3.1) unstable; urgency=low
+
+  * Merge changes for new version
+  * Update protobuf dependency to be more accurate
+
+ -- Micah Anderson <micah@debian.org>  Thu, 22 Aug 2013 15:16:23 -0400
+
 leap-common (0.3.0.1) unstable; urgency=low
 
   * Regenerate events_pb2.py with protobuf 2.4.1
