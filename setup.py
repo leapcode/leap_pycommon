@@ -19,20 +19,8 @@ setup file for leap.common
 """
 from setuptools import setup, find_packages
 
-# XXX parse pkg/requirements.pip
-requirements = [
-    "jsonschema",
-    "pyxdg",
-    'protobuf>=2.4.1',
-    'protobuf.socketrpc',
-    "PyOpenSSL",
-    "python-dateutil",
-    "PyCrypto",
-]
-
-#dependency_links = [
-    #"https://protobuf-socket-rpc.googlecode.com/files/protobuf.socketrpc-1.3.2.tar.gz#egg=protobuf.socketrpc"
-#]
+from pkg import utils
+parsed_reqs = utils.parse_requirements()
 
 tests_requirements = [
     'mock',
@@ -73,7 +61,7 @@ setup(
     #packages=find_packages('src', exclude=['leap.common.tests']),
     packages=find_packages('src'),
     test_suite='leap.common.tests',
-    install_requires=requirements,
+    install_requires=parsed_reqs,
     #dependency_links=dependency_links,
     tests_require=tests_requirements,
     include_package_data=True
