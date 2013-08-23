@@ -1,1 +1,2 @@
 include src/leap/common/testing/*.pem
+include versioneer.py

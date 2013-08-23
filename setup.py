@@ -22,6 +22,12 @@ from setuptools import setup, find_packages
 from pkg import utils
 parsed_reqs = utils.parse_requirements()
 
+import versioneer
+versioneer.versionfile_source = 'src/leap/common/_version.py'
+versioneer.versionfile_build = 'leap/common/_version.py'
+versioneer.tag_prefix = ''  # tags are like 1.2.0
+versioneer.parentdir_prefix = 'leap.common-'
+
 tests_requirements = [
     'mock',
 ]
@@ -42,9 +48,8 @@ trove_classifiers = [
 
 setup(
     name='leap.common',
-    # If you change version, do it also in
-    # src/leap/common/__init__.py
-    version='0.3.0',
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
     url='https://leap.se/',
     license='GPLv3+',
     author='The LEAP Encryption Access Project',
