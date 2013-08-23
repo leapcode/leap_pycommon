@@ -25,7 +25,7 @@ all: events_pb2.py
 
 %_pb2.py: %.proto
 	$(PROTOC) --python_out=./ $<
-	autopep8 --in-place --aggressive $@
+#	autopep8 --in-place --aggressive $@
 
 clean:
 	rm -f *_pb2.py
