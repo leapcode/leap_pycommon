@@ -1,3 +1,14 @@
+0.3.1 Aug 23:
+  o Add libssl-dev requirement for pyOpenSSL.
+  o Make the server ping call be async inside events'
+    ensure_server. Fixes #3355.
+  o Requirements in setup are taken from requirements.pip
+  o Updated requirements.
+  o Add IMAP_UNREAD_MAIL event.
+  o Add events for SMTP relay signaling. Closes #3464.
+  o Add events for imap and keymanager notifications. Closes: #3480
+  o Add versioneer to handle versioning.
+
 0.3.0 Aug 9:
   o OSX: Fix problem with path prefix not returning the correct
     value. Fixes #3273.
