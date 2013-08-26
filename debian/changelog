@@ -1,3 +1,9 @@
+leap-common (0.3.1) unstable; urgency=low
+
+  * Update to 0.3.1
+
+ -- Ben Carrillo <ben@futeisha.org>  Mon, 26 Aug 2013 21:55:19 +0200
+
 leap-common (0.3.0.1) unstable; urgency=low
 
   * Regenerate events_pb2.py with protobuf 2.4.1
