@@ -77,17 +77,31 @@ def ensure_server(port=SERVER_PORT):
         s.connect(('localhost', port))
         s.close()
         # port is taken, check if there's a server running there
-        response = ping(port)
-        if response is not None and response.status == proto.EventResponse.OK:
-            logger.info('A server is already running on port %d.', port)
-            return None
-        # port is taken, and not by an events server
-        logger.info('Port %d is taken by something not an events server.', port)
-        raise PortAlreadyTaken(port)
+        ping(port,
+             reqcbk=lambda req, res: process_ping(port, req, res),
+             timeout=10)
     except socket.error:
         # port is available, run a server
         logger.info('Launching server on port %d.', port)
         return EventsServerDaemon.ensure(port)
+
+def process_ping(port, request, response):
+    """
+    Response callback for the ping event.
+
+    :param port: Port that is trying to be used
+    :type port: int
+    :param request: Ping request made
+    :type request: proto.PingRequest
+    :param response: Response from the event
+    :type response: proto.EventResponse
+    """
+    if response is not None and response.status == proto.EventResponse.OK:
+        logger.info('A server is already running on port %d.', port)
+        return
+    # port is taken, and not by an events server
+    logger.info('Port %d is taken by something not an events server.', port)
+    raise PortAlreadyTaken(port)
 
 
 def ping(port=SERVER_PORT, reqcbk=None, timeout=1000):
