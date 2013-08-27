@@ -1,0 +1,8 @@
+jsonschema  #<=0.8 -- are we done with this conflict?
+pyxdg
+protobuf>=2.4.1
+protobuf.socketrpc
+pyopenssl
+python-dateutil
+
+#autopep8 -- ???

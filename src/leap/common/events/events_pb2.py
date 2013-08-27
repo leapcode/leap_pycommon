@@ -498,31 +498,31 @@ DESCRIPTOR.message_types_by_name['EventResponse'] = _EVENTRESPONSE
 class SignalRequest(message.Message):
   __metaclass__ = reflection.GeneratedProtocolMessageType
   DESCRIPTOR = _SIGNALREQUEST
-  
+
   # @@protoc_insertion_point(class_scope:leap.common.events.SignalRequest)
 
 class RegisterRequest(message.Message):
   __metaclass__ = reflection.GeneratedProtocolMessageType
   DESCRIPTOR = _REGISTERREQUEST
-  
+
   # @@protoc_insertion_point(class_scope:leap.common.events.RegisterRequest)
 
 class UnregisterRequest(message.Message):
   __metaclass__ = reflection.GeneratedProtocolMessageType
   DESCRIPTOR = _UNREGISTERREQUEST
-  
+
   # @@protoc_insertion_point(class_scope:leap.common.events.UnregisterRequest)
 
 class PingRequest(message.Message):
   __metaclass__ = reflection.GeneratedProtocolMessageType
   DESCRIPTOR = _PINGREQUEST
-  
+
   # @@protoc_insertion_point(class_scope:leap.common.events.PingRequest)
 
 class EventResponse(message.Message):
   __metaclass__ = reflection.GeneratedProtocolMessageType
   DESCRIPTOR = _EVENTRESPONSE
-  
+
   # @@protoc_insertion_point(class_scope:leap.common.events.EventResponse)
 
 

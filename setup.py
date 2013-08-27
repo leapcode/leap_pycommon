@@ -19,20 +19,14 @@ setup file for leap.common
 """
 from setuptools import setup, find_packages
 
-# XXX parse pkg/requirements.pip
-requirements = [
-    "jsonschema",
-    "pyxdg",
-    'protobuf>=2.4.1',
-    'protobuf.socketrpc',
-    "PyOpenSSL",
-    "python-dateutil",
-    "PyCrypto",
-]
+from pkg import utils
+parsed_reqs = utils.parse_requirements()
 
-#dependency_links = [
-    #"https://protobuf-socket-rpc.googlecode.com/files/protobuf.socketrpc-1.3.2.tar.gz#egg=protobuf.socketrpc"
-#]
+import versioneer
+versioneer.versionfile_source = 'src/leap/common/_version.py'
+versioneer.versionfile_build = 'leap/common/_version.py'
+versioneer.tag_prefix = ''  # tags are like 1.2.0
+versioneer.parentdir_prefix = 'leap.common-'
 
 tests_requirements = [
     'mock',
@@ -54,9 +48,8 @@ trove_classifiers = [
 
 setup(
     name='leap.common',
-    # If you change version, do it also in
-    # src/leap/common/__init__.py
-    version='0.3.0',
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
     url='https://leap.se/',
     license='GPLv3+',
     author='The LEAP Encryption Access Project',
@@ -73,7 +66,7 @@ setup(
     #packages=find_packages('src', exclude=['leap.common.tests']),
     packages=find_packages('src'),
     test_suite='leap.common.tests',
-    install_requires=requirements,
+    install_requires=parsed_reqs,
     #dependency_links=dependency_links,
     tests_require=tests_requirements,
     include_package_data=True
