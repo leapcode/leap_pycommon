@@ -1,2 +1,5 @@
+include pkg/*
 include src/leap/common/testing/*.pem
 include versioneer.py
+include LICENSE
+include CHANGELOG
