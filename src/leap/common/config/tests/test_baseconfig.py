@@ -113,8 +113,11 @@ class TestConfig(BaseConfig):
     def get_version(self):
         return self._safe_get_value("version")
 
-    def _get_spec(self):
+    def _get_schema(self):
         return sample_spec
+
+    def _get_spec(self):
+        return self._get_schema()
 
     def get_default_language(self):
         return self._safe_get_value("default_language")
