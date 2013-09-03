@@ -14,7 +14,6 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
-
 """
 The client end point of the events mechanism.
 
@@ -27,18 +26,15 @@ server that it wants to be notified whenever signals of that type are sent by
 some other client.
 """
 
-
 import logging
-import threading
 
 
 from protobuf.socketrpc import RpcService
-from leap.common.events import (
-    events_pb2 as proto,
-    server,
-    daemon,
-    mac_auth,
-)
+
+from leap.common.events import events_pb2 as proto
+from leap.common.events import server
+from leap.common.events import daemon
+from leap.common.events import mac_auth
 
 
 logger = logging.getLogger(__name__)
@@ -118,6 +114,10 @@ def register(signal, callback, uid=None, replace=False, reqcbk=None,
     if signal not in registered_callbacks:
         registered_callbacks[signal] = []
     cbklist = registered_callbacks[signal]
+
+    # TODO should check that the callback has the right
+    # number of arguments.
+
     if uid and filter(lambda (x, y): x == uid, cbklist):
         if not replace:
             raise CallbackAlreadyRegistered()
