@@ -120,7 +120,7 @@ def register(signal, callback, uid=None, replace=False, reqcbk=None,
     cbklist = registered_callbacks[signal]
     if uid and filter(lambda (x, y): x == uid, cbklist):
         if not replace:
-            raise CallbackAlreadyRegisteredException()
+            raise CallbackAlreadyRegistered()
         else:
             registered_callbacks[signal] = filter(lambda(x, y): x != uid,
                                                   cbklist)
