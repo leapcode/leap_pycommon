@@ -85,6 +85,7 @@ def ensure_server(port=SERVER_PORT):
         logger.info('Launching server on port %d.', port)
         return EventsServerDaemon.ensure(port)
 
+
 def process_ping(port, request, response):
     """
     Response callback for the ping event.
@@ -100,7 +101,7 @@ def process_ping(port, request, response):
         logger.info('A server is already running on port %d.', port)
         return
     # port is taken, and not by an events server
-    logger.info('Port %d is taken by something not an events server.', port)
+    logger.warning('Port %d is taken by something not an events server.', port)
     raise PortAlreadyTaken(port)
 
 
@@ -125,7 +126,7 @@ def ping(port=SERVER_PORT, reqcbk=None, timeout=1000):
         proto.EventsServerService_Stub,
         port,
         'localhost')
-    logger.info("Pinging server in port %d..." % port)
+    logger.debug("Pinging server in port %d..." % port)
     return service.ping(request, callback=reqcbk, timeout=timeout)
 
 
@@ -196,14 +197,14 @@ class EventsServerService(proto.EventsServerService):
         :param done: callback to be called when done
         :type done: protobuf.socketrpc.server.Callback
         """
-        logger.info('Received signal from client: %s...', str(request)[:40])
+        logger.debug('Received signal from client: %s...', str(request)[:40])
         # send signal to all registered clients
         # TODO: verify signal auth
         if request.event in registered_clients:
             for port in registered_clients[request.event]:
 
                 def callback(req, resp):
-                    logger.info("Signal received by " + str(port))
+                    logger.debug("Signal received by " + str(port))
 
                 service = RpcService(proto.EventsClientService_Stub,
                                      port, 'localhost')
@@ -224,7 +225,7 @@ class EventsServerService(proto.EventsServerService):
         :param done: callback to be called when done
         :type done: protobuf.socketrpc.server.Callback
         """
-        logger.info("Received ping request, sending response.")
+        logger.debug("Received ping request, sending response.")
         response = proto.EventResponse()
         response.status = proto.EventResponse.OK
         done.run(response)
