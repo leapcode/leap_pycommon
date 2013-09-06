@@ -29,7 +29,7 @@ from abc import ABCMeta, abstractmethod
 from leap.common.check import leap_assert, leap_check
 from leap.common.files import mkdir_p
 from leap.common.config.pluggableconfig import PluggableConfig
-from leap.common.config.prefixers import get_platform_prefixer
+from leap.common.config import get_path_prefix
 
 logger = logging.getLogger(__name__)
 
@@ -108,8 +108,7 @@ class BaseConfig:
         """
         Returns the platform dependant path prefixer
         """
-        return get_platform_prefixer().get_path_prefix(
-            standalone=self.standalone)
+        return get_path_prefix(standalone=self.standalone)
 
     def loaded(self):
         """

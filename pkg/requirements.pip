@@ -1,5 +1,5 @@
 jsonschema  #<=0.8 -- are we done with this conflict?
-pyxdg
+dirspec
 protobuf>=2.4.1
 protobuf.socketrpc
 pyopenssl

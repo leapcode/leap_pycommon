@@ -14,7 +14,6 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
-
 """
 The client end point of the events mechanism.
 
@@ -27,18 +26,15 @@ server that it wants to be notified whenever signals of that type are sent by
 some other client.
 """
 
-
 import logging
-import threading
 
 
 from protobuf.socketrpc import RpcService
-from leap.common.events import (
-    events_pb2 as proto,
-    server,
-    daemon,
-    mac_auth,
-)
+
+from leap.common.events import events_pb2 as proto
+from leap.common.events import server
+from leap.common.events import daemon
+from leap.common.events import mac_auth
 
 
 logger = logging.getLogger(__name__)
@@ -118,9 +114,13 @@ def register(signal, callback, uid=None, replace=False, reqcbk=None,
     if signal not in registered_callbacks:
         registered_callbacks[signal] = []
     cbklist = registered_callbacks[signal]
+
+    # TODO should check that the callback has the right
+    # number of arguments.
+
     if uid and filter(lambda (x, y): x == uid, cbklist):
         if not replace:
-            raise CallbackAlreadyRegisteredException()
+            raise CallbackAlreadyRegistered()
         else:
             registered_callbacks[signal] = filter(lambda(x, y): x != uid,
                                                   cbklist)
@@ -133,11 +133,12 @@ def register(signal, callback, uid=None, replace=False, reqcbk=None,
     request.mac = ""
     service = RpcService(proto.EventsServerService_Stub,
                          server.SERVER_PORT, 'localhost')
-    logger.info(
+    logger.debug(
         "Sending registration request to server on port %s: %s",
         server.SERVER_PORT,
         str(request)[:40])
     return service.register(request, callback=reqcbk, timeout=timeout)
+
 
 def unregister(signal, uid=None, reqcbk=None, timeout=1000):
     """
@@ -226,7 +227,7 @@ def signal(signal, content="", mac_method="", mac="", reqcbk=None,
     request.mac = mac
     service = RpcService(proto.EventsServerService_Stub, server.SERVER_PORT,
                          'localhost')
-    logger.info("Sending signal to server: %s", str(request)[:40])
+    logger.debug("Sending signal to server: %s", str(request)[:40])
     return service.signal(request, callback=reqcbk, timeout=timeout)
 
 
@@ -251,7 +252,7 @@ def ping(port, reqcbk=None, timeout=1000):
         proto.EventsClientService_Stub,
         port,
         'localhost')
-    logger.info("Pinging a client in port %d..." % port)
+    logger.debug("Pinging a client in port %d..." % port)
     return service.ping(request, callback=reqcbk, timeout=timeout)
 
 
@@ -277,7 +278,7 @@ class EventsClientService(proto.EventsClientService):
         :param done: callback to be called when done
         :type done: protobuf.socketrpc.server.Callback
         """
-        logger.info('Received signal from server: %s...' % str(request)[:40])
+        logger.debug('Received signal from server: %s...' % str(request)[:40])
 
         # run registered callbacks
         # TODO: verify authentication using mac in incoming message
@@ -303,7 +304,7 @@ class EventsClientService(proto.EventsClientService):
         :param done: callback to be called when done
         :type done: protobuf.socketrpc.server.Callback
         """
-        logger.info("Received ping request, sending response.")
+        logger.debug("Received ping request, sending response.")
         response = proto.EventResponse()
         response.status = proto.EventResponse.OK
         done.run(response)

@@ -1,3 +1,7 @@
+0.3.2 Sep 06:
+  o Use dirspec instead of plain xdg. Closes #3574.
+  o Correct use of CallbackAlreadyRegistered exception.
+
 0.3.1 Aug 23:
   o Add libssl-dev requirement for pyOpenSSL.
   o Make the server ping call be async inside events'
