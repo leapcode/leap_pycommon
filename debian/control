@@ -7,7 +7,7 @@ Standards-Version: 3.9.4
 
 Package: python-leap-common
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}, python-jsonschema, python-xdg, python-protobuf (>=2.4.1), python-protobuf.socketrpc,
+Depends: ${misc:Depends}, ${python:Depends}, python-jsonschema, python-dirspec, python-protobuf (>=2.4.1), python-protobuf.socketrpc,
  python-dateutil, python-autopep8, python-openssl, python-gnupg
 Description: Common python files needed by LEAP projects.
  This package contains common python functions that are needed 
