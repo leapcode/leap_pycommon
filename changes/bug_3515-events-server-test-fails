@@ -1,2 +1,0 @@
-  o Fix events server exception raising when port is occupied by some other
-    process. Closes #3515.
