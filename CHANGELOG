@@ -1,3 +1,7 @@
+0.3.3 Sep 20:
+  o Fix events server exception raising when port is occupied by some
+    other process. Closes #3515.
+
 0.3.2 Sep 06:
   o Use dirspec instead of plain xdg. Closes #3574.
   o Correct use of CallbackAlreadyRegistered exception.
