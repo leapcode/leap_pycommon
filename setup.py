@@ -69,5 +69,6 @@ setup(
     install_requires=parsed_reqs,
     #dependency_links=dependency_links,
     tests_require=tests_requirements,
-    include_package_data=True
+    include_package_data=True,
+    zip_safe=False,
 )
