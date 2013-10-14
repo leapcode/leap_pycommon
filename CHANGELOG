@@ -1,3 +1,6 @@
+0.3.4 Oct 4:
+  o Add cert bundle including ca-cert certificate. Closes #3850.
+
 0.3.3 Sep 20:
   o Fix events server exception raising when port is occupied by some
     other process. Closes #3515.
