@@ -1,3 +1,9 @@
+leap-common (0.3.5) unstable; urgency=low
+
+  * Update to 0.3.5 release.
+ 
+ -- Micah Anderson <micah@debian.org>  Tue, 05 Nov 2013 11:05:40 -0200
+
 leap-common (0.3.4) unstable; urgency=low
 
   * Update to 0.3.4 release.
