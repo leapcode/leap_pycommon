@@ -104,6 +104,11 @@ def get_versions(default={}, verbose=False):
         with open(versioneer.versionfile_source, 'w') as f:
             f.write(subst_template)
 
+try:
+    long_description = open('README.rst').read() + '\n\n\n' + \
+        open('CHANGELOG').read()
+except Exception:
+    long_description = ""
 
 cmdclass["freeze_debianver"] = freeze_debianver
 setup(
@@ -118,8 +123,7 @@ setup(
     maintainer='Kali Kaneko',
     maintainer_email='kali@leap.se',
     description='Common files used by the LEAP project.',
-    long_description=open('README.rst').read() + '\n\n\n' +
-    open('CHANGELOG').read(),
+    long_description=long_description,
     classifiers=trove_classifiers,
     namespace_packages=["leap"],
     package_dir={'': 'src'},
