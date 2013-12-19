@@ -18,6 +18,7 @@
 Useful decorators.
 """
 import collections
+import datetime
 import functools
 import logging
 
@@ -32,7 +33,13 @@ class _memoized(object):
     If called later with the same arguments, the cached value is returned
     (not reevaluated).
     """
-    def __init__(self, func, ignore_kwargs=None, is_method=False):
+
+    # cache invalidation time, in seconds
+    CACHE_INVALIDATION_DELTA = 1800
+
+    def __init__(self, func, ignore_kwargs=None, is_method=False,
+                 invalidation=None):
+
         """
         :param ignore_kwargs: If True, ignore all kwargs.
                               If tuple, ignore those kwargs.
@@ -45,9 +52,13 @@ class _memoized(object):
         self.is_method = is_method
         self.func = func
 
+        if invalidation:
+            self.CACHE_INVALIDATION_DELTA = invalidation
+
         # TODO should put bounds to the cache dict so we do not
         # consume a huge amount of memory.
         self.cache = {}
+        self.cache_ts = {}
 
     def __call__(self, *args, **kwargs):
         """
@@ -68,6 +79,9 @@ class _memoized(object):
         if self.is_method:
             # forget about `self` as key
             key_args = args[1:]
+        else:
+            key_args = args
+
         if self.ignore_kwargs is True:
             key = key_args
         else:
@@ -82,17 +96,40 @@ class _memoized(object):
             return self.func(*args, **kwargs)
 
         if key in self.cache:
-            logger.debug("Got value from cache...")
-            value = self.cache[key]
-            return ret_or_raise(value)
-        else:
-            try:
-                value = self.func(*args, **kwargs)
-            except Exception as exc:
-                logger.error("Exception while calling function: %r" % (exc,))
-                value = exc
-            self.cache[key] = value
-            return ret_or_raise(value)
+            if self._is_cache_still_valid(key):
+                value = self.cache[key]
+                logger.debug("Got value from cache...")
+                return ret_or_raise(value)
+            else:
+                logger.debug("Cache is invalid, evaluating again...")
+
+        # no cache, or cache invalid
+        try:
+            value = self.func(*args, **kwargs)
+        except Exception as exc:
+            logger.error("Exception while calling function: %r" % (exc,))
+            value = exc
+        self.cache[key] = value
+        self.cache_ts[key] = datetime.datetime.now()
+        return ret_or_raise(value)
+
+    def _is_cache_still_valid(self, key, now=datetime.datetime.now):
+        """
+        Returns True if the cache value is still valid, False otherwise.
+
+        For now, this happen if less than CACHE_INVALIDATION_DELTA seconds
+        have passed from the time in which we recorded the cached value.
+
+        :param key: the key to lookup in the cache
+        :type key: hashable
+        :param now: a callable that returns a datetime object. override
+                    for dependency injection during testing.
+        :type now: callable
+        :rtype: bool
+        """
+        cached_ts = self.cache_ts[key]
+        delta = datetime.timedelta(seconds=self.CACHE_INVALIDATION_DELTA)
+        return (now() - cached_ts) < delta
 
     def __repr__(self):
         """
