@@ -56,6 +56,15 @@ class _memoized(object):
         :tyoe args: tuple
         :type kwargs: dict
         """
+        def ret_or_raise(value):
+            """
+            Returns the value except if it is an exception,
+            in which case it's raised.
+            """
+            if isinstance(value, Exception):
+                raise value
+            return value
+
         if self.is_method:
             # forget about `self` as key
             key_args = args[1:]
@@ -74,15 +83,16 @@ class _memoized(object):
 
         if key in self.cache:
             logger.debug("Got value from cache...")
-            return self.cache[key]
+            value = self.cache[key]
+            return ret_or_raise(value)
         else:
             try:
                 value = self.func(*args, **kwargs)
             except Exception as exc:
                 logger.error("Exception while calling function: %r" % (exc,))
-                value = None
+                value = exc
             self.cache[key] = value
-            return value
+            return ret_or_raise(value)
 
     def __repr__(self):
         """
