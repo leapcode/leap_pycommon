@@ -1,3 +1,10 @@
+0.3.7 Apr 4:
+  o Add memoized_method decorator. Closes #4784.
+  o Add Soledad invalid auth token event. Closes #5191.
+  o Support str type in email charset detection.
+
+-- 2014 --
+
 0.3.6 Dec 6:
   o Update some documentation and packaging bits.
 

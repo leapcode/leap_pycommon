@@ -27,6 +27,7 @@ import mock
 
 from leap.common import check
 
+
 class CheckTests(unittest.TestCase):
     def test_raises_on_false_condition(self):
         with self.assertRaises(AssertionError):

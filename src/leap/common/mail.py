@@ -20,26 +20,25 @@ Utility functions for email.
 import email
 import re
 
-from leap.common.check import leap_assert_type
-
 
 def get_email_charset(content, default="utf-8"):
     """
     Mini parser to retrieve the charset of an email.
 
     :param content: mail contents
-    :type content: unicode
+    :type content: unicode or str
     :param default: optional default value for encoding
     :type default: str or None
 
     :returns: the charset as parsed from the contents
     :rtype: str
     """
-    leap_assert_type(content, unicode)
+    if isinstance(content, unicode):
+        content.encode("utf-8", "replace")
 
     charset = default
     try:
-        em = email.message_from_string(content.encode("utf-8", "replace"))
+        em = email.message_from_string(content)
         # Miniparser for: Content-Type: <something>; charset=<charset>
         charset_re = r'''charset=(?P<charset>[\w|\d|-]*)'''
         charset = re.findall(charset_re, em["Content-Type"])[0]
