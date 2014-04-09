@@ -1,8 +1,8 @@
-leap-common (0.3.7~rc) unstable; urgency=low
+leap-common (0.3.7) unstable; urgency=low
 
-  * Update to 0.3.7 release candidate
+  * Update to 0.3.7 release
 
- -- Ben Carrillo <ben@futeisha.org>  Mon, 23 Dec 2013 02:31:53 -0400
+ -- Ben Carrillo <ben@futeisha.org>  Wed, 09 Apr 2014 14:26:10 -0500
 
 leap-common (0.3.6) unstable; urgency=low
 
