@@ -1,3 +1,9 @@
+leap-common (0.3.8) unstable; urgency=medium
+
+  * Update to 0.3.8 release 
+
+ -- Ben Carrillo <ben@futeisha.org>  Tue, 10 Jun 2014 09:24:12 -0500
+
 leap-common (0.3.7) unstable; urgency=low
 
   * Update to 0.3.7 release
