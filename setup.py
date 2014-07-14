@@ -127,6 +127,7 @@ setup(
     classifiers=trove_classifiers,
     namespace_packages=["leap"],
     package_dir={'': 'src'},
+    package_data={'': ['*.pem']},
     # For now, we do not exclude tests because of the circular dependency
     # between leap.common and leap.soledad.
     #packages=find_packages('src', exclude=['leap.common.tests']),
