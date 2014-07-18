@@ -21,8 +21,12 @@ If you are packaging Requests, e.g., for a Linux distribution or a managed
 environment, you can change the definition of where() to return a separately
 packaged CA bundle.
 """
+import platform
 import os.path
 
+_system = platform.system()
+
+IS_MAC = _system == "Darwin"
 
 def where():
     """
@@ -30,6 +34,10 @@ def where():
     :rtype: str
     """
     # vendored bundle inside Requests, plus some additions of ours
+    if IS_MAC:
+        return os.path.join("/Applications", "Bitmask.app",
+                            "Contents", "Resources",
+                            "cacert.pem")
     return os.path.join(os.path.dirname(__file__), 'cacert.pem')
 
 if __name__ == '__main__':

@@ -27,14 +27,14 @@ To register a callback to be executed when a specific event is signaled, use
 leap.common.events.register():
 
 >>> from leap.common.events import register
->>> from leap.common.events.proto import CLIENT_UID
->>> register(CLIENT_UID, lambda req: do_something(req))
+>>> from leap.common.events import events_pb2 as proto
+>>> register(proto.CLIENT_UID, lambda req: do_something(req))
 
 To signal an event, use leap.common.events.signal():
 
 >>> from leap.common.events import signal
->>> from leap.common.events.proto import CLIENT_UID
->>> signal(CLIENT_UID)
+>>> from leap.common.events import events_pb2 as proto
+>>> signal(proto.CLIENT_UID)
 
 
 NOTE ABOUT SYNC/ASYNC REQUESTS:
