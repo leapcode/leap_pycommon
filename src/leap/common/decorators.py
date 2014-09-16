@@ -144,17 +144,20 @@ class _memoized(object):
         return functools.partial(self.__call__, obj)
 
 
-def memoized_method(function=None, ignore_kwargs=None):
+def memoized_method(function=None, ignore_kwargs=None,
+                    invalidation=_memoized.CACHE_INVALIDATION_DELTA):
     """
     Wrap _memoized to allow for deferred calling
 
     :type function: callable, or None.
     :type ignore_kwargs: None, True or tuple.
+    :type invalidation: int seconds.
     """
     if function:
-        return _memoized(function, is_method=True)
+        return _memoized(function, is_method=True, invalidation=invalidation)
     else:
         def wrapper(function):
             return _memoized(
-                function, ignore_kwargs=ignore_kwargs, is_method=True)
+                function, ignore_kwargs=ignore_kwargs, is_method=True,
+                invalidation=invalidation)
         return wrapper
