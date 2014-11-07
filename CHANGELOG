@@ -1,3 +1,7 @@
+0.3.9 Jul 18, 2014:
+  o Include pemfile in the package data. Closes #5897.
+  o Look for bundled cacert.pem in the Resources dir for OSX.
+
 0.3.8 Jun 6, 2014:
   o Add Soledad sync status signals. Closes #5517.
 
