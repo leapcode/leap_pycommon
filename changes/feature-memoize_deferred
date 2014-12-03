@@ -1,0 +1,1 @@
+- Add support for deferreds to memoize_method decorator
