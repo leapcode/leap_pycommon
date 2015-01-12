@@ -77,6 +77,9 @@ class BaseLeapTest(unittest.TestCase):
         # XXX needs to adapt to non-linuces
         leap_assert(
             cls.tempdir.startswith('/tmp/leap_tests-') or
+            (cls.tempdir.startswith('/tmp/') and
+             cls.tempdir.startswith(tempfile.gettempdir()) and
+             'leap_tests-' in cls.tempdir) or
             cls.tempdir.startswith('/var/folder'),
             "beware! tried to remove a dir which does not "
             "live in temporal folder!")
