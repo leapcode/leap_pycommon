@@ -1,3 +1,8 @@
+0.3.10 Jan 26, 2015:
+  o Consider different possibilities for tmpdir. Related to #6631.
+  o Add support for deferreds to memoize_method decorator
+  o Extract the environment set up and tear down for tests
+
 0.3.9 Jul 18, 2014:
   o Include pemfile in the package data. Closes #5897.
   o Look for bundled cacert.pem in the Resources dir for OSX.
