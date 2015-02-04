@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# mac_auth.py
-# Copyright (C) 2013 LEAP
+# errors.py
+# Copyright (C) 2015 LEAP
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,17 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""
-Authentication system for events.
 
-This is not implemented yet.
-"""
-
-
-class MacMethod(object):
+class CallbackAlreadyRegisteredError(Exception):
     """
-    Representation of possible MAC authentication methods.
+    Raised when trying to register an already registered callback.
     """
-
-    MAC_NONE = 'none'
-    MAC_HMAC = 'hmac'
+    pass

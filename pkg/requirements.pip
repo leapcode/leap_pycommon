@@ -1,10 +1,10 @@
 jsonschema  #<=0.8 -- are we done with this conflict?
 dirspec
-protobuf>=2.4.1
-protobuf.socketrpc
 pyopenssl
 python-dateutil
 Twisted>=12.1
 zope.interface
+pyzmq
+txzmq
 
 #autopep8 -- ???
