@@ -28,6 +28,8 @@ except ImportError:
     import unittest
 
 from leap.common.check import leap_assert
+from leap.common.events import server as events_server
+from leap.common.events import client as events_client
 from leap.common.files import mkdir_p, check_and_fix_urw_only
 
 
@@ -56,6 +58,9 @@ class BaseLeapTest(unittest.TestCase):
         """
         cls.old_path = os.environ['PATH']
         cls.old_home = os.environ['HOME']
+        cls.old_xdg_config = None
+        if "XDG_CONFIG_HOME" in os.environ:
+            cls.old_xdg_config = os.environ["XDG_CONFIG_HOME"]
         cls.tempdir = tempfile.mkdtemp(prefix="leap_tests-")
         cls.home = cls.tempdir
         bin_tdir = os.path.join(
@@ -63,6 +68,17 @@ class BaseLeapTest(unittest.TestCase):
             'bin')
         os.environ["PATH"] = bin_tdir
         os.environ["HOME"] = cls.tempdir
+        os.environ["XDG_CONFIG_HOME"] = os.path.join(cls.tempdir, ".config")
+        cls._init_events()
+
+    @classmethod
+    def _init_events(cls):
+        cls._server = events_server.ensure_server(
+            emit_addr="tcp://127.0.0.1:0",
+            reg_addr="tcp://127.0.0.1:0")
+        events_client.configure_client(
+            emit_addr="tcp://127.0.0.1:%d" % cls._server.pull_port,
+            reg_addr="tcp://127.0.0.1:%d" % cls._server.pub_port)
 
     @classmethod
     def tearDownEnv(cls):
@@ -71,8 +87,13 @@ class BaseLeapTest(unittest.TestCase):
         - restores the default PATH and HOME variables
         - removes the temporal folder
         """
+        events_client.shutdown()
+        cls._server.shutdown()
+
         os.environ["PATH"] = cls.old_path
         os.environ["HOME"] = cls.old_home
+        if cls.old_xdg_config is not None:
+            os.environ["XDG_CONFIG_HOME"] = cls.old_xdg_config
         # safety check! please do not wipe my home...
         # XXX needs to adapt to non-linuces
         leap_assert(
