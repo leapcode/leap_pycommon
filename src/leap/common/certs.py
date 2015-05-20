@@ -128,22 +128,23 @@ def is_valid_pemfile(cert):
     return can_load_cert_and_pkey(cert)
 
 
-def get_cert_time_boundaries(certfile):
+def get_cert_time_boundaries(certdata):
     """
-    Returns the time boundaries for the certificate saved in certfile
+    Return the time boundaries for the given certificate.
+    The returned values are UTC/GMT time.struct_time objects
 
-    :param certfile: path to certificate
-    :type certfile: str
+    :param certdata: the certificate contents
+    :type certdata: str
 
     :rtype: tuple (from, to)
     """
-    cert = get_cert_from_string(certfile)
+    cert = get_cert_from_string(certdata)
     leap_assert(cert, 'There was a problem loading the certificate')
 
     fromts, tots = (cert.get_notBefore(), cert.get_notAfter())
-    from_, to_ = map(
-        lambda ts: time.gmtime(time.mktime(dateparse(ts).timetuple())),
-        (fromts, tots))
+    from_ = dateparse(fromts).timetuple()
+    to_ = dateparse(tots).timetuple()
+
     return from_, to_
 
 
