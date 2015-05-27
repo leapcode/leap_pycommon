@@ -184,7 +184,7 @@ class EventsClient(object):
         :type msg: list(str)
         """
         logger.debug("Handling event %s..." % event)
-        for uid in self._callbacks[event]:
+        for uid in self._callbacks[event].keys():
             callback = self._callbacks[event][uid]
             logger.debug("Executing callback %s." % uid)
             callback(event, *content)
@@ -351,7 +351,6 @@ class EventsClientThread(threading.Thread, EventsClient):
         :type tag: str
         """
         self._sub.socket.setsockopt(zmq.SUBSCRIBE, tag)
-
 
     def _unsubscribe(self, tag):
         """
