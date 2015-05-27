@@ -44,13 +44,21 @@ from twisted.web.http_headers import Headers
 from twisted.web.iweb import IBodyProducer
 
 
+def createPool(maxPersistentPerHost=10, persistent=True):
+    pool = HTTPConnectionPool(reactor, persistent)
+    pool.maxPersistentPerHost = maxPersistentPerHost
+    return pool
+
+_pool = createPool()
+
+
 class HTTPClient(object):
     """
     HTTP client done the twisted way, with a main focus on pinning the SSL
     certificate.
     """
 
-    def __init__(self, cert_file=None):
+    def __init__(self, cert_file=None, pool=_pool):
         """
         Init the HTTP client
 
@@ -58,15 +66,13 @@ class HTTPClient(object):
                           system's CAs will be used.
         :type cert_file: str
         """
-        self._pool = HTTPConnectionPool(reactor, persistent=True)
-        self._pool.maxPersistentPerHost = 10
 
         policy = get_compatible_ssl_context_factory(cert_file)
 
         self._agent = Agent(
             reactor,
             policy,
-            pool=self._pool)
+            pool=pool)
 
     def request(self, url, method='GET', body=None, headers={}):
         """
