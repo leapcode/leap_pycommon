@@ -1,1 +1,0 @@
-- Fix time comparison between local and UTC times that caused the VPN certificates not being correctly downloaded on time. Closes #6994.
