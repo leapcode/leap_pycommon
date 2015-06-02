@@ -45,7 +45,7 @@ from leap.common.zmq_utils import PUBLIC_KEYS_PREFIX
 logger = logging.getLogger(__name__)
 
 
-ADDRESS_RE = re.compile("(.+)://(.+):([0-9]+)")
+ADDRESS_RE = re.compile("^([a-z]+)://([^:]+):?(\d+)?$")
 
 
 class TxZmqComponent(object):
@@ -63,7 +63,7 @@ class TxZmqComponent(object):
         """
         self._factory = txzmq.ZmqFactory()
         self._factory.registerForShutdown()
-        if path_prefix == None:
+        if path_prefix is None:
             path_prefix = get_path_prefix()
         self._config_prefix = os.path.join(path_prefix, "leap", "events")
         self._connections = []
@@ -125,15 +125,19 @@ class TxZmqComponent(object):
             socket.curve_publickey = public
             socket.curve_secretkey = secret
             self._start_thread_auth(connection.socket)
-        # check if port was given
-        protocol, addr, port = ADDRESS_RE.match(address).groups()
-        if port == "0":
-            port = socket.bind_to_random_port("%s://%s" % (protocol, addr))
+
+        proto, addr, port = ADDRESS_RE.search(address).groups()
+
+        if port is None:
+            params = proto, addr
+            port = socket.bind("%s://%s" % params)
+            # XXX this log doesn't appear
+            logger.debug("Binded %s to %s://%s." % ((connClass,) + params))
         else:
-            socket.bind(address)
-            port = int(port)
-        logger.debug("Binded %s to %s://%s:%d."
-                     % (connClass, protocol, addr, port))
+            params = proto, addr, int(port)
+            socket.bind("%s://%s:%d" % params)
+            # XXX this log doesn't appear
+            logger.debug("Binded %s to %s://%s:%d." % ((connClass,) + params))
         self._connections.append(connection)
         return connection, port
 

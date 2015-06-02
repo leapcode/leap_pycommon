@@ -1,0 +1,1 @@
+o [bug] fix regexp to allow ipc protocol in zmq sockets. Closes: #7089
