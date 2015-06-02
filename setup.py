@@ -138,4 +138,11 @@ setup(
     tests_require=tests_requirements,
     include_package_data=True,
     zip_safe=False,
+
+    extras_require={
+        # needed for leap.common.http
+        #  service_identity needed for propper hostname identification,
+        #  see http://twistedmatrix.com/documents/current/core/howto/ssl.html
+        'Twisted':  ["Twisted>=14.0.2", "service_identity", "zope.insterface"]
+    },
 )
