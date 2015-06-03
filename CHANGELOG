@@ -1,3 +1,9 @@
+0.4.0 Jun 1, 2015:
+  o Modify leap.common.events to use ZMQ. Closes #6359.
+  o Fix time comparison between local and UTC times that caused the VPN
+    certificates not being correctly downloaded on time. Closes #6994.
+  o Add a HTTPClient the twisted way.
+
 0.3.10 Jan 26, 2015:
   o Consider different possibilities for tmpdir. Related to #6631.
   o Add support for deferreds to memoize_method decorator
