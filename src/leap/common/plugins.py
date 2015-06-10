@@ -42,7 +42,8 @@ def _get_extra_pluggable_modules():
     try:
         modules = eval(
             config.get('plugins', 'extra_pluggable_modules'), {}, {})
-    except (ConfigParser.NoSectionError, ConfigParser.NoOptionError):
+    except (ConfigParser.NoSectionError, ConfigParser.NoOptionError,
+            ConfigParser.MissingSectionHeaderError):
         modules = []
     return modules
 
