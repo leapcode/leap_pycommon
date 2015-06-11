@@ -173,7 +173,7 @@ class EventsClient(object):
         :param content: The content of the event.
         :type content: list
         """
-        logger.debug("Sending event: (%s, %s)" % (event, content))
+        logger.debug("Emitting event: (%s, %s)" % (event, content))
         self._send(str(event) + b'\0' + pickle.dumps(content))
 
     def _handle_event(self, event, content):
@@ -368,7 +368,6 @@ class EventsClientThread(threading.Thread, EventsClient):
         :param data: The data to be sent.
         :type event: str
         """
-        logger.debug("Sending data: %s" % data)
         # add send() as a callback for ioloop so it works between threads
         self._loop.add_callback(lambda: self._push.send(data))
 
