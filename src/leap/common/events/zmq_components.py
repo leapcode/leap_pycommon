@@ -128,9 +128,9 @@ class TxZmqComponent(object):
 
         proto, addr, port = ADDRESS_RE.search(address).groups()
 
-        if port is None:
+        if port is None or port is '0':
             params = proto, addr
-            port = socket.bind("%s://%s" % params)
+            port = socket.bind_to_random_port("%s://%s" % params)
             # XXX this log doesn't appear
             logger.debug("Binded %s to %s://%s." % ((connClass,) + params))
         else:
