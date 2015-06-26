@@ -112,6 +112,19 @@ class EventsTxClient(TxZmqClientComponent, EventsClient):
         """
         self._push.send(data)
 
+    def _run_callback(self, callback, event, content):
+        """
+        Run a callback.
+
+        :param callback: The callback to be run.
+        :type callback: callable(event, *content)
+        :param event: The event to be sent.
+        :type event: Event
+        :param content: The content of the event.
+        :type content: list
+        """
+        callback(event, *content)
+
     def shutdown(self):
         TxZmqClientComponent.shutdown(self)
         EventsClient.shutdown(self)
