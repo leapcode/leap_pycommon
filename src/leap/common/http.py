@@ -80,6 +80,7 @@ class HTTPClient(object):
 
         policy = get_compatible_ssl_context_factory(cert_file)
 
+        self._pool = pool
         self._agent = Agent(
             reactor,
             policy,
@@ -109,6 +110,12 @@ class HTTPClient(object):
                                 bodyProducer=body)
         d.addCallback(readBody)
         return d
+
+    def close(self):
+        """
+        Close any cached connections.
+        """
+        self._pool.closeCachedConnections()
 
     class StringBodyProducer(object):
         """
