@@ -1,1 +1,0 @@
-- Makes https client use Twisted SSL validation and adds a reuse by default behavior on connection pool

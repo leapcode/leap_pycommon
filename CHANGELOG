@@ -1,3 +1,9 @@
+0.4.1 Jul 10, 2015:
+  o Fix regexp to allow ipc protocol in zmq sockets. Closes: #7089.
+  o Remove extraneous data from events logs. Closes #7130.
+  o Make https client use Twisted SSL validation and adds a reuse by default
+    behavior on connection pool
+
 0.4.0 Jun 1, 2015:
   o Modify leap.common.events to use ZMQ. Closes #6359.
   o Fix time comparison between local and UTC times that caused the VPN
