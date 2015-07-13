@@ -14,8 +14,6 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-
 """
 The client end point of the events mechanism.
 
@@ -27,8 +25,6 @@ When a client registers a callback for a given event, it also tells the
 server that it wants to be notified whenever events of that type are sent by
 some other client.
 """
-
-
 import logging
 import collections
 import uuid
@@ -59,6 +55,7 @@ from leap.common.zmq_utils import PUBLIC_KEYS_PREFIX
 from leap.common.events.errors import CallbackAlreadyRegisteredError
 from leap.common.events.server import EMIT_ADDR
 from leap.common.events.server import REG_ADDR
+from leap.common.events import flags
 from leap.common.events import catalog
 
 
@@ -173,9 +170,10 @@ class EventsClient(object):
         :param content: The content of the event.
         :type content: list
         """
-        logger.debug("Emitting event: (%s, %s)" % (event, content))
-        payload = str(event) + b'\0' + pickle.dumps(content)
-        self._send(payload)
+        if flags.EVENTS_ENABLED:
+            logger.debug("Emitting event: (%s, %s)" % (event, content))
+            payload = str(event) + b'\0' + pickle.dumps(content)
+            self._send(payload)
 
     def _handle_event(self, event, content):
         """

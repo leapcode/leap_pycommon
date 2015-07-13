@@ -14,8 +14,6 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-
 """
 This is an events mechanism that uses a server to allow for emitting events
 between clients.
@@ -37,13 +35,13 @@ To emit an event, use leap.common.events.emit():
 >>> from leap.common.events import catalog
 >>> emit(catalog.CLIENT_UID)
 """
-
-
 import logging
 import argparse
 
 from leap.common.events import client
 from leap.common.events import server
+from leap.common.events.flags import set_events_enabled
+
 from leap.common.events import catalog
 
 
@@ -52,6 +50,7 @@ __all__ = [
     "unregister",
     "emit",
     "catalog",
+    "set_events_enabled"
 ]
 
 

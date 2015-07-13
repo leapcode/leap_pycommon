@@ -30,7 +30,10 @@ except ImportError:
 from leap.common.check import leap_assert
 from leap.common.events import server as events_server
 from leap.common.events import client as events_client
+from leap.common.events import flags, set_events_enabled
 from leap.common.files import mkdir_p, check_and_fix_urw_only
+
+set_events_enabled(False)
 
 
 class BaseLeapTest(unittest.TestCase):
@@ -73,12 +76,13 @@ class BaseLeapTest(unittest.TestCase):
 
     @classmethod
     def _init_events(cls):
-        cls._server = events_server.ensure_server(
-            emit_addr="tcp://127.0.0.1:0",
-            reg_addr="tcp://127.0.0.1:0")
-        events_client.configure_client(
-            emit_addr="tcp://127.0.0.1:%d" % cls._server.pull_port,
-            reg_addr="tcp://127.0.0.1:%d" % cls._server.pub_port)
+        if flags.EVENTS_ENABLED:
+            cls._server = events_server.ensure_server(
+                emit_addr="tcp://127.0.0.1:0",
+                reg_addr="tcp://127.0.0.1:0")
+            events_client.configure_client(
+                emit_addr="tcp://127.0.0.1:%d" % cls._server.pull_port,
+                reg_addr="tcp://127.0.0.1:%d" % cls._server.pub_port)
 
     @classmethod
     def tearDownEnv(cls):
@@ -87,8 +91,9 @@ class BaseLeapTest(unittest.TestCase):
         - restores the default PATH and HOME variables
         - removes the temporal folder
         """
-        events_client.shutdown()
-        cls._server.shutdown()
+        if flags.EVENTS_ENABLED:
+            events_client.shutdown()
+            cls._server.shutdown()
 
         os.environ["PATH"] = cls.old_path
         os.environ["HOME"] = cls.old_home
