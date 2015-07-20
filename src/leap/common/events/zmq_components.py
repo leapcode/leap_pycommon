@@ -128,16 +128,21 @@ class TxZmqComponent(object):
 
         proto, addr, port = ADDRESS_RE.search(address).groups()
 
-        if port is None or port is '0':
-            params = proto, addr
-            port = socket.bind_to_random_port("%s://%s" % params)
-            # XXX this log doesn't appear
-            logger.debug("Binded %s to %s://%s." % ((connClass,) + params))
+        if proto == "tcp":
+            if port is None or port is '0':
+                params = proto, addr
+                port = socket.bind_to_random_port("%s://%s" % params)
+                logger.debug("Binded %s to %s://%s." % ((connClass,) + params))
+            else:
+                params = proto, addr, int(port)
+                socket.bind("%s://%s:%d" % params)
+                logger.debug(
+                    "Binded %s to %s://%s:%d." % ((connClass,) + params))
         else:
-            params = proto, addr, int(port)
-            socket.bind("%s://%s:%d" % params)
-            # XXX this log doesn't appear
-            logger.debug("Binded %s to %s://%s:%d." % ((connClass,) + params))
+            params = proto, addr
+            socket.bind("%s://%s" % params)
+            logger.debug(
+                "Binded %s to %s://%s" % ((connClass,) + params))
         self._connections.append(connection)
         return connection, port
 
