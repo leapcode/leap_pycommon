@@ -174,7 +174,8 @@ class EventsClient(object):
         :type content: list
         """
         logger.debug("Emitting event: (%s, %s)" % (event, content))
-        self._send(str(event) + b'\0' + pickle.dumps(content))
+        payload = str(event) + b'\0' + pickle.dumps(content)
+        self._send(payload)
 
     def _handle_event(self, event, content):
         """
@@ -186,7 +187,7 @@ class EventsClient(object):
         :type content: list
         """
         logger.debug("Handling event %s..." % event)
-        for uid in self._callbacks[event].keys():
+        for uid in self._callbacks[event]:
             callback = self._callbacks[event][uid]
             logger.debug("Executing callback %s." % uid)
             self._run_callback(callback, event, content)
@@ -398,8 +399,7 @@ class EventsClientThread(threading.Thread, EventsClient):
         :param content: The content of the event.
         :type content: list
         """
-        from twisted.internet import reactor
-        reactor.callFromThread(callback, event, *content)
+        self._loop.add_callback(lambda: callback(event, *content))
 
     def register(self, event, callback, uid=None, replace=False):
         """
@@ -422,7 +422,8 @@ class EventsClientThread(threading.Thread, EventsClient):
                 callback identified by the given uid and replace is False.
         """
         self.ensure_client()
-        return EventsClient.register(self, event, callback, uid=uid, replace=replace)
+        return EventsClient.register(
+            self, event, callback, uid=uid, replace=replace)
 
     def unregister(self, event, uid=None):
         """
