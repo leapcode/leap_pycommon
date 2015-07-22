@@ -43,10 +43,10 @@ CERT_NOT_AFTER = (2023, 9, 1, 17, 52, 16, 4, 244, 0)
 class CertsTest(BaseLeapTest):
 
     def setUp(self):
-        pass
+        self.setUpEnv()
 
     def tearDown(self):
-        pass
+        self.tearDownEnv()
 
     def test_should_redownload_if_no_cert(self):
         self.assertTrue(certs.should_redownload(certfile=""))
