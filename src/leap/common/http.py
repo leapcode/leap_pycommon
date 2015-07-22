@@ -150,6 +150,7 @@ class HTTPClient(object):
 # An IBodyProducer to write the body of an HTTP request as a string.
 #
 
+
 class _StringBodyProducer(object):
     """
     A producer that writes the body of a request to a consumer.
@@ -254,18 +255,18 @@ class _HTTP11ClientProtocol(HTTP11ClientProtocol):
             self._timeoutCall = None
 
     def _finishResponse_WAITING(self, rest):
-       """
-       Cancel the timeout when finished receiving the response.
-       """
-       self._cancelTimeout()
-       HTTP11ClientProtocol._finishResponse_WAITING(self, rest)
+        """
+        Cancel the timeout when finished receiving the response.
+        """
+        self._cancelTimeout()
+        HTTP11ClientProtocol._finishResponse_WAITING(self, rest)
 
     def _finishResponse_TRANSMITTING(self, rest):
-       """
-       Cancel the timeout when finished receiving the response.
-       """
-       self._cancelTimeout()
-       HTTP11ClientProtocol._finishResponse_TRANSMITTING(self, rest)
+        """
+        Cancel the timeout when finished receiving the response.
+        """
+        self._cancelTimeout()
+        HTTP11ClientProtocol._finishResponse_TRANSMITTING(self, rest)
 
     def dataReceived(self, bytes):
         """

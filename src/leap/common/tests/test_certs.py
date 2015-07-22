@@ -60,11 +60,13 @@ class CertsTest(BaseLeapTest):
         self.assertTrue(certs.should_redownload(cert_path))
 
     def test_should_redownload_if_before(self):
-        new_now = lambda: time.struct_time(CERT_NOT_BEFORE)
+        def new_now():
+            time.struct_time(CERT_NOT_BEFORE)
         self.assertTrue(certs.should_redownload(TEST_CERT_PEM, now=new_now))
 
     def test_should_redownload_if_after(self):
-        new_now = lambda: time.struct_time(CERT_NOT_AFTER)
+        def new_now():
+            time.struct_time(CERT_NOT_AFTER)
         self.assertTrue(certs.should_redownload(TEST_CERT_PEM, now=new_now))
 
     def test_not_should_redownload(self):

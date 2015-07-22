@@ -29,21 +29,21 @@ from mock import Mock
 # reduced eipconfig sample config
 sample_config = {
     "gateways": [
-    {
-        "capabilities": {
-            "adblock": False,
-            "transport": ["openvpn"],
-            "user_ips": False
-        },
-        "host": "host.dev.example.org",
-    }, {
-        "capabilities": {
-            "adblock": False,
-            "transport": ["openvpn"],
-            "user_ips": False
-        },
-        "host": "host2.dev.example.org",
-    }
+        {
+            "capabilities": {
+                "adblock": False,
+                "transport": ["openvpn"],
+                "user_ips": False
+            },
+            "host": "host.dev.example.org",
+        }, {
+            "capabilities": {
+                "adblock": False,
+                "transport": ["openvpn"],
+                "user_ips": False
+            },
+            "host": "host2.dev.example.org",
+        }
     ],
     "default_language": "en",
     "languages": [

@@ -1,5 +1,3 @@
-
-IN_LONG_VERSION_PY = True
 # This file helps to compute a version number in source trees obtained from
 # git-archive tarball (such as those provided by githubs download-from-tag
 # feature). Distribution tarballs (build by setup.py sdist) and build
@@ -10,12 +8,16 @@ IN_LONG_VERSION_PY = True
 # versioneer-0.7+ (https://github.com/warner/python-versioneer)
 
 # these strings will be replaced by git during git-archive
-git_refnames = "$Format:%d$"
-git_full = "$Format:%H$"
-
 
 import subprocess
 import sys
+import re
+import os.path
+
+IN_LONG_VERSION_PY = True
+git_refnames = "$Format:%d$"
+git_full = "$Format:%H$"
+
 
 def run_command(args, cwd=None, verbose=False):
     try:
@@ -37,10 +39,6 @@ def run_command(args, cwd=None, verbose=False):
     return stdout
 
 
-import sys
-import re
-import os.path
-
 def get_expanded_variables(versionfile_source):
     # the code embedded in _version.py can just fetch the value of these
     # variables. When used from setup.py, we don't want to import
@@ -48,7 +46,7 @@ def get_expanded_variables(versionfile_source):
     # used from _version.py.
     variables = {}
     try:
-        f = open(versionfile_source,"r")
+        f = open(versionfile_source, "r")
         for line in f.readlines():
             if line.strip().startswith("git_refnames ="):
                 mo = re.search(r'=\s*"(.*)"', line)
@@ -63,12 +61,13 @@ def get_expanded_variables(versionfile_source):
         pass
     return variables
 
+
 def versions_from_expanded_variables(variables, tag_prefix, verbose=False):
     refnames = variables["refnames"].strip()
     if refnames.startswith("$Format"):
         if verbose:
             print("variables are unexpanded, not using")
-        return {} # unexpanded, so not in an unpacked git-archive tarball
+        return {}  # unexpanded, so not in an unpacked git-archive tarball
     refs = set([r.strip() for r in refnames.strip("()").split(",")])
     # starting in git-1.8.3, tags are listed as "tag: foo-1.0" instead of
     # just "foo-1.0". If we see a "tag: " prefix, prefer those.
@@ -84,7 +83,7 @@ def versions_from_expanded_variables(variables, tag_prefix, verbose=False):
         # "stabilization", as well as "HEAD" and "master".
         tags = set([r for r in refs if re.search(r'\d', r)])
         if verbose:
-            print("discarding '%s', no digits" % ",".join(refs-tags))
+            print("discarding '%s', no digits" % ",".join(refs - tags))
     if verbose:
         print("likely tags: %s" % ",".join(sorted(tags)))
     for ref in sorted(tags):
@@ -93,13 +92,14 @@ def versions_from_expanded_variables(variables, tag_prefix, verbose=False):
             r = ref[len(tag_prefix):]
             if verbose:
                 print("picking %s" % r)
-            return { "version": r,
-                     "full": variables["full"].strip() }
+            return {"version": r,
+                    "full": variables["full"].strip()}
     # no suitable tags, so we use the full revision id
     if verbose:
         print("no suitable tags, using full revision id")
-    return { "version": variables["full"].strip(),
-             "full": variables["full"].strip() }
+    return {"version": variables["full"].strip(),
+            "full": variables["full"].strip()}
+
 
 def versions_from_vcs(tag_prefix, versionfile_source, verbose=False):
     # this runs 'git' from the root of the source tree. That either means
@@ -116,7 +116,7 @@ def versions_from_vcs(tag_prefix, versionfile_source, verbose=False):
         here = os.path.abspath(__file__)
     except NameError:
         # some py2exe/bbfreeze/non-CPython implementations don't do __file__
-        return {} # not always correct
+        return {}  # not always correct
 
     # versionfile_source is the relative path from the top of the source tree
     # (where the .git directory might live) to this file. Invert this to find
@@ -163,7 +163,7 @@ def versions_from_parentdir(parentdir_prefix, versionfile_source, verbose=False)
             here = os.path.abspath(__file__)
         except NameError:
             # py2exe/bbfreeze/non-CPython don't have __file__
-            return {} # without __file__, we have no hope
+            return {}  # without __file__, we have no hope
         # versionfile_source is the relative path from the top of the source
         # tree to _version.py. Invert this to find the root from __file__.
         root = here
@@ -189,8 +189,9 @@ tag_prefix = ""
 parentdir_prefix = "leap.common-"
 versionfile_source = "src/leap/common/_version.py"
 
+
 def get_versions(default={"version": "unknown", "full": ""}, verbose=False):
-    variables = { "refnames": git_refnames, "full": git_full }
+    variables = {"refnames": git_refnames, "full": git_full}
     ver = versions_from_expanded_variables(variables, tag_prefix, verbose)
     if not ver:
         ver = versions_from_vcs(tag_prefix, versionfile_source, verbose)
@@ -200,4 +201,3 @@ def get_versions(default={"version": "unknown", "full": ""}, verbose=False):
     if not ver:
         ver = default
     return ver
-

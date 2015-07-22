@@ -1,4 +1,4 @@
-## -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # test_events.py
 # Copyright (C) 2013 LEAP
 #
@@ -60,7 +60,10 @@ class EventsGenericClientTestCase(object):
                         'There should be no callback for this event.')
         # register one event
         event1 = catalog.CLIENT_UID
-        cbk1 = lambda event, _: True
+
+        def cbk1(event, _):
+            return True
+
         uid1 = self._client.register(event1, cbk1)
         # assert for correct registration
         self.assertTrue(len(callbacks) == 1)
@@ -68,7 +71,10 @@ class EventsGenericClientTestCase(object):
                         'Could not register event in local client.')
         # register another event
         event2 = catalog.CLIENT_SESSION_ID
-        cbk2 = lambda event, _: True
+
+        def cbk2(event, _):
+            return True
+
         uid2 = self._client.register(event2, cbk2)
         # assert for correct registration
         self.assertTrue(len(callbacks) == 2)
@@ -81,8 +87,13 @@ class EventsGenericClientTestCase(object):
         """
         event = catalog.CLIENT_UID
         d = defer.Deferred()
-        cbk_fail = lambda event, _: callFromThread(d.errback, event)
-        cbk_succeed = lambda event, _: callFromThread(d.callback, event)
+
+        def cbk_fail(event, _):
+            return callFromThread(d.errback, event)
+
+        def cbk_succeed(event, _):
+            return callFromThread(d.callback, event)
+
         self._client.register(event, cbk_fail, uid=1)
         self._client.register(event, cbk_succeed, uid=1, replace=True)
         self._client.emit(event, None)
@@ -106,9 +117,15 @@ class EventsGenericClientTestCase(object):
         """
         event = catalog.CLIENT_UID
         d1 = defer.Deferred()
-        cbk1 = lambda event, _: callFromThread(d1.callback, event)
+
+        def cbk1(event, _):
+            return callFromThread(d1.callback, event)
+
         d2 = defer.Deferred()
-        cbk2 = lambda event, _: callFromThread(d2.callback, event)
+
+        def cbk2(event, _):
+            return d2.callback(event)
+
         self._client.register(event, cbk1)
         self._client.register(event, cbk2)
         self._client.emit(event, None)
@@ -121,8 +138,10 @@ class EventsGenericClientTestCase(object):
         """
         event = catalog.CLIENT_UID
         d = defer.Deferred()
+
         def cbk(events, _):
             callFromThread(d.callback, event)
+
         self._client.register(event, cbk)
         self._client.emit(event, None)
         return d
