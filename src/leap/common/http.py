@@ -116,7 +116,7 @@ class HTTPClient(object):
     _pool = _HTTPConnectionPool(
         reactor,
         persistent=True,
-        timeout = DEFAULT_HTTP_TIMEOUT,
+        timeout=DEFAULT_HTTP_TIMEOUT,
         maxPersistentPerHost=10
     )
 
