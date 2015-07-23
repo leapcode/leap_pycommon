@@ -47,7 +47,12 @@ class HTTPClientTest(BaseLeapTest):
         self.assertEquals(client._agent._pool, client2._agent._pool, "Pool was not reused by default")
 
     def test_agent_can_have_dedicated_custom_pool(self):
-        custom_pool = http.createPool(maxPersistentPerHost=42, persistent=False)
+        custom_pool = http._HTTPConnectionPool(
+            None,
+            timeout=10,
+            maxPersistentPerHost=42,
+            persistent=False
+        )
         self.assertEquals(custom_pool.maxPersistentPerHost, 42,
                           "Custom persistent connections limit is not being respected")
         self.assertFalse(custom_pool.persistent,
