@@ -26,6 +26,7 @@ from twisted.internet import defer
 
 from leap.common.events import server
 from leap.common.events import client
+from leap.common.events import flags
 from leap.common.events import txclient
 from leap.common.events import catalog
 from leap.common.events.errors import CallbackAlreadyRegisteredError
@@ -44,10 +45,12 @@ class EventsGenericClientTestCase(object):
         self._client.configure_client(
             emit_addr="tcp://127.0.0.1:%d" % self._server.pull_port,
             reg_addr="tcp://127.0.0.1:%d" % self._server.pub_port)
+        flags.set_events_enabled(True)
 
     def tearDown(self):
         self._client.shutdown()
         self._server.shutdown()
+        flags.set_events_enabled(False)
         # wait a bit for sockets to close properly
         time.sleep(0.1)
 
