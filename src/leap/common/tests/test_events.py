@@ -20,6 +20,7 @@ import os
 import logging
 import time
 
+from twisted.internet.reactor import callFromThread
 from twisted.trial import unittest
 from twisted.internet import defer
 
@@ -80,8 +81,8 @@ class EventsGenericClientTestCase(object):
         """
         event = catalog.CLIENT_UID
         d = defer.Deferred()
-        cbk_fail = lambda event, _: d.errback(event)
-        cbk_succeed = lambda event, _: d.callback(event)
+        cbk_fail = lambda event, _: callFromThread(d.errback, event)
+        cbk_succeed = lambda event, _: callFromThread(d.callback, event)
         self._client.register(event, cbk_fail, uid=1)
         self._client.register(event, cbk_succeed, uid=1, replace=True)
         self._client.emit(event, None)
@@ -105,9 +106,9 @@ class EventsGenericClientTestCase(object):
         """
         event = catalog.CLIENT_UID
         d1 = defer.Deferred()
-        cbk1 = lambda event, _: d1.callback(event)
+        cbk1 = lambda event, _: callFromThread(d1.callback, event)
         d2 = defer.Deferred()
-        cbk2 = lambda event, _: d2.callback(event)
+        cbk2 = lambda event, _: callFromThread(d2.callback, event)
         self._client.register(event, cbk1)
         self._client.register(event, cbk2)
         self._client.emit(event, None)
@@ -121,7 +122,7 @@ class EventsGenericClientTestCase(object):
         event = catalog.CLIENT_UID
         d = defer.Deferred()
         def cbk(events, _):
-            d.callback(event)
+            callFromThread(d.callback, event)
         self._client.register(event, cbk)
         self._client.emit(event, None)
         return d
@@ -133,14 +134,17 @@ class EventsGenericClientTestCase(object):
         event1 = catalog.CLIENT_UID
         d = defer.Deferred()
         # register more than one callback for the same event
-        self._client.register(event1, lambda ev, _: d.errback(None))
-        self._client.register(event1, lambda ev, _: d.errback(None))
+        self._client.register(
+            event1, lambda ev, _: callFromThread(d.errback, None))
+        self._client.register(
+            event1, lambda ev, _: callFromThread(d.errback, None))
         # unregister and emit the event
         self._client.unregister(event1)
         self._client.emit(event1, None)
         # register and emit another event so the deferred can succeed
         event2 = catalog.CLIENT_SESSION_ID
-        self._client.register(event2, lambda ev, _: d.callback(None))
+        self._client.register(
+            event2, lambda ev, _: callFromThread(d.callback, None))
         self._client.emit(event2, None)
         return d
 
@@ -151,9 +155,11 @@ class EventsGenericClientTestCase(object):
         event = catalog.CLIENT_UID
         d = defer.Deferred()
         # register one callback that would fail
-        uid = self._client.register(event, lambda ev, _: d.errback(None))
+        uid = self._client.register(
+            event, lambda ev, _: callFromThread(d.errback, None))
         # register one callback that will succeed
-        self._client.register(event, lambda ev, _: d.callback(None))
+        self._client.register(
+            event, lambda ev, _: callFromThread(d.callback, None))
         # unregister by uid and emit the event
         self._client.unregister(event, uid=uid)
         self._client.emit(event, None)
