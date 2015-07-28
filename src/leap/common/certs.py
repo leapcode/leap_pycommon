@@ -192,6 +192,7 @@ def get_compatible_ssl_context_factory(cert_path=None):
         return policy
     else:
         raise Exception(("""
-            Twisted 14.0.2 is needed in order to have secure Client Web SSL Contexts, not %s
+            Twisted 14.0.2 is needed in order to have secure
+            Client Web SSL Contexts, not %s
             See: http://twistedmatrix.com/trac/ticket/7647
             """) % (twisted.version.base()))

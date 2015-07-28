@@ -120,7 +120,8 @@ class HTTPClient(object):
         maxPersistentPerHost=10
     )
 
-    def __init__(self, cert_file=None, timeout=DEFAULT_HTTP_TIMEOUT, pool=None):
+    def __init__(self, cert_file=None,
+                 timeout=DEFAULT_HTTP_TIMEOUT, pool=None):
         """
         Init the HTTP client
 

@@ -43,8 +43,11 @@ class HTTPClientTest(BaseLeapTest):
     def test_agents_sharing_pool_by_default(self):
         client = http.HTTPClient()
         client2 = http.HTTPClient(TEST_CERT_PEM)
-        self.assertNotEquals(client._agent, client2._agent, "Expected dedicated agents")
-        self.assertEquals(client._agent._pool, client2._agent._pool, "Pool was not reused by default")
+        self.assertNotEquals(
+            client._agent, client2._agent, "Expected dedicated agents")
+        self.assertEquals(
+            client._agent._pool, client2._agent._pool,
+            "Pool was not reused by default")
 
     def test_agent_can_have_dedicated_custom_pool(self):
         custom_pool = http._HTTPConnectionPool(
@@ -54,14 +57,19 @@ class HTTPClientTest(BaseLeapTest):
             persistent=False
         )
         self.assertEquals(custom_pool.maxPersistentPerHost, 42,
-                          "Custom persistent connections limit is not being respected")
+                          "Custom persistent connections "
+                          "limit is not being respected")
         self.assertFalse(custom_pool.persistent,
                          "Custom persistence is not being respected")
         default_client = http.HTTPClient()
         custom_client = http.HTTPClient(pool=custom_pool)
 
-        self.assertNotEquals(default_client._agent, custom_client._agent, "No agent reuse is expected")
-        self.assertEquals(custom_pool, custom_client._agent._pool, "Custom pool usage was not respected")
+        self.assertNotEquals(
+            default_client._agent, custom_client._agent,
+            "No agent reuse is expected")
+        self.assertEquals(
+            custom_pool, custom_client._agent._pool,
+            "Custom pool usage was not respected")
 
 if __name__ == "__main__":
     unittest.main()
