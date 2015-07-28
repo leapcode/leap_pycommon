@@ -466,7 +466,7 @@ class EventsClientThread(threading.Thread, EventsClient):
         Make sure the events client thread is started.
         """
         with self._lock:
-            if not self.is_alive():
+            if flags.EVENTS_ENABLED and not self.is_alive():
                 self.daemon = True
                 self.start()
                 self._initialized.wait()
