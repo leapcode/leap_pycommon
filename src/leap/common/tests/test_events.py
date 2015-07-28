@@ -39,13 +39,13 @@ if 'DEBUG' in os.environ:
 class EventsGenericClientTestCase(object):
 
     def setUp(self):
+        flags.set_events_enabled(True)
         self._server = server.ensure_server(
             emit_addr="tcp://127.0.0.1:0",
             reg_addr="tcp://127.0.0.1:0")
         self._client.configure_client(
             emit_addr="tcp://127.0.0.1:%d" % self._server.pull_port,
             reg_addr="tcp://127.0.0.1:%d" % self._server.pub_port)
-        flags.set_events_enabled(True)
 
     def tearDown(self):
         self._client.shutdown()
