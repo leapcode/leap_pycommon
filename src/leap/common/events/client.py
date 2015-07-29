@@ -508,8 +508,9 @@ def register(event, callback, uid=None, replace=False):
     :raises CallbackAlreadyRegisteredError: when there's already a callback
             identified by the given uid and replace is False.
     """
-    return EventsClientThread.instance().register(
-        event, callback, uid=uid, replace=replace)
+    if flags.EVENTS_ENABLED:
+        return EventsClientThread.instance().register(
+            event, callback, uid=uid, replace=replace)
 
 
 def unregister(event, uid=None):
@@ -524,7 +525,8 @@ def unregister(event, uid=None):
     :param uid: The callback uid.
     :type uid: str
     """
-    return EventsClientThread.instance().unregister(event, uid=uid)
+    if flags.EVENTS_ENABLED:
+        return EventsClientThread.instance().unregister(event, uid=uid)
 
 
 def emit(event, *content):
