@@ -170,10 +170,9 @@ class EventsClient(object):
         :param content: The content of the event.
         :type content: list
         """
-        if flags.EVENTS_ENABLED:
-            logger.debug("Emitting event: (%s, %s)" % (event, content))
-            payload = str(event) + b'\0' + pickle.dumps(content)
-            self._send(payload)
+        logger.debug("Emitting event: (%s, %s)" % (event, content))
+        payload = str(event) + b'\0' + pickle.dumps(content)
+        self._send(payload)
 
     def _handle_event(self, event, content):
         """
@@ -537,7 +536,8 @@ def emit(event, *content):
     :param content: The content of the event.
     :type content: list
     """
-    return EventsClientThread.instance().emit(event, *content)
+    if flags.EVENTS_ENABLED:
+        return EventsClientThread.instance().emit(event, *content)
 
 
 def instance():
