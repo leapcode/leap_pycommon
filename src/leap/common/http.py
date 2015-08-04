@@ -302,23 +302,16 @@ class _HTTP11ClientProtocol(HTTP11ClientProtocol):
         """
         Cancel the request timeout, when it's finished.
         """
-        if self._timeoutCall.active():
+        if self._timeoutCall and self._timeoutCall.active():
             self._timeoutCall.cancel()
             self._timeoutCall = None
 
-    def _finishResponse_WAITING(self, rest):
+    def _finishResponse(self, rest):
         """
         Cancel the timeout when finished receiving the response.
         """
         self._cancelTimeout()
-        HTTP11ClientProtocol._finishResponse_WAITING(self, rest)
-
-    def _finishResponse_TRANSMITTING(self, rest):
-        """
-        Cancel the timeout when finished receiving the response.
-        """
-        self._cancelTimeout()
-        HTTP11ClientProtocol._finishResponse_TRANSMITTING(self, rest)
+        HTTP11ClientProtocol._finishResponse(self, rest)
 
     def dataReceived(self, bytes):
         """
@@ -330,3 +323,7 @@ class _HTTP11ClientProtocol(HTTP11ClientProtocol):
         HTTP11ClientProtocol.dataReceived(self, bytes)
         if self._timeoutCall and self._timeoutCall.active():
             self._timeoutCall.reset(self._timeout)
+
+    def connectionLost(self, reason):
+        self._cancelTimeout()
+        return HTTP11ClientProtocol.connectionLost(self, reason)
