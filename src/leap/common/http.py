@@ -31,6 +31,7 @@ except ImportError:
 
 
 from leap.common.certs import get_compatible_ssl_context_factory
+from leap.common.check import leap_assert
 
 from zope.interface import implements
 
@@ -150,7 +151,7 @@ class HTTPClient(object):
         pool.maxPersistentPerHost = maxPersistentPerHost
         return pool
 
-    def _request(self, url, method, body, headers):
+    def _request(self, url, method, body, headers, callback):
         """
         Perform an HTTP request.
 
@@ -162,6 +163,9 @@ class HTTPClient(object):
         :type body: str
         :param headers: The headers of the request.
         :type headers: dict
+        :param callback: A callback to be added to the request's deferred
+                         callback chain.
+        :type callback: callable
 
         :return: A deferred that fires with the body of the request.
         :rtype: twisted.internet.defer.Deferred
@@ -170,13 +174,20 @@ class HTTPClient(object):
             body = _StringBodyProducer(body)
         d = self._agent.request(
             method, url, headers=Headers(headers), bodyProducer=body)
-        d.addCallback(readBody)
+        d.addCallback(callback)
         return d
 
-    def request(self, url, method='GET', body=None, headers={}):
+    def request(self, url, method='GET', body=None, headers={},
+            callback=readBody):
         """
         Perform an HTTP request, but limit the maximum amount of concurrent
         connections.
+
+        May be passed a callback to be added to the request's deferred
+        callback chain. The callback is expected to receive the response of
+        the request and may do whatever it wants with the response. By
+        default, if no callback is passed, we will use a simple body reader
+        which returns a deferred that is fired with the body of the response.
 
         :param url: The URL for the request.
         :type url: str
@@ -186,11 +197,18 @@ class HTTPClient(object):
         :type body: str
         :param headers: The headers of the request.
         :type headers: dict
+        :param callback: A callback to be added to the request's deferred
+                         callback chain.
+        :type callback: callable
 
         :return: A deferred that fires with the body of the request.
         :rtype: twisted.internet.defer.Deferred
         """
-        return self._semaphore.run(self._request, url, method, body, headers)
+        leap_assert(
+            callable(callback),
+            message="The callback parameter should be a callable!")
+        return self._semaphore.run(self._request, url, method, body, headers,
+            callback)
 
     def close(self):
         """
