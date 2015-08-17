@@ -20,6 +20,7 @@ Twisted HTTP/HTTPS client.
 
 try:
     import twisted
+    assert twisted
 except ImportError:
     print "*******"
     print "Twisted is needed to use leap.common.http module"
@@ -178,7 +179,7 @@ class HTTPClient(object):
         return d
 
     def request(self, url, method='GET', body=None, headers={},
-            callback=readBody):
+                callback=readBody):
         """
         Perform an HTTP request, but limit the maximum amount of concurrent
         connections.
@@ -208,7 +209,7 @@ class HTTPClient(object):
             callable(callback),
             message="The callback parameter should be a callable!")
         return self._semaphore.run(self._request, url, method, body, headers,
-            callback)
+                                   callback)
 
     def close(self):
         """
