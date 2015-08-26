@@ -1,3 +1,12 @@
+0.4.2 Aug 26, 2015:
+  o Add http request timeout. Related to #7234.
+  o Add a flag to disable events framework. Closes: #7259
+  o Allow passing callback to HTTP client.
+  o Bugfix: do not add a port string to non-tcp addresses.
+  o Add close method for http agent.
+  o Fix code style and tests.
+  o Bugfix: HTTP timeout was not being cleared on abort.
+
 0.4.1 Jul 10, 2015:
   o Fix regexp to allow ipc protocol in zmq sockets. Closes: #7089.
   o Remove extraneous data from events logs. Closes #7130.
