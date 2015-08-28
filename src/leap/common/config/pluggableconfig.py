@@ -27,7 +27,7 @@ import urlparse
 
 import jsonschema
 
-#from leap.base.util.translations import LEAPTranslatable
+# from leap.base.util.translations import LEAPTranslatable
 from leap.common.check import leap_assert
 
 
@@ -163,8 +163,8 @@ class TranslatableType(object):
         return data  # LEAPTranslatable(data)
 
     # needed? we already have an extended dict...
-    #def get_prep_value(self, data):
-        #return dict(data)
+    # def get_prep_value(self, data):
+    #     return dict(data)
 
 
 class URIType(object):
@@ -283,9 +283,13 @@ class PluggableConfig(object):
                 except BaseException, e:
                     raise TypeCastException(
                         "Could not coerce %s, %s, "
-                        "to format %s: %s" % (key, value,
-                        _ftype.__class__.__name__,
-                        e))
+                        "to format %s: %s" % (
+                            key,
+                            value,
+                            _ftype.__class__.__name__,
+                            e
+                        )
+                    )
 
         return config
 
@@ -303,9 +307,12 @@ class PluggableConfig(object):
                 except BaseException, e:
                     raise TypeCastException(
                         "Could not serialize %s, %s, "
-                        "by format %s: %s" % (key, value,
-                        _ftype.__class__.__name__,
-                        e))
+                        "by format %s: %s" % (
+                            key,
+                            value,
+                            _ftype.__class__.__name__,
+                            e)
+                    )
             else:
                 config[key] = value
         return config
@@ -435,7 +442,7 @@ class PluggableConfig(object):
             content = self.deserialize(string)
 
         if not string and fromfile is not None:
-            #import ipdb;ipdb.set_trace()
+            # import ipdb;ipdb.set_trace()
             content = self.deserialize(fromfile=fromfile)
 
         if not content:

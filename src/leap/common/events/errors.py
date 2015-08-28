@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Makefile
-# Copyright (C) 2013 LEAP
+# errors.py
+# Copyright (C) 2015 LEAP
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,17 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-# This file is used to generate protobuf python files that are used for IPC:
-#
-#   https://developers.google.com/protocol-buffers/docs/pythontutorial
 
-PROTOC = protoc
-
-all: events_pb2.py
-
-%_pb2.py: %.proto
-	$(PROTOC) --python_out=./ $<
-#	autopep8 --in-place --aggressive $@
-
-clean:
-	rm -f *_pb2.py
+class CallbackAlreadyRegisteredError(Exception):
+    """
+    Raised when trying to register an already registered callback.
+    """
+    pass
