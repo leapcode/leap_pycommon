@@ -8,7 +8,7 @@ Standards-Version: 3.9.6
 
 Package: python-leap-common
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}, python-jsonschema, python-dirspec, python-dateutil, python-openssl, python-gnupg, python-zmq, python-txzmq
+Depends: ${misc:Depends}, ${python:Depends}, python-jsonschema, python-dirspec, python-dateutil, python-openssl, python-zmq, python-txzmq
 Description: Common python files needed by LEAP projects.
  This package contains common python functions that are needed 
  for the LEAP Client project
