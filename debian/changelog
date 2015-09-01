@@ -4,7 +4,7 @@ leap-common (0.4.2) unstable; urgency=medium
   * Update standards version to 3.9.6 (no changes) 
   * Change my email address
 
- -- Ben Carrillo <ben@futeisha.org>  Fri, 07 Nov 2014 18:50:11 +0100
+ -- Micah Anderson <micah@leap.se>  Tue, 01 Sep 2015 14:18:31 -0400
 
 leap-common (0.3.8) unstable; urgency=medium
 
