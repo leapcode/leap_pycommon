@@ -3,13 +3,12 @@ Maintainer: Micah Anderson <micah@leap.se>
 Uploaders: Ben Carrillo <ben@futeisha.org>
 Section: python
 Priority: optional
-Build-Depends: python-setuptools (>= 0.6b3), python-all (>= 2.6.6-3), debhelper (>= 9), python-protobuf, python-protobuf.socketrpc
+Build-Depends: python-setuptools (>= 0.6b3), python-all (>= 2.6.6-3), debhelper (>= 9), dh-python
 Standards-Version: 3.9.6
 
 Package: python-leap-common
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}, python-jsonschema, python-dirspec, python-protobuf (>=2.4.1), python-protobuf.socketrpc,
- python-dateutil, python-openssl, python-gnupg
+Depends: ${misc:Depends}, ${python:Depends}, python-jsonschema, python-dirspec, python-dateutil, python-openssl, python-zmq, python-txzmq
 Description: Common python files needed by LEAP projects.
  This package contains common python functions that are needed 
  for the LEAP Client project

@@ -1,8 +1,8 @@
 jsonschema  #<=0.8 -- are we done with this conflict?
 dirspec
-protobuf>=2.4.1
-protobuf.socketrpc
 pyopenssl
 python-dateutil
+pyzmq>=14.4.1
+txzmq>=0.7.3
 
 #autopep8 -- ???

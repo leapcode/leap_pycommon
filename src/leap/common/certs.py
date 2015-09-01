@@ -128,22 +128,23 @@ def is_valid_pemfile(cert):
     return can_load_cert_and_pkey(cert)
 
 
-def get_cert_time_boundaries(certfile):
+def get_cert_time_boundaries(certdata):
     """
-    Returns the time boundaries for the certificate saved in certfile
+    Return the time boundaries for the given certificate.
+    The returned values are UTC/GMT time.struct_time objects
 
-    :param certfile: path to certificate
-    :type certfile: str
+    :param certdata: the certificate contents
+    :type certdata: str
 
     :rtype: tuple (from, to)
     """
-    cert = get_cert_from_string(certfile)
+    cert = get_cert_from_string(certdata)
     leap_assert(cert, 'There was a problem loading the certificate')
 
     fromts, tots = (cert.get_notBefore(), cert.get_notAfter())
-    from_, to_ = map(
-        lambda ts: time.gmtime(time.mktime(dateparse(ts).timetuple())),
-        (fromts, tots))
+    from_ = dateparse(fromts).timetuple()
+    to_ = dateparse(tots).timetuple()
+
     return from_, to_
 
 
@@ -177,3 +178,21 @@ def should_redownload(certfile, now=time.gmtime):
         return True
 
     return False
+
+
+def get_compatible_ssl_context_factory(cert_path=None):
+    import twisted
+    cert = None
+    if twisted.version.base() > '14.0.1':
+        from twisted.web.client import BrowserLikePolicyForHTTPS
+        from twisted.internet import ssl
+        if cert_path:
+            cert = ssl.Certificate.loadPEM(open(cert_path).read())
+        policy = BrowserLikePolicyForHTTPS(cert)
+        return policy
+    else:
+        raise Exception(("""
+            Twisted 14.0.2 is needed in order to have secure
+            Client Web SSL Contexts, not %s
+            See: http://twistedmatrix.com/trac/ticket/7647
+            """) % (twisted.version.base()))

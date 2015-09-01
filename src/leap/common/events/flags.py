@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# mac_auth.py
-# Copyright (C) 2013 LEAP
+# __init__.py
+# Copyright (C) 2015 LEAP
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,18 +14,15 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
-
 """
-Authentication system for events.
-
-This is not implemented yet.
+Flags for the events framework.
 """
+from leap.common.check import leap_assert
+
+EVENTS_ENABLED = True
 
 
-class MacMethod(object):
-    """
-    Representation of possible MAC authentication methods.
-    """
-
-    MAC_NONE = 'none'
-    MAC_HMAC = 'hmac'
+def set_events_enabled(flag):
+    leap_assert(isinstance(flag, bool))
+    global EVENTS_ENABLED
+    EVENTS_ENABLED = flag

@@ -28,6 +28,7 @@ _system = platform.system()
 
 IS_MAC = _system == "Darwin"
 
+
 def where():
     """
     Return the preferred certificate bundle.
