@@ -3,6 +3,8 @@ leap.common
 
 .. image:: https://badge.fury.io/py/leap.common.svg
     :target: http://badge.fury.io/py/leap.common
+.. image:: https://img.shields.io/pypi/dm/leap.common.svg
+    :target: http://badge.fury.io/py/leap.common
 
 A collection of shared utils used by the several python LEAP subprojects.
 
