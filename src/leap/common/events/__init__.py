@@ -39,6 +39,7 @@ import logging
 import argparse
 
 from leap.common.events import client
+from leap.common.events import txclient
 from leap.common.events import server
 from leap.common.events.flags import set_events_enabled
 
@@ -80,6 +81,10 @@ def register(event, callback, uid=None, replace=False):
     return client.register(event, callback, uid, replace)
 
 
+def register_async(event, callback, uid=None, replace=False):
+    return txclient.register(event, callback, uid, replace)
+
+
 def unregister(event, uid=None):
     """
     Unregister callbacks for an event.
@@ -95,6 +100,10 @@ def unregister(event, uid=None):
     return client.unregister(event, uid)
 
 
+def unregister_async(event, uid=None):
+    return txclient.unregister(event, uid)
+
+
 def emit(event, *content):
     """
     Send an event.
@@ -105,6 +114,10 @@ def emit(event, *content):
     :type content: list
     """
     return client.emit(event, *content)
+
+
+def emit_async(event, *content):
+    return txclient.emit(event, *content)
 
 
 if __name__ == "__main__":
