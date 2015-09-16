@@ -146,9 +146,8 @@ def register(event, callback, uid=None, replace=False):
     :raises CallbackAlreadyRegisteredError: when there's already a callback
             identified by the given uid and replace is False.
     """
-    if flags.EVENTS_ENABLED:
-        return EventsTxClient.instance().register(
-            event, callback, uid=uid, replace=replace)
+    return EventsTxClient.instance().register(
+        event, callback, uid=uid, replace=replace)
 
 
 def unregister(event, uid=None):
@@ -163,8 +162,7 @@ def unregister(event, uid=None):
     :param uid: The callback uid.
     :type uid: str
     """
-    if flags.EVENTS_ENABLED:
-        return EventsTxClient.instance().unregister(event, uid=uid)
+    return EventsTxClient.instance().unregister(event, uid=uid)
 
 
 def emit(event, *content):
@@ -176,8 +174,7 @@ def emit(event, *content):
     :param content: The content of the event.
     :type content: list
     """
-    if flags.EVENTS_ENABLED:
-        return EventsTxClient.instance().emit(event, *content)
+    return EventsTxClient.instance().emit(event, *content)
 
 
 def shutdown():
