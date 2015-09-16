@@ -35,7 +35,7 @@ from leap.common.events.client import EventsClient
 from leap.common.events.client import configure_client
 from leap.common.events.server import EMIT_ADDR
 from leap.common.events.server import REG_ADDR
-from leap.common.events import catalog
+from leap.common.events import catalog, flags
 
 
 logger = logging.getLogger(__name__)
@@ -146,8 +146,9 @@ def register(event, callback, uid=None, replace=False):
     :raises CallbackAlreadyRegisteredError: when there's already a callback
             identified by the given uid and replace is False.
     """
-    return EventsTxClient.instance().register(
-        event, callback, uid=uid, replace=replace)
+    if flags.EVENTS_ENABLED:
+        return EventsTxClient.instance().register(
+            event, callback, uid=uid, replace=replace)
 
 
 def unregister(event, uid=None):
@@ -162,7 +163,8 @@ def unregister(event, uid=None):
     :param uid: The callback uid.
     :type uid: str
     """
-    return EventsTxClient.instance().unregister(event, uid=uid)
+    if flags.EVENTS_ENABLED:
+        return EventsTxClient.instance().unregister(event, uid=uid)
 
 
 def emit(event, *content):
@@ -174,7 +176,8 @@ def emit(event, *content):
     :param content: The content of the event.
     :type content: list
     """
-    return EventsTxClient.instance().emit(event, *content)
+    if flags.EVENTS_ENABLED:
+        return EventsTxClient.instance().emit(event, *content)
 
 
 def shutdown():
