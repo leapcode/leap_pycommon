@@ -1,5 +1,5 @@
 Source: leap-common
-Maintainer: Micah Anderson <micah@debian.org>
+Maintainer: Micah Anderson <micah@leap.se>
 Uploaders: Ben Carrillo <ben@futeisha.org>
 Section: python
 Priority: optional
@@ -8,7 +8,7 @@ Standards-Version: 3.9.6
 
 Package: python-leap-common
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}, python-jsonschema, python-dirspec, python-dateutil, python-openssl, python-zmq, python-txzmq
-Description: Common python files needed by LEAP projects.
- This package contains common python functions that are needed 
+Depends: ${misc:Depends}, ${python:Depends}, python-jsonschema, python-dirspec, python-dateutil, python-openssl, python-zmq (>=14.4.1-1.1), python-txzmq (>= 0.7.3)
+Description: Common Python files needed by LEAP projects
+ This package contains common Python functions that are needed 
  for the LEAP Client project
