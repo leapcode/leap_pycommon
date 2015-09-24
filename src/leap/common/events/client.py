@@ -465,7 +465,7 @@ class EventsClientThread(threading.Thread, EventsClient):
         Make sure the events client thread is started.
         """
         with self._lock:
-            if flags.EVENTS_ENABLED and not self.is_alive():
+            if not self.is_alive():
                 self.daemon = True
                 self.start()
                 self._initialized.wait()
@@ -508,9 +508,8 @@ def register(event, callback, uid=None, replace=False):
     :raises CallbackAlreadyRegisteredError: when there's already a callback
             identified by the given uid and replace is False.
     """
-    if flags.EVENTS_ENABLED:
-        return EventsClientThread.instance().register(
-            event, callback, uid=uid, replace=replace)
+    return EventsClientThread.instance().register(
+        event, callback, uid=uid, replace=replace)
 
 
 def unregister(event, uid=None):
@@ -525,8 +524,7 @@ def unregister(event, uid=None):
     :param uid: The callback uid.
     :type uid: str
     """
-    if flags.EVENTS_ENABLED:
-        return EventsClientThread.instance().unregister(event, uid=uid)
+    return EventsClientThread.instance().unregister(event, uid=uid)
 
 
 def emit(event, *content):
@@ -538,8 +536,7 @@ def emit(event, *content):
     :param content: The content of the event.
     :type content: list
     """
-    if flags.EVENTS_ENABLED:
-        return EventsClientThread.instance().emit(event, *content)
+    return EventsClientThread.instance().emit(event, *content)
 
 
 def instance():
