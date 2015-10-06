@@ -35,7 +35,7 @@ from leap.common.events.client import EventsClient
 from leap.common.events.client import configure_client
 from leap.common.events.server import EMIT_ADDR
 from leap.common.events.server import REG_ADDR
-from leap.common.events import catalog, flags
+from leap.common.events import catalog
 
 
 logger = logging.getLogger(__name__)
