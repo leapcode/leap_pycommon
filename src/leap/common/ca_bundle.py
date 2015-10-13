@@ -39,7 +39,7 @@ def where():
         # we are running in a |PyInstaller| bundle
         path = sys._MEIPASS
         return os.path.join(path, 'cacert.pem')
-    return os.path.join(os.path, dirname(__file__), 'cacert.pem')
+    return os.path.join(os.path.dirname(__file__), 'cacert.pem')
 
 if __name__ == '__main__':
     print(where())
