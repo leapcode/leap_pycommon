@@ -25,6 +25,7 @@ import os
 import logging
 import txzmq
 import re
+import time
 
 from abc import ABCMeta
 
@@ -154,6 +155,11 @@ class TxZmqComponent(object):
         :type socket: zmq.Socket
         """
         authenticator = ThreadAuthenticator(self._factory.context)
+
+        # Temporary fix until we understand what the problem is
+        # See https://leap.se/code/issues/7536
+        time.sleep(0.5)
+
         authenticator.start()
         # XXX do not hardcode this here.
         authenticator.allow('127.0.0.1')
