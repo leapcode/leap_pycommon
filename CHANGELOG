@@ -1,3 +1,8 @@
+0.4.4 Oct 28, 2015:
+  o Consider standalone flag when saving events certificates. Related #7512.
+  o fix wrong ca_cert path inside bundle.
+  o Workaround for deadlock problem in zmq auth.
+
 0.4.3 Sep 22, 2015:
   o Expose async methods for events. Closes: #7274
 
