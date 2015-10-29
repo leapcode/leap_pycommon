@@ -21,8 +21,9 @@ If you are packaging Requests, e.g., for a Linux distribution or a managed
 environment, you can change the definition of where() to return a separately
 packaged CA bundle.
 """
-import platform
 import os.path
+import platform
+import sys
 
 _system = platform.system()
 
@@ -34,11 +35,10 @@ def where():
     Return the preferred certificate bundle.
     :rtype: str
     """
-    # vendored bundle inside Requests, plus some additions of ours
-    if IS_MAC:
-        return os.path.join("/Applications", "Bitmask.app",
-                            "Contents", "Resources",
-                            "cacert.pem")
+    if getattr(sys, 'frozen', False):
+        # we are running in a |PyInstaller| bundle
+        path = sys._MEIPASS
+        return os.path.join(path, 'cacert.pem')
     return os.path.join(os.path.dirname(__file__), 'cacert.pem')
 
 if __name__ == '__main__':

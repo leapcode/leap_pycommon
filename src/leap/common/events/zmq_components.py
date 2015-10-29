@@ -25,6 +25,7 @@ import os
 import logging
 import txzmq
 import re
+import time
 
 from abc import ABCMeta
 
@@ -36,7 +37,7 @@ try:
 except ImportError:
     pass
 
-from leap.common.config import get_path_prefix
+from leap.common.config import flags, get_path_prefix
 from leap.common.zmq_utils import zmq_has_curve
 from leap.common.zmq_utils import maybe_create_and_get_certificates
 from leap.common.zmq_utils import PUBLIC_KEYS_PREFIX
@@ -64,7 +65,7 @@ class TxZmqComponent(object):
         self._factory = txzmq.ZmqFactory()
         self._factory.registerForShutdown()
         if path_prefix is None:
-            path_prefix = get_path_prefix()
+            path_prefix = get_path_prefix(flags.STANDALONE)
         self._config_prefix = os.path.join(path_prefix, "leap", "events")
         self._connections = []
 
@@ -154,6 +155,11 @@ class TxZmqComponent(object):
         :type socket: zmq.Socket
         """
         authenticator = ThreadAuthenticator(self._factory.context)
+
+        # Temporary fix until we understand what the problem is
+        # See https://leap.se/code/issues/7536
+        time.sleep(0.5)
+
         authenticator.start()
         # XXX do not hardcode this here.
         authenticator.allow('127.0.0.1')

@@ -47,7 +47,7 @@ try:
 except ImportError:
     pass
 
-from leap.common.config import get_path_prefix
+from leap.common.config import flags, get_path_prefix
 from leap.common.zmq_utils import zmq_has_curve
 from leap.common.zmq_utils import maybe_create_and_get_certificates
 from leap.common.zmq_utils import PUBLIC_KEYS_PREFIX
@@ -55,7 +55,6 @@ from leap.common.zmq_utils import PUBLIC_KEYS_PREFIX
 from leap.common.events.errors import CallbackAlreadyRegisteredError
 from leap.common.events.server import EMIT_ADDR
 from leap.common.events.server import REG_ADDR
-from leap.common.events import flags
 from leap.common.events import catalog
 
 
@@ -280,7 +279,7 @@ class EventsClientThread(threading.Thread, EventsClient):
         self._lock = threading.Lock()
         self._initialized = threading.Event()
         self._config_prefix = os.path.join(
-            get_path_prefix(), "leap", "events")
+            get_path_prefix(flags.STANDALONE), "leap", "events")
         self._loop = None
         self._context = None
         self._push = None
