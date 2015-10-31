@@ -2,6 +2,7 @@ leap-common (0.4.11) unstable; urgency=medium
 
   * Dummy release. This is exactly tag 0.4.4, to fix a former versioning
     error. Closes leap issue 7555.
+  * Remove dh-python so we can build on wheezy
 
  -- Ben Carrillo <ben@futeisha.org>  Thu, 29 Oct 2015 16:33:25 -0400
 
