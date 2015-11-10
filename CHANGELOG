@@ -1,3 +1,26 @@
+0.4.4 Oct 28, 2015:
+  o Consider standalone flag when saving events certificates. Related #7512.
+  o fix wrong ca_cert path inside bundle.
+  o Workaround for deadlock problem in zmq auth.
+
+0.4.3 Sep 22, 2015:
+  o Expose async methods for events. Closes: #7274
+
+0.4.2 Aug 26, 2015:
+  o Add http request timeout. Related to #7234.
+  o Add a flag to disable events framework. Closes: #7259
+  o Allow passing callback to HTTP client.
+  o Bugfix: do not add a port string to non-tcp addresses.
+  o Add close method for http agent.
+  o Fix code style and tests.
+  o Bugfix: HTTP timeout was not being cleared on abort.
+
+0.4.1 Jul 10, 2015:
+  o Fix regexp to allow ipc protocol in zmq sockets. Closes: #7089.
+  o Remove extraneous data from events logs. Closes #7130.
+  o Make https client use Twisted SSL validation and adds a reuse by default
+    behavior on connection pool
+
 0.4.0 Jun 1, 2015:
   o Modify leap.common.events to use ZMQ. Closes #6359.
   o Fix time comparison between local and UTC times that caused the VPN

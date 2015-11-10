@@ -2,8 +2,6 @@ jsonschema  #<=0.8 -- are we done with this conflict?
 dirspec
 pyopenssl
 python-dateutil
-Twisted>=12.1
-zope.interface
 pyzmq>=14.4.1
 txzmq>=0.7.3
 

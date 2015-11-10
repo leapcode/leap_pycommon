@@ -14,8 +14,6 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-
 """
 This is an events mechanism that uses a server to allow for emitting events
 between clients.
@@ -37,13 +35,15 @@ To emit an event, use leap.common.events.emit():
 >>> from leap.common.events import catalog
 >>> emit(catalog.CLIENT_UID)
 """
-
-
 import logging
 import argparse
 
 from leap.common.events import client
+from leap.common.events import txclient
 from leap.common.events import server
+from leap.common.events import flags
+from leap.common.events.flags import set_events_enabled
+
 from leap.common.events import catalog
 
 
@@ -52,6 +52,7 @@ __all__ = [
     "unregister",
     "emit",
     "catalog",
+    "set_events_enabled"
 ]
 
 
@@ -78,7 +79,13 @@ def register(event, callback, uid=None, replace=False):
     :raises CallbackAlreadyRegistered: when there's already a callback
             identified by the given uid and replace is False.
     """
-    return client.register(event, callback, uid, replace)
+    if flags.EVENTS_ENABLED:
+        return client.register(event, callback, uid, replace)
+
+
+def register_async(event, callback, uid=None, replace=False):
+    if flags.EVENTS_ENABLED:
+        return txclient.register(event, callback, uid, replace)
 
 
 def unregister(event, uid=None):
@@ -93,7 +100,13 @@ def unregister(event, uid=None):
     :param uid: The callback uid.
     :type uid: str
     """
-    return client.unregister(event, uid)
+    if flags.EVENTS_ENABLED:
+        return client.unregister(event, uid)
+
+
+def unregister_async(event, uid=None):
+    if flags.EVENTS_ENABLED:
+        return txclient.unregister(event, uid)
 
 
 def emit(event, *content):
@@ -105,7 +118,13 @@ def emit(event, *content):
     :param content: The content of the event.
     :type content: list
     """
-    return client.emit(event, *content)
+    if flags.EVENTS_ENABLED:
+        return client.emit(event, *content)
+
+
+def emit_async(event, *content):
+    if flags.EVENTS_ENABLED:
+        return txclient.emit(event, *content)
 
 
 if __name__ == "__main__":

@@ -1,8 +1,45 @@
+leap-common (0.4.11.1) unstable; urgency=medium
+
+  * Move python-service-identity to Recommends.
+    Closes leap issue #7559
+
+ -- Ben Carrillo <ben@futeisha.org>  Mon, 02 Nov 2015 11:55:28 -0400
+
+leap-common (0.4.11) unstable; urgency=medium
+
+  * Dummy release. This is exactly tag 0.4.4, to fix a former versioning
+    error. Closes leap issue 7555.
+  * Remove dh-python so we can build on wheezy
+
+ -- Ben Carrillo <ben@futeisha.org>  Thu, 29 Oct 2015 16:33:25 -0400
+
 leap-common (0.4.10) unstable; urgency=medium
 
   * Update to 0.4.0 release
 
  -- Ben Carrillo <ben@futeisha.org>  Mon, 01 Jun 2015 14:30:27 -0400
+
+leap-common (0.4.4) unstable; urgency=medium
+
+  * Update to 0.4.4 release 
+
+ -- Ben Carrillo <ben@futeisha.org>  Thu, 29 Oct 2015 12:00:51 -0400
+
+leap-common (0.4.3) unstable; urgency=medium
+
+  * Update to 0.4.3 release 
+
+ -- Ben Carrillo <ben@futeisha.org>  Thu, 24 Sep 2015 15:18:51 -0400
+
+leap-common (0.4.2) unstable; urgency=medium
+
+  * Update to 0.4.2 release 
+  * Update standards version to 3.9.6 (no changes) 
+  * Change my email address
+  * Add pydist-overrides for pyopenssl
+  * Specify explicit dependencies for python-zmq and python-txzmq
+
+ -- Micah Anderson <micah@leap.se>  Tue, 01 Sep 2015 14:18:31 -0400
 
 leap-common (0.3.9) unstable; urgency=medium
 

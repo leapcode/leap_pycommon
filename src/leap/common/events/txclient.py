@@ -14,8 +14,6 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-
 """
 The client end point of the events mechanism, implemented using txzmq.
 
@@ -27,8 +25,6 @@ When a client registers a callback for a given event, it also tells the
 server that it wants to be notified whenever events of that type are sent by
 some other client.
 """
-
-
 import logging
 import pickle
 
@@ -62,7 +58,7 @@ class EventsTxClient(TxZmqClientComponent, EventsClient):
     """
 
     def __init__(self, emit_addr=EMIT_ADDR, reg_addr=REG_ADDR,
-            path_prefix=None):
+                 path_prefix=None):
         """
         Initialize the events server.
         """
@@ -111,6 +107,19 @@ class EventsTxClient(TxZmqClientComponent, EventsClient):
         :type event: str
         """
         self._push.send(data)
+
+    def _run_callback(self, callback, event, content):
+        """
+        Run a callback.
+
+        :param callback: The callback to be run.
+        :type callback: callable(event, *content)
+        :param event: The event to be sent.
+        :type event: Event
+        :param content: The content of the event.
+        :type content: list
+        """
+        callback(event, *content)
 
     def shutdown(self):
         TxZmqClientComponent.shutdown(self)

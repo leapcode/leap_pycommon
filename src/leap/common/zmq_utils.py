@@ -101,5 +101,3 @@ def maybe_create_and_get_certificates(basedir, name):
         mkdir_p(public_keys_dir)
         shutil.move(old_public_key, new_public_key)
     return zmq.auth.load_certificate(private_key)
-
-

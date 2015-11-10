@@ -178,3 +178,21 @@ def should_redownload(certfile, now=time.gmtime):
         return True
 
     return False
+
+
+def get_compatible_ssl_context_factory(cert_path=None):
+    import twisted
+    cert = None
+    if twisted.version.base() > '14.0.1':
+        from twisted.web.client import BrowserLikePolicyForHTTPS
+        from twisted.internet import ssl
+        if cert_path:
+            cert = ssl.Certificate.loadPEM(open(cert_path).read())
+        policy = BrowserLikePolicyForHTTPS(cert)
+        return policy
+    else:
+        raise Exception(("""
+            Twisted 14.0.2 is needed in order to have secure
+            Client Web SSL Contexts, not %s
+            See: http://twistedmatrix.com/trac/ticket/7647
+            """) % (twisted.version.base()))

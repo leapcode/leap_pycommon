@@ -1,8 +1,10 @@
 leap.common
 ===========
 
-.. image:: https://pypip.in/v/leap.common/badge.png
-        :target: https://crate.io/packages/leap.common
+.. image:: https://badge.fury.io/py/leap.common.svg
+    :target: http://badge.fury.io/py/leap.common
+.. image:: https://img.shields.io/pypi/dm/leap.common.svg
+    :target: http://badge.fury.io/py/leap.common
 
 A collection of shared utils used by the several python LEAP subprojects.
 
@@ -15,7 +17,6 @@ A collection of shared utils used by the several python LEAP subprojects.
 
 Library dependencies
 --------------------
-* ``protobuf-compiler``
 * ``libssl-dev``
 
 Python dependencies

@@ -19,15 +19,17 @@ setup file for leap.common
 """
 import re
 from setuptools import setup, find_packages
+from setuptools import Command
 
 from pkg import utils
-parsed_reqs = utils.parse_requirements()
 
 import versioneer
 versioneer.versionfile_source = 'src/leap/common/_version.py'
 versioneer.versionfile_build = 'leap/common/_version.py'
 versioneer.tag_prefix = ''  # tags are like 1.2.0
 versioneer.parentdir_prefix = 'leap.common-'
+
+parsed_reqs = utils.parse_requirements()
 
 tests_requirements = [
     'mock',
@@ -61,7 +63,6 @@ if len(_version_short) > 0:
     DOWNLOAD_URL = DOWNLOAD_BASE % VERSION_SHORT
 
 cmdclass = versioneer.get_cmdclass()
-from setuptools import Command
 
 
 class freeze_debianver(Command):
@@ -130,12 +131,19 @@ setup(
     package_data={'': ['*.pem']},
     # For now, we do not exclude tests because of the circular dependency
     # between leap.common and leap.soledad.
-    #packages=find_packages('src', exclude=['leap.common.tests']),
+    # packages=find_packages('src', exclude=['leap.common.tests']),
     packages=find_packages('src'),
     test_suite='leap.common.tests',
     install_requires=parsed_reqs,
-    #dependency_links=dependency_links,
+    # dependency_links=dependency_links,
     tests_require=tests_requirements,
     include_package_data=True,
     zip_safe=False,
+
+    extras_require={
+        # needed for leap.common.http
+        #  service_identity needed for propper hostname identification,
+        #  see http://twistedmatrix.com/documents/current/core/howto/ssl.html
+        'Twisted': ["Twisted>=14.0.2", "service_identity", "zope.interface"]
+    },
 )

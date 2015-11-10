@@ -43,10 +43,10 @@ CERT_NOT_AFTER = (2023, 9, 1, 17, 52, 16, 4, 244, 0)
 class CertsTest(BaseLeapTest):
 
     def setUp(self):
-        pass
+        self.setUpEnv()
 
     def tearDown(self):
-        pass
+        self.tearDownEnv()
 
     def test_should_redownload_if_no_cert(self):
         self.assertTrue(certs.should_redownload(certfile=""))
@@ -60,11 +60,13 @@ class CertsTest(BaseLeapTest):
         self.assertTrue(certs.should_redownload(cert_path))
 
     def test_should_redownload_if_before(self):
-        new_now = lambda: time.struct_time(CERT_NOT_BEFORE)
+        def new_now():
+            time.struct_time(CERT_NOT_BEFORE)
         self.assertTrue(certs.should_redownload(TEST_CERT_PEM, now=new_now))
 
     def test_should_redownload_if_after(self):
-        new_now = lambda: time.struct_time(CERT_NOT_AFTER)
+        def new_now():
+            time.struct_time(CERT_NOT_AFTER)
         self.assertTrue(certs.should_redownload(TEST_CERT_PEM, now=new_now))
 
     def test_not_should_redownload(self):
