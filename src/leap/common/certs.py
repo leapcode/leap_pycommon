@@ -30,6 +30,8 @@ from leap.common.check import leap_assert
 
 logger = logging.getLogger(__name__)
 
+SKIP_SSL_CHECK = os.environ.get('SKIP_TWISTED_SSL_CHECK', False)
+
 
 def get_cert_from_string(string):
     """
@@ -182,10 +184,25 @@ def should_redownload(certfile, now=time.gmtime):
 
 def get_compatible_ssl_context_factory(cert_path=None):
     import twisted
+    from twisted.internet import ssl
     cert = None
+
+    if SKIP_SSL_CHECK:
+        # This should be used *only* for testing purposes.
+
+        class WebClientContextFactory(ssl.ClientContextFactory):
+            """
+            A web context factory which ignores the hostname and port and does no
+            certificate verification.
+            """
+            def getContext(self, hostname, port):
+                return ssl.ClientContextFactory.getContext(self)
+
+        contextFactory = WebClientContextFactory()
+        return contextFactory
+
     if twisted.version.base() > '14.0.1':
         from twisted.web.client import BrowserLikePolicyForHTTPS
-        from twisted.internet import ssl
         if cert_path:
             cert = ssl.Certificate.loadPEM(open(cert_path).read())
         policy = BrowserLikePolicyForHTTPS(cert)
