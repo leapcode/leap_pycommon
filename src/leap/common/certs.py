@@ -192,8 +192,8 @@ def get_compatible_ssl_context_factory(cert_path=None):
 
         class WebClientContextFactory(ssl.ClientContextFactory):
             """
-            A web context factory which ignores the hostname and port and does no
-            certificate verification.
+            A web context factory which ignores the hostname and port and does
+            no certificate verification.
             """
             def getContext(self, hostname, port):
                 return ssl.ClientContextFactory.getContext(self)
