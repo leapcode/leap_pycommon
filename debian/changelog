@@ -1,3 +1,9 @@
+leap-common (0.4.11.2) unstable; urgency=medium
+
+  * Relax dependency on python-zmq
+
+ -- Micah Anderson <micah@leap.se>  Thu, 12 Nov 2015 11:20:03 -0500
+
 leap-common (0.4.11.1) unstable; urgency=medium
 
   * Move python-service-identity to Recommends.
