@@ -5,8 +5,8 @@
 # unpacked source archive. Distribution tarballs contain a pre-generated copy
 # of this file.
 
-version_version = '0.4.4'
-version_full = 'ee0e9cadccd00cb62032d8fc4b322bb6fe3dc7ed'
+version_version = '0.5.0'
+version_full = 'dd032e7374fa137a8613c2392d744b9b16280fca'
 
 
 def get_versions(default={}, verbose=False):

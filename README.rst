@@ -22,3 +22,10 @@ Library dependencies
 Python dependencies
 -------------------
 * See ``pkg/requirements.pip``
+
+Extras
+-------------------
+Using `leap.common.http` needs some extra dependencies (twisted.web >= 14.0.2,
+python-service-identity). You can install them by running::
+
+  pip install leap.common[http]
