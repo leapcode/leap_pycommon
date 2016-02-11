@@ -22,6 +22,7 @@ The server for the events mechanism.
 
 
 import logging
+import platform
 import txzmq
 
 from leap.common.zmq_utils import zmq_has_curve
@@ -29,7 +30,8 @@ from leap.common.zmq_utils import zmq_has_curve
 from leap.common.events.zmq_components import TxZmqServerComponent
 
 
-if zmq_has_curve():
+if zmq_has_curve() or platform.system() == "Windows":
+    # Windows doesn't have icp sockets, we need to use always tcp
     EMIT_ADDR = "tcp://127.0.0.1:9000"
     REG_ADDR = "tcp://127.0.0.1:9001"
 else:
