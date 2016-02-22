@@ -58,7 +58,7 @@ class TxZmqComponent(object):
 
     _component_type = None
 
-    def __init__(self, path_prefix=None):
+    def __init__(self, path_prefix=None, enable_curve=True):
         """
         Initialize the txzmq component.
         """
@@ -68,6 +68,10 @@ class TxZmqComponent(object):
             path_prefix = get_path_prefix(flags.STANDALONE)
         self._config_prefix = os.path.join(path_prefix, "leap", "events")
         self._connections = []
+        if enable_curve:
+            self.use_curve = zmq_has_curve()
+        else:
+            self.use_curve = False
 
     @property
     def component_type(self):
