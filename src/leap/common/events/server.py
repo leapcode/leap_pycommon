@@ -14,30 +14,26 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-
 """
 The server for the events mechanism.
 """
-
-
 import logging
 import platform
-import txzmq
 
 from leap.common.zmq_utils import zmq_has_curve
 
 from leap.common.events.zmq_components import TxZmqServerComponent
 
+import txzmq
+
 
 if zmq_has_curve() or platform.system() == "Windows":
-    # Windows doesn't have icp sockets, we need to use always tcp
+    # Windows doesn't have ipc sockets, we need to use always tcp
     EMIT_ADDR = "tcp://127.0.0.1:9000"
     REG_ADDR = "tcp://127.0.0.1:9001"
 else:
     EMIT_ADDR = "ipc:///tmp/leap.common.events.socket.0"
     REG_ADDR = "ipc:///tmp/leap.common.events.socket.1"
-
 
 logger = logging.getLogger(__name__)
 

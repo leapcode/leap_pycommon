@@ -28,9 +28,10 @@ some other client.
 import logging
 import pickle
 
+from leap.common.events.zmq_components import TxZmqClientComponent
+
 import txzmq
 
-from leap.common.events.zmq_components import TxZmqClientComponent
 from leap.common.events.client import EventsClient
 from leap.common.events.client import configure_client
 from leap.common.events.server import EMIT_ADDR
@@ -68,6 +69,7 @@ class EventsTxClient(TxZmqClientComponent, EventsClient):
         # same client
         self._sub = self._zmq_connect(txzmq.ZmqSubConnection, reg_addr)
         self._sub.gotMessage = self._gotMessage
+
         self._push = self._zmq_connect(txzmq.ZmqPushConnection, emit_addr)
 
     def _gotMessage(self, msg, tag):
@@ -122,7 +124,6 @@ class EventsTxClient(TxZmqClientComponent, EventsClient):
         callback(event, *content)
 
     def shutdown(self):
-        TxZmqClientComponent.shutdown(self)
         EventsClient.shutdown(self)
 
 
