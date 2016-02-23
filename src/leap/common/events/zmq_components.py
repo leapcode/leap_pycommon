@@ -21,16 +21,13 @@ import os
 import logging
 import txzmq
 import re
-import time
-
 
 from abc import ABCMeta
 
-# XXX some distros don't package libsodium, so we have to be prepared for
-#     absence of zmq.auth
 try:
     import zmq.auth
-    from zmq.auth.thread import ThreadAuthenticator
+    from leap.common.events.auth import TxAuthenticator
+    from leap.common.events.auth import TxAuthenticationRequest
 except ImportError:
     pass
 
@@ -38,15 +35,14 @@ from txzmq.connection import ZmqEndpoint, ZmqEndpointType
 
 from leap.common.config import flags, get_path_prefix
 from leap.common.zmq_utils import zmq_has_curve
-
 from leap.common.zmq_utils import maybe_create_and_get_certificates
 from leap.common.zmq_utils import PUBLIC_KEYS_PREFIX
 
-
 logger = logging.getLogger(__name__)
 
-
 ADDRESS_RE = re.compile("^([a-z]+)://([^:]+):?(\d+)?$")
+
+LOCALHOST_ALLOWED = '127.0.0.1'
 
 
 class TxZmqComponent(object):
@@ -55,6 +51,7 @@ class TxZmqComponent(object):
     """
     _factory = txzmq.ZmqFactory()
     _factory.registerForShutdown()
+    _auth = None
 
     __metaclass__ = ABCMeta
 
@@ -135,33 +132,28 @@ class TxZmqComponent(object):
                 self._config_prefix, self.component_type)
             socket.curve_publickey = public
             socket.curve_secretkey = secret
-            self._start_thread_auth(connection.socket)
+            self._start_authentication(connection.socket)
 
         connection.addEndpoints([endpoint])
         return connection, port
 
-    def _start_thread_auth(self, socket):
-        """
-        Start the zmq curve thread authenticator.
+    def _start_authentication(self, socket):
 
-        :param socket: The socket in which to configure the authenticator.
-        :type socket: zmq.Socket
-        """
-        # TODO re-implement without threads.
-        logger.debug("Starting thread authenticator...")
-        authenticator = ThreadAuthenticator(self._factory.context)
+        if not TxZmqComponent._auth:
+            TxZmqComponent._auth = TxAuthenticator(self._factory)
+            TxZmqComponent._auth.start()
 
-        # Temporary fix until we understand what the problem is
-        # See https://leap.se/code/issues/7536
-        time.sleep(0.5)
+        auth_req = TxAuthenticationRequest(self._factory)
+        auth_req.start()
+        auth_req.allow(LOCALHOST_ALLOWED)
 
-        authenticator.start()
-        # XXX do not hardcode this here.
-        authenticator.allow('127.0.0.1')
         # tell authenticator to use the certificate in a directory
         public_keys_dir = os.path.join(self._config_prefix, PUBLIC_KEYS_PREFIX)
-        authenticator.configure_curve(domain="*", location=public_keys_dir)
-        socket.curve_server = True  # must come before bind
+        auth_req.configure_curve(domain="*", location=public_keys_dir)
+
+        # This has to be set before binding the socket, that's why this method
+        # has to be called before addEndpoints()
+        socket.curve_server = True
 
 
 class TxZmqServerComponent(TxZmqComponent):

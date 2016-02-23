@@ -28,10 +28,9 @@ some other client.
 import logging
 import pickle
 
-from leap.common.events.zmq_components import TxZmqClientComponent
-
 import txzmq
 
+from leap.common.events.zmq_components import TxZmqClientComponent
 from leap.common.events.client import EventsClient
 from leap.common.events.client import configure_client
 from leap.common.events.server import EMIT_ADDR

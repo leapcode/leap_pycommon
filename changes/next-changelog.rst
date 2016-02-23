@@ -15,6 +15,7 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- `#7536 <https://leap.se/code/issues/7536>`_: zmq authenticator often hangs.
 - `#1235 <https://leap.se/code/issues/1235>`_: Description for the fixed stuff corresponding with issue #1235.
 - Bugfix without related issue number.
 

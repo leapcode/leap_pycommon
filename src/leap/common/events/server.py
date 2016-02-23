@@ -20,11 +20,10 @@ The server for the events mechanism.
 import logging
 import platform
 
-from leap.common.zmq_utils import zmq_has_curve
-
-from leap.common.events.zmq_components import TxZmqServerComponent
-
 import txzmq
+
+from leap.common.zmq_utils import zmq_has_curve
+from leap.common.events.zmq_components import TxZmqServerComponent
 
 
 if zmq_has_curve() or platform.system() == "Windows":
