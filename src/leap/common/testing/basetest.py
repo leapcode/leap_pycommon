@@ -52,7 +52,7 @@ class BaseLeapTest(unittest.TestCase):
         cls.tearDownEnv()
 
     @classmethod
-    def setUpEnv(cls):
+    def setUpEnv(cls, launch_events_server=True):
         """
         Sets up common facilities for testing this TestCase:
         - custom PATH and HOME environmental variables
@@ -72,14 +72,15 @@ class BaseLeapTest(unittest.TestCase):
         os.environ["PATH"] = bin_tdir
         os.environ["HOME"] = cls.tempdir
         os.environ["XDG_CONFIG_HOME"] = os.path.join(cls.tempdir, ".config")
-        cls._init_events()
+        if launch_events_server:
+            cls._init_events()
 
     @classmethod
     def _init_events(cls):
         if flags.EVENTS_ENABLED:
             cls._server = events_server.ensure_server(
-                emit_addr="tcp://127.0.0.1:0",
-                reg_addr="tcp://127.0.0.1:0")
+                emit_addr="tcp://127.0.0.1",
+                reg_addr="tcp://127.0.0.1")
             events_client.configure_client(
                 emit_addr="tcp://127.0.0.1:%d" % cls._server.pull_port,
                 reg_addr="tcp://127.0.0.1:%d" % cls._server.pub_port)

@@ -37,7 +37,8 @@ else:
 logger = logging.getLogger(__name__)
 
 
-def ensure_server(emit_addr=EMIT_ADDR, reg_addr=REG_ADDR):
+def ensure_server(emit_addr=EMIT_ADDR, reg_addr=REG_ADDR, path_prefix=None,
+                  factory=None, enable_curve=True):
     """
     Make sure the server is running in the given addresses.
 
@@ -49,7 +50,8 @@ def ensure_server(emit_addr=EMIT_ADDR, reg_addr=REG_ADDR):
     :return: an events server instance
     :rtype: EventsServer
     """
-    _server = EventsServer(emit_addr, reg_addr)
+    _server = EventsServer(emit_addr, reg_addr, path_prefix, factory=factory,
+            enable_curve=enable_curve)
     return _server
 
 
@@ -59,7 +61,8 @@ class EventsServer(TxZmqServerComponent):
     events in another address.
     """
 
-    def __init__(self, emit_addr, reg_addr):
+    def __init__(self, emit_addr, reg_addr, path_prefix=None, factory=None,
+                 enable_curve=True):
         """
         Initialize the events server.
 
@@ -68,7 +71,9 @@ class EventsServer(TxZmqServerComponent):
         :param reg_addr: The address to which publish events to clients.
         :type reg_addr: str
         """
-        TxZmqServerComponent.__init__(self)
+        TxZmqServerComponent.__init__(self, path_prefix=path_prefix,
+                                      factory=factory,
+                                      enable_curve=enable_curve)
         # bind PULL and PUB sockets
         self._pull, self.pull_port = self._zmq_bind(
             txzmq.ZmqPullConnection, emit_addr)

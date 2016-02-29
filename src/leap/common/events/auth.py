@@ -38,8 +38,8 @@ class TxAuthenticator(ZmqConnection):
     address = 'inproc://zeromq.zap.01'
     encoding = 'utf-8'
 
-    def __init__(self, factory):
-        super(TxAuthenticator, self).__init__(factory)
+    def __init__(self, factory, *args, **kw):
+        super(TxAuthenticator, self).__init__(factory, *args, **kw)
         self.authenticator = Authenticator(factory.context)
         self.authenticator._send_zap_reply = self._send_zap_reply
 
