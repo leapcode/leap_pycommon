@@ -51,7 +51,7 @@ def ensure_server(emit_addr=EMIT_ADDR, reg_addr=REG_ADDR, path_prefix=None,
     :rtype: EventsServer
     """
     _server = EventsServer(emit_addr, reg_addr, path_prefix, factory=factory,
-            enable_curve=enable_curve)
+                           enable_curve=enable_curve)
     return _server
 
 

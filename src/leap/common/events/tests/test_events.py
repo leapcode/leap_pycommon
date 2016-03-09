@@ -89,7 +89,6 @@ class EventsGenericClientTestCase(object):
         self.assertTrue(callbacks[event2][uid2] == cbk2,
                         'Could not register event in local client.')
 
-
     def test_register_signal_replace(self):
         """
         Make sure clients can replace already registered callbacks.
