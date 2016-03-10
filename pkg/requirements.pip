@@ -5,3 +5,4 @@ pyzmq>=14.4.1
 txzmq>=0.7.3
 https://launchpad.net/dirspec/stable-13-10/13.10/+download/dirspec-13.10.tar.gz
 dirspec
+-e .
