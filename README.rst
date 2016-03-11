@@ -29,3 +29,17 @@ Using `leap.common.http` needs some extra dependencies (twisted.web >= 14.0.2,
 python-service-identity). You can install them by running::
 
   pip install leap.common[http]
+
+
+Running the tests
+-------------------
+To run the tests, first run the setup with:
+
+.. code-block::
+pip install -r pkg/requirements.pip
+pip install -r pkg/requirements-testing.pip
+
+After that you can run the tests with
+
+.. code-block::
+trial leap.common

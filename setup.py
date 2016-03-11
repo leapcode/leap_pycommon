@@ -29,7 +29,11 @@ versioneer.versionfile_build = 'leap/common/_version.py'
 versioneer.tag_prefix = ''  # tags are like 1.2.0
 versioneer.parentdir_prefix = 'leap.common-'
 
-parsed_reqs = utils.parse_requirements()
+requirements = utils.parse_requirements()
+
+dependency_links = [requirement for requirement in requirements if requirement.startswith('http')]
+requirements = [requirement for requirement in requirements if requirement not in dependency_links]
+requirements.append('dirspec')
 
 tests_requirements = [
     'mock',
@@ -134,8 +138,8 @@ setup(
     # packages=find_packages('src', exclude=['leap.common.tests']),
     packages=find_packages('src'),
     test_suite='leap.common.tests',
-    install_requires=parsed_reqs,
-    # dependency_links=dependency_links,
+    install_requires=requirements,
+    dependency_links=dependency_links,
     tests_require=tests_requirements,
     include_package_data=True,
     zip_safe=False,
