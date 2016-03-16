@@ -76,6 +76,10 @@ class TxAuthenticator(ZmqConnection):
                  user_id, metadata]
         self.send(reply)
 
+    def shutdown(self):
+        if self.factory:
+            super(TxAuthenticator, self).shutdown()
+
 
 class TxAuthenticationRequest(ZmqConnection):
 
