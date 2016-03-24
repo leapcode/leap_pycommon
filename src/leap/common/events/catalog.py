@@ -52,7 +52,7 @@ EVENTS = [
     "MAIL_MSG_DELETED_INCOMING",  # (userid)
     "MAIL_MSG_PROCESSING",  # (userid)
     "MAIL_MSG_SAVED_LOCALLY",  # (userid)
-    "MAIL_UNREAD_MESSAGES",  # (userid)
+    "MAIL_UNREAD_MESSAGES",  # (userid, number)
 
     "IMAP_SERVICE_STARTED",
     "IMAP_SERVICE_FAILED_TO_START",
