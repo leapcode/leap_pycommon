@@ -158,6 +158,7 @@ class TxZmqComponent(object):
         public_keys_dir = os.path.join(self._config_prefix, PUBLIC_KEYS_PREFIX)
         auth_req.configure_curve(domain="*", location=public_keys_dir)
         auth_req.shutdown()
+        TxZmqComponent._auth.shutdown()
 
         # This has to be set before binding the socket, that's why this method
         # has to be called before addEndpoints()
