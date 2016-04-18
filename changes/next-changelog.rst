@@ -1,4 +1,4 @@
-0.5.0
+0.5.2
 +++++++++++++++++++
 
 Please add lines to this file, they will be moved to the CHANGELOG.rst during
@@ -10,13 +10,11 @@ I've added a new category `Misc` so we can track doc/style/packaging stuff.
 
 Features
 ~~~~~~~~
-- Add HookableService, allowing inter-service notification for hooks.
 - `#1234 <https://leap.se/code/issues/1234>`_: Description of the new feature corresponding with issue #1234.
 - New feature without related issue number.
 
 Bugfixes
 ~~~~~~~~
-- `#7536 <https://leap.se/code/issues/7536>`_: zmq authenticator often hangs.
 - `#1235 <https://leap.se/code/issues/1235>`_: Description for the fixed stuff corresponding with issue #1235.
 - Bugfix without related issue number.
 
