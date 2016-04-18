@@ -14,15 +14,17 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-
+"""
+Tests for the events framework
+"""
 import os
 import logging
-import time
 
 from twisted.internet.reactor import callFromThread
 from twisted.trial import unittest
 from twisted.internet import defer
+
+from txzmq import ZmqFactory
 
 from leap.common.events import server
 from leap.common.events import client
@@ -40,19 +42,22 @@ class EventsGenericClientTestCase(object):
 
     def setUp(self):
         flags.set_events_enabled(True)
+        self.factory = ZmqFactory()
         self._server = server.ensure_server(
             emit_addr="tcp://127.0.0.1:0",
-            reg_addr="tcp://127.0.0.1:0")
+            reg_addr="tcp://127.0.0.1:0",
+            factory=self.factory,
+            enable_curve=False)
+
         self._client.configure_client(
             emit_addr="tcp://127.0.0.1:%d" % self._server.pull_port,
-            reg_addr="tcp://127.0.0.1:%d" % self._server.pub_port)
+            reg_addr="tcp://127.0.0.1:%d" % self._server.pub_port,
+            factory=self.factory, enable_curve=False)
 
     def tearDown(self):
-        self._client.shutdown()
-        self._server.shutdown()
         flags.set_events_enabled(False)
-        # wait a bit for sockets to close properly
-        time.sleep(0.1)
+        self.factory.shutdown()
+        self._client.instance().reset()
 
     def test_client_register(self):
         """

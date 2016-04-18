@@ -19,6 +19,7 @@ Utilities to handle ZMQ certificates.
 """
 import os
 import logging
+import platform
 import stat
 import shutil
 
@@ -52,6 +53,10 @@ def zmq_has_curve():
        `zmq.auth` module is new in version 14.1
        `zmq.has()` is new in version 14.1, new in version libzmq-4.1.
     """
+    if platform.system() == "Windows":
+        # TODO: curve is not working on windows #7919
+        return False
+
     zmq_version = zmq.zmq_version_info()
     pyzmq_version = zmq.pyzmq_version_info()
 

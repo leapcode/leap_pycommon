@@ -58,16 +58,19 @@ class EventsTxClient(TxZmqClientComponent, EventsClient):
     """
 
     def __init__(self, emit_addr=EMIT_ADDR, reg_addr=REG_ADDR,
-                 path_prefix=None):
+                 path_prefix=None, factory=None, enable_curve=True):
         """
-        Initialize the events server.
+        Initialize the events client.
         """
-        TxZmqClientComponent.__init__(self, path_prefix=path_prefix)
+        TxZmqClientComponent.__init__(
+            self, path_prefix=path_prefix, factory=factory,
+            enable_curve=enable_curve)
         EventsClient.__init__(self, emit_addr, reg_addr)
         # connect SUB first, otherwise we might miss some event sent from this
         # same client
         self._sub = self._zmq_connect(txzmq.ZmqSubConnection, reg_addr)
         self._sub.gotMessage = self._gotMessage
+
         self._push = self._zmq_connect(txzmq.ZmqPushConnection, emit_addr)
 
     def _gotMessage(self, msg, tag):
@@ -122,7 +125,6 @@ class EventsTxClient(TxZmqClientComponent, EventsClient):
         callback(event, *content)
 
     def shutdown(self):
-        TxZmqClientComponent.shutdown(self)
         EventsClient.shutdown(self)
 
 

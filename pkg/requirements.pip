@@ -1,8 +1,7 @@
-jsonschema  #<=0.8 -- are we done with this conflict?
-dirspec
+jsonschema
 pyopenssl
 python-dateutil
 pyzmq>=14.4.1
 txzmq>=0.7.3
-
-#autopep8 -- ???
+https://launchpad.net/dirspec/stable-13-10/13.10/+download/dirspec-13.10.tar.gz
+-e .
