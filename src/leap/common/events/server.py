@@ -14,33 +14,31 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-
 """
 The server for the events mechanism.
 """
-
-
 import logging
+import platform
+
 import txzmq
 
 from leap.common.zmq_utils import zmq_has_curve
-
 from leap.common.events.zmq_components import TxZmqServerComponent
 
 
-if zmq_has_curve():
+if zmq_has_curve() or platform.system() == "Windows":
+    # Windows doesn't have ipc sockets, we need to use always tcp
     EMIT_ADDR = "tcp://127.0.0.1:9000"
     REG_ADDR = "tcp://127.0.0.1:9001"
 else:
     EMIT_ADDR = "ipc:///tmp/leap.common.events.socket.0"
     REG_ADDR = "ipc:///tmp/leap.common.events.socket.1"
 
-
 logger = logging.getLogger(__name__)
 
 
-def ensure_server(emit_addr=EMIT_ADDR, reg_addr=REG_ADDR):
+def ensure_server(emit_addr=EMIT_ADDR, reg_addr=REG_ADDR, path_prefix=None,
+                  factory=None, enable_curve=True):
     """
     Make sure the server is running in the given addresses.
 
@@ -52,7 +50,8 @@ def ensure_server(emit_addr=EMIT_ADDR, reg_addr=REG_ADDR):
     :return: an events server instance
     :rtype: EventsServer
     """
-    _server = EventsServer(emit_addr, reg_addr)
+    _server = EventsServer(emit_addr, reg_addr, path_prefix, factory=factory,
+                           enable_curve=enable_curve)
     return _server
 
 
@@ -62,7 +61,8 @@ class EventsServer(TxZmqServerComponent):
     events in another address.
     """
 
-    def __init__(self, emit_addr, reg_addr):
+    def __init__(self, emit_addr, reg_addr, path_prefix=None, factory=None,
+                 enable_curve=True):
         """
         Initialize the events server.
 
@@ -71,7 +71,9 @@ class EventsServer(TxZmqServerComponent):
         :param reg_addr: The address to which publish events to clients.
         :type reg_addr: str
         """
-        TxZmqServerComponent.__init__(self)
+        TxZmqServerComponent.__init__(self, path_prefix=path_prefix,
+                                      factory=factory,
+                                      enable_curve=enable_curve)
         # bind PULL and PUB sockets
         self._pull, self.pull_port = self._zmq_bind(
             txzmq.ZmqPullConnection, emit_addr)
