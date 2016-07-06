@@ -30,7 +30,6 @@ dependency_links = [requirement for requirement
                     in requirements if requirement.startswith('http')]
 requirements = [requirement for requirement
                 in requirements if requirement not in dependency_links]
-requirements.append('dirspec')
 
 tests_requirements = [
     'mock',

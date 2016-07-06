@@ -19,11 +19,8 @@ Tests for get_path_prefix
 """
 import os
 import mock
-
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
+import pytest
+import sys
 
 from leap.common.config import get_path_prefix
 from leap.common.testing.basetest import BaseLeapTest
@@ -58,6 +55,21 @@ class GetPathPrefixTest(BaseLeapTest):
         path = get_path_prefix(standalone=False)
         self.assertNotEquals(path, standalone_path)
 
+homedir = os.environ.get('HOME')
 
-if __name__ == "__main__":
-    unittest.main(verbosity=2)
+
+@pytest.mark.parametrize(
+    "scenario", [
+        # (platform, path_parts, standalone),
+        ('linux', [homedir, '.config'], False),
+        ('darwin', [homedir, 'Library/Preferences'], False),
+        ('win32', [homedir, 'xyz'], False),
+        ('standalone', [os.getcwd(), 'config'], True)])
+def test_get_path_prefix(scenario, monkeypatch):
+    platform, path_parts, standalone = scenario
+    if platform == 'win32':
+        pytest.skip()  # TODO: find a way to add test for win32 platform
+    # set a custom temporary platform
+    monkeypatch.setattr(sys, 'platform', platform)
+    expected_prefix = os.path.join(*path_parts)
+    assert expected_prefix == get_path_prefix(standalone)
