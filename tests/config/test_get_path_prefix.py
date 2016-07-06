@@ -36,7 +36,7 @@ class GetPathPrefixTest(BaseLeapTest):
     Note: we only are testing that the path is correctly returned and that if
     we are not in a bundle (standalone=False) then the paths are different.
 
-    dirspec calculates the correct path using different methods and dlls
+    xdg calculates the correct path using different methods and dlls
     (in case of Windows) so we don't implement tests to check if the paths
     are the correct ones.
     """

@@ -33,8 +33,6 @@ from txzmq.test import _wait
 class ZmqAuthTestCase(unittest.TestCase, BaseLeapTest):
 
     def setUp(self):
-        self.setUpEnv(launch_events_server=False)
-
         self.factory = ZmqFactory()
         self._config_prefix = os.path.join(self.tempdir, "leap", "events")
 
@@ -47,7 +45,6 @@ class ZmqAuthTestCase(unittest.TestCase, BaseLeapTest):
 
     def tearDown(self):
         self.factory.shutdown()
-        self.tearDownEnv()
 
     def test_curve_auth(self):
         self.auth_req.start()
