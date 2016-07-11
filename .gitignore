@@ -3,6 +3,7 @@
 *.egg-info
 *.swp
 *.swo
+.tox
 dist/
 build/
 MANIFEST
