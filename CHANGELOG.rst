@@ -6,6 +6,9 @@ Changelog
 ====
 2016
 ====
+0.5.2 Jul 11, 2016
+++++++++++++++++++
+- Remove dependency on dirspec
 
 0.5.1 Apr 18, 2016
 +++++++++++++++++++
