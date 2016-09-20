@@ -83,10 +83,10 @@ class TestInitBaseLeapTest(BaseLeapTest):
     """
 
     def setUp(self):
-        self.setUpEnv()
+        pass
 
     def tearDown(self):
-        self.tearDownEnv()
+        pass
 
     def test_path_is_changed(self):
         """tests whether we have changed the PATH env var"""

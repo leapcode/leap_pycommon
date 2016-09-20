@@ -18,7 +18,6 @@
 Tests for:
     * leap/common/certs.py
 """
-import os
 import time
 
 try:
@@ -28,10 +27,9 @@ except ImportError:
 
 from leap.common import certs
 from leap.common.testing.basetest import BaseLeapTest
+from leap.common.testing.https_server import where
 
-TEST_CERT_PEM = os.path.join(
-    os.path.split(__file__)[0],
-    '..', 'testing', "leaptest_combined_keycert.pem")
+TEST_CERT_PEM = where("leaptest_combined_keycert.pem")
 
 # Values from the test cert file:
 # Not Before: Sep  3 17:52:16 2013 GMT
@@ -43,10 +41,10 @@ CERT_NOT_AFTER = (2023, 9, 1, 17, 52, 16, 4, 244, 0)
 class CertsTest(BaseLeapTest):
 
     def setUp(self):
-        self.setUpEnv()
+        pass
 
     def tearDown(self):
-        self.tearDownEnv()
+        pass
 
     def test_should_redownload_if_no_cert(self):
         self.assertTrue(certs.should_redownload(certfile=""))
