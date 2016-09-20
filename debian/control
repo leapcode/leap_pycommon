@@ -8,7 +8,7 @@ Standards-Version: 3.9.6
 
 Package: python-leap-common
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}, python-jsonschema, python-dirspec, python-dateutil, python-openssl, python-zmq (>=14.4.1-1.1), python-txzmq (>= 0.7.3), python-twisted-web (>= 13.0.0)
+Depends: ${misc:Depends}, ${python:Depends}, python-jsonschema, python-dateutil, python-openssl, python-zmq (>=14.4.1-1.1), python-txzmq (>= 0.7.3), python-twisted-web (>= 13.0.0)
 Recommends: python-service-identity
 Description: Common Python files needed by LEAP projects
  This package contains common Python functions that are needed 
