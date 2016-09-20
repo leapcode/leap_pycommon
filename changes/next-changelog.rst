@@ -1,4 +1,4 @@
-0.5.0
+0.5.x
 +++++++++++++++++++
 
 Please add lines to this file, they will be moved to the CHANGELOG.rst during

@@ -18,7 +18,6 @@
 Tests for:
     * leap/common/http.py
 """
-import os
 try:
     import unittest2 as unittest
 except ImportError:
@@ -26,10 +25,9 @@ except ImportError:
 
 from leap.common import http
 from leap.common.testing.basetest import BaseLeapTest
+from leap.common.testing.https_server import where
 
-TEST_CERT_PEM = os.path.join(
-    os.path.split(__file__)[0],
-    '..', 'testing', "leaptest_combined_keycert.pem")
+TEST_CERT_PEM = where("leaptest_combined_keycert.pem")
 
 
 class HTTPClientTest(BaseLeapTest):

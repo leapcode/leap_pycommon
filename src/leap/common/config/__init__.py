@@ -18,8 +18,22 @@
 Common configs
 """
 import os
+import sys
 
-from dirspec.basedir import get_xdg_config_home
+
+def _get_xdg_config_home():
+    if sys.platform == 'win32':
+        from win32com.shell import shell, shellcon
+        get_path = lambda name: shell.SHGetFolderPath(
+            0, getattr(shellcon, name), None, 0).encode('utf8')
+        path = get_path('CSIDL_LOCAL_APPDATA')
+    elif sys.platform == 'darwin':
+        user_home = os.path.expanduser('~')
+        path = os.path.join(user_home, 'Library', 'Preferences')
+    else:
+        user_home = os.path.expanduser('~')
+        path = os.path.join(user_home, '.config')
+    return path
 
 
 def get_path_prefix(standalone=False):
@@ -32,8 +46,6 @@ def get_path_prefix(standalone=False):
                        configuration storage.
     :type standalone: bool
     """
-    config_home = get_xdg_config_home()
     if standalone:
-        config_home = os.path.join(os.getcwd(), "config")
-
-    return config_home
+        return os.path.join(os.getcwd(), "config")
+    return _get_xdg_config_home()
