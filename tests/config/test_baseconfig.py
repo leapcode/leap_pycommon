@@ -100,7 +100,7 @@ sample_spec = {
 }
 
 
-class TestConfig(BaseConfig):
+class Config(BaseConfig):
     """
     BaseConfig implementation for testing purposes only.
     """
@@ -149,16 +149,16 @@ class BaseConfigTest(BaseLeapTest):
 
     def _get_config(self, fromfile=False, data=sample_config):
         """
-        Helper that returns a TestConfig object using the data parameter
+        Helper that returns a Config object using the data parameter
         or a sample data.
 
         :param fromfile: sets if we should use a file or a string
         :fromfile type: bool
-        :param data: sets the data to be used to load in the TestConfig object
+        :param data: sets the data to be used to load in the Config object
         :data type: dict (valid json)
-        :rtype: TestConfig
+        :rtype: Config
         """
-        config = TestConfig()
+        config = Config()
 
         loaded = False
         if fromfile:
@@ -198,7 +198,7 @@ class BaseConfigTest(BaseLeapTest):
         self.assertEqual(config.get_gateways(), sample_config["gateways"])
 
     def test_safe_get_value_no_config(self):
-        config = TestConfig()
+        config = Config()
 
         with self.assertRaises(AssertionError):
             config.get_version()
@@ -213,7 +213,7 @@ class BaseConfigTest(BaseLeapTest):
         self.assertTrue(config.loaded())
 
     def test_not_loaded(self):
-        config = TestConfig()
+        config = Config()
         self.assertFalse(config.loaded())
 
     def test_save_and_load(self):
@@ -222,7 +222,7 @@ class BaseConfigTest(BaseLeapTest):
         config_file = 'test_config.json'
         self.assertTrue(config.save([config_file]))
 
-        config_saved = TestConfig()
+        config_saved = Config()
         config_file_path = self.get_tempfile(config_file)
         self.assertTrue(config_saved.load(config_file_path, relative=False))
 
@@ -243,7 +243,7 @@ class BaseConfigTest(BaseLeapTest):
         conf = copy.deepcopy(sample_config)
         conf['default_language'] = lang
         json_string = json.dumps(conf)
-        config = TestConfig()
+        config = Config()
         config.load(data=json_string)
 
         return config
