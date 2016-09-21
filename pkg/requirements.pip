@@ -1,6 +1,6 @@
 jsonschema
 pyopenssl
 python-dateutil
-pyzmq>=14.4.1
+pyzmq  # >=14.4.1
 txzmq>=0.7.3
 -e .
