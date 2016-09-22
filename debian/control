@@ -1,0 +1,15 @@
+Source: leap-common
+Maintainer: Micah Anderson <micah@leap.se>
+Uploaders: LEAP automated build <sysdev@leap.se>
+Section: python
+Priority: optional
+Build-Depends: python-setuptools (>= 0.6b3), python-all (>= 2.6.6-3), debhelper (>= 9)
+Standards-Version: 3.9.8
+
+Package: python-leap-common
+Architecture: all
+Depends: ${misc:Depends}, ${python:Depends}, python-jsonschema, python-dateutil, python-openssl, python-zmq, python-txzmq (>= 0.7.3), python-twisted-web (>= 13.0.0)
+Recommends: python-service-identity
+Description: Common Python files needed by LEAP projects
+ This package contains common Python functions that are needed
+ for the LEAP Client project

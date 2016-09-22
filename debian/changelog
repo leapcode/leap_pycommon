@@ -1,0 +1,148 @@
+leap-common (0.5.2) unstable; urgency=medium
+
+  * Update to 0.5.2 release
+
+ -- Ben Carrillo <ben@futeisha.org>  Tue, 20 Sep 2016 17:05:00 -0400
+
+leap-common (0.5.1) unstable; urgency=medium
+
+  * Update to 0.5.1 release
+
+ -- Ben Carrillo <ben@futeisha.org>  Mon, 25 Apr 2016 19:15:44 -0400
+
+leap-common (0.5.0) unstable; urgency=medium
+
+  * Update to 0.5.0 release
+  * Version bump to fix previous versioning mistakes in the 0.4.x series.
+
+ -- Ben Carrillo <ben@futeisha.org>  Wed, 11 Nov 2015 16:22:10 -0400
+
+leap-common (0.4.11.2) unstable; urgency=medium
+
+  * Relax dependency on python-zmq
+
+ -- Micah Anderson <micah@leap.se>  Thu, 12 Nov 2015 11:20:03 -0500
+
+leap-common (0.4.11.1) unstable; urgency=medium
+
+  * Move python-service-identity to Recommends.
+    Closes leap issue #7559
+
+ -- Ben Carrillo <ben@futeisha.org>  Mon, 02 Nov 2015 11:55:28 -0400
+
+leap-common (0.4.11) unstable; urgency=medium
+
+  * Dummy release. This is exactly tag 0.4.4, to fix a former versioning
+    error. Closes leap issue 7555.
+  * Remove dh-python so we can build on wheezy
+
+ -- Ben Carrillo <ben@futeisha.org>  Thu, 29 Oct 2015 16:33:25 -0400
+
+leap-common (0.4.10) unstable; urgency=medium
+
+  * Update to 0.4.0 release
+
+ -- Ben Carrillo <ben@futeisha.org>  Mon, 01 Jun 2015 14:30:27 -0400
+
+leap-common (0.4.4) unstable; urgency=medium
+
+  * Update to 0.4.4 release 
+
+ -- Ben Carrillo <ben@futeisha.org>  Thu, 29 Oct 2015 12:00:51 -0400
+
+leap-common (0.4.3) unstable; urgency=medium
+
+  * Update to 0.4.3 release 
+
+ -- Ben Carrillo <ben@futeisha.org>  Thu, 24 Sep 2015 15:18:51 -0400
+
+leap-common (0.4.2) unstable; urgency=medium
+
+  * Update to 0.4.2 release 
+  * Update standards version to 3.9.6 (no changes) 
+  * Change my email address
+  * Add pydist-overrides for pyopenssl
+  * Specify explicit dependencies for python-zmq and python-txzmq
+
+ -- Micah Anderson <micah@leap.se>  Tue, 01 Sep 2015 14:18:31 -0400
+
+leap-common (0.3.9) unstable; urgency=medium
+
+  * Update to 0.3.9 release 
+
+ -- Ben Carrillo <ben@futeisha.org>  Fri, 07 Nov 2014 18:50:11 +0100
+
+leap-common (0.3.8) unstable; urgency=medium
+
+  * Update to 0.3.8 release 
+
+ -- Ben Carrillo <ben@futeisha.org>  Tue, 10 Jun 2014 09:24:12 -0500
+
+leap-common (0.3.7) unstable; urgency=low
+
+  * Update to 0.3.7 release
+
+ -- Ben Carrillo <ben@futeisha.org>  Wed, 09 Apr 2014 14:26:10 -0500
+
+leap-common (0.3.6) unstable; urgency=low
+
+  * Update to 0.3.6 release
+
+ -- Micah Anderson <micah@debian.org>  Tue, 10 Dec 2013 16:02:51 -0400
+
+leap-common (0.3.5) unstable; urgency=low
+
+  * Update to 0.3.5 release.
+ 
+ -- Micah Anderson <micah@debian.org>  Tue, 05 Nov 2013 11:05:40 -0200
+
+leap-common (0.3.4) unstable; urgency=low
+
+  * Update to 0.3.4 release.
+  * Install LEAP changelog too.
+
+ -- Micah Anderson <micah@debian.org>  Mon, 14 Oct 2013 03:40:42 -0300
+
+leap-common (0.3.3) unstable; urgency=low
+
+  * Update to 0.3.3 release.
+
+ -- Micah Anderson <micah@debian.org>  Tue, 24 Sep 2013 17:02:57 -0400
+
+leap-common (0.3.2) unstable; urgency=low
+
+  * Update to 0.3.2
+
+ -- Ben Carrillo <ben@futeisha.org>  Thu, 12 Sep 2013 14:00:01 +0200
+
+leap-common (0.3.1) unstable; urgency=low
+
+  * Update protobuf dependency to be more accurate
+  * Update to 0.3.1
+
+ -- Ben Carrillo <ben@futeisha.org>  Mon, 26 Aug 2013 21:55:19 +0200
+
+leap-common (0.3.0.1) unstable; urgency=low
+
+  * Regenerate events_pb2.py with protobuf 2.4.1
+
+ -- Micah Anderson <micah@debian.org>  Thu, 15 Aug 2013 10:11:43 -0400
+
+leap-common (0.3.0) unstable; urgency=low
+
+  * Update to 0.3.0
+
+ -- Micah Anderson <micah@debian.org>  Tue, 13 Aug 2013 14:26:37 -0400
+
+leap-common (0.2.5) unstable; urgency=low
+
+  * Upgrade to 0.2.5
+  * Change to native package
+
+ -- Micah Anderson <micah@debian.org>  Tue, 04 Jun 2013 16:16:29 -0400
+
+leap-common (0.2.3-dev1) unstable; urgency=low
+
+  * Initial debianization
+
+ -- Micah Anderson <micah@debian.org>  Thu, 30 May 2013 14:06:16 -0400
