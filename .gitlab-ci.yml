@@ -1,2 +1,44 @@
+# Todo:
+#   - Move test stage at the beginning of pipeline once packaging is done
+stages:
+  - package
+  - test
+
+
+.job_template: &job_definition
+  stage: package
+  image: "0xacab.org:4567/leap/gitlab-buildpackage:build_${DIST}_${ARCH}"
+  script:
+    - "pwd; git describe"
+    - build-build-package
+    # Test the package with lintian
+    - build-test-lintian --fail-on-warnings
+    - upload-package
+    # sleep 1h to allow debugging of running container
+    #- sleep 3600
+  artifacts:
+    expire_in: 1w
+    paths:
+    - '*_*.xz'
+    - '*_*.dsc'
+    - '*_amd64.changes'
+    - '*.deb'
+    - 'results/*'
+
 test:
-  script: tox
+  stage: test
+  image: "0xacab.org:4567/leap/gitlab-buildpackage:build_jessie_amd64"
+  script:
+  - tox --recreate
+
+package:amd64_jessie:
+  variables:
+    ARCH: "amd64"
+    DIST: "jessie"
+  <<: *job_definition
+
+package:amd64_stretch:
+  variables:
+    ARCH: "amd64"
+    DIST: "stretch"
+  <<: *job_definition
