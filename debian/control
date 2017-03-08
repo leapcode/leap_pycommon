@@ -4,7 +4,7 @@ Uploaders: Ben Carrillo <ben@futeisha.org>
 Section: python
 Priority: optional
 Build-Depends: python-setuptools (>= 0.6b3), python-all (>= 2.6.6-3), debhelper (>= 9)
-Standards-Version: 3.9.6
+Standards-Version: 3.9.8
 
 Package: python-leap-common
 Architecture: all
