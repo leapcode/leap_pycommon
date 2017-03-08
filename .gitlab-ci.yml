@@ -40,3 +40,9 @@ package:amd64_stretch:
     ARCH: "amd64"
     DIST: "stretch"
   <<: *job_definition
+
+package:amd64_xenial:
+  variables:
+    ARCH: "amd64"
+    DIST: "xenial"
+  <<: *job_definition
