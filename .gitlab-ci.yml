@@ -27,7 +27,7 @@ stages:
 
 test:
   stage: test
-  image: "0xacab.org:4567/leap/gitlab-buildpackage:build_jessie_amd64"
+  image: "0xacab.org:4567/leap/gitlab-buildpackage:test_jessie_amd64"
   script:
   - tox --recreate
 
