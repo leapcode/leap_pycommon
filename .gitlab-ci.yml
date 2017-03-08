@@ -46,3 +46,9 @@ package:amd64_xenial:
     ARCH: "amd64"
     DIST: "xenial"
   <<: *job_definition
+
+package:amd64_yakkety:
+  variables:
+    ARCH: "amd64"
+    DIST: "yakkety"
+  <<: *job_definition
