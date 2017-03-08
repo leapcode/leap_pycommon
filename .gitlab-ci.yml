@@ -1,8 +1,6 @@
-# Todo:
-#   - Move test stage at the beginning of pipeline once packaging is done
 stages:
-  - package
   - test
+  - package
 
 
 .job_template: &job_definition
