@@ -12,7 +12,7 @@ stages:
     - "pwd; git describe"
     - build-build-package
     # Test the package with lintian
-    - build-test-lintian --fail-on-warnings
+    - build-test-lintian
     - upload-package
     # sleep 1h to allow debugging of running container
     #- sleep 3600
