@@ -4,7 +4,7 @@ Uploaders: LEAP automated build <sysdev@leap.se>
 Section: python
 Priority: optional
 Build-Depends: python-setuptools (>= 0.6b3), python-all (>= 2.6.6-3), debhelper (>= 9)
-Standards-Version: 3.9.8
+Standards-Version: 3.9.7
 
 Package: python-leap-common
 Architecture: all
