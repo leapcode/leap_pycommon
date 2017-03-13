@@ -2,6 +2,12 @@
 
 Changelog
 ---------
+====
+2017
+====
+0.5.3 Mar 13, 2017
+++++++++++++++++++
+- Add mail_status_changed event.
 
 ====
 2016
