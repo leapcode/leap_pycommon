@@ -130,7 +130,7 @@ def emit_async(event, *content):
 if __name__ == "__main__":
 
     def _echo(event, *content):
-        print "Received event: (%s, %s)" % (event, content)
+        print("Received event: (%s, %s)" % (event, content))
 
     def _parse_args():
         parser = argparse.ArgumentParser()
