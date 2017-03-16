@@ -73,6 +73,8 @@ EVENTS = [
     "SMTP_CONNECTION_LOST",  # (userid, dest)
     "SMTP_RECIPIENT_REJECTED",  # (userid, dest)
     "SMTP_SEND_MESSAGE_ERROR",  # (userid, dest)
+
+    "VPN_STATUS_CHANGED",
 ]
 
 
