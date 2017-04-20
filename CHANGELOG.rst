@@ -5,6 +5,10 @@ Changelog
 ====
 2017
 ====
+0.5.5 Apr 20, 2017
+++++++++++++++++++
+- Add a bonafide status event.
+
 0.5.4 Mar 17, 2017
 ++++++++++++++++++
 - Add a vpn status event.

@@ -74,6 +74,8 @@ EVENTS = [
     "SMTP_RECIPIENT_REJECTED",  # (userid, dest)
     "SMTP_SEND_MESSAGE_ERROR",  # (userid, dest)
 
+    "BONAFIDE_AUTH_DONE",  # (uuid, userid)
+
     "VPN_STATUS_CHANGED",
 ]
 
