@@ -33,22 +33,27 @@ package:amd64_jessie:
   variables:
     ARCH: "amd64"
     DIST: "jessie"
+    REPONAME: "platform"
+    REPONAMES: "platform,client"
   <<: *job_definition
 
 package:amd64_stretch:
   variables:
     ARCH: "amd64"
     DIST: "stretch"
+    REPONAMES: "platform,client"
   <<: *job_definition
 
 package:amd64_xenial:
   variables:
     ARCH: "amd64"
     DIST: "xenial"
+    REPONAMES: "client"
   <<: *job_definition
 
 package:amd64_yakkety:
   variables:
     ARCH: "amd64"
     DIST: "yakkety"
+    REPONAMES: "client"
   <<: *job_definition
