@@ -44,16 +44,16 @@ package:amd64_stretch:
     REPONAMES: "platform,client"
   <<: *job_definition
 
-package:amd64_xenial:
-  variables:
-    ARCH: "amd64"
-    DIST: "xenial"
-    REPONAMES: "client"
-  <<: *job_definition
+#package:amd64_xenial:
+#  variables:
+#    ARCH: "amd64"
+#    DIST: "xenial"
+#    REPONAMES: "client"
+#  <<: *job_definition
 
-package:amd64_yakkety:
-  variables:
-    ARCH: "amd64"
-    DIST: "yakkety"
-    REPONAMES: "client"
-  <<: *job_definition
+#package:amd64_yakkety:
+#  variables:
+#    ARCH: "amd64"
+#    DIST: "yakkety"
+#    REPONAMES: "client"
+#  <<: *job_definition
