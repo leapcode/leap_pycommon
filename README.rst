@@ -17,14 +17,17 @@ A collection of shared utils used by the several python LEAP subprojects.
 
 Library dependencies
 --------------------
+
 * ``libssl-dev``
 
 Python dependencies
 -------------------
+
 * See ``pkg/requirements.pip``
 
 Extras
 -------------------
+
 Using `leap.common.http` needs some extra dependencies (twisted.web >= 14.0.2,
 python-service-identity). You can install them by running::
 
@@ -33,6 +36,7 @@ python-service-identity). You can install them by running::
 
 Running the tests
 -------------------
+
 To run the tests, first run the setup with:
 
 .. code-block::
