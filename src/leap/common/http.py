@@ -16,7 +16,12 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 Twisted HTTP/HTTPS client.
+This module will be deprecated and slowly migrated to use treq instead.
 """
+
+import os
+import re
+
 
 try:
     import twisted
@@ -26,21 +31,28 @@ except ImportError:
     print "Twisted is needed to use leap.common.http module"
     print ""
     print "Install the extra requirement of the package:"
-    print "$ pip install leap.common[Twisted]"
+    print "$ pip install leap.common[http]"
     import sys
     sys.exit(1)
 
+from leap.common import ca_bundle
 
-from leap.common.certs import get_compatible_ssl_context_factory
-from leap.common.check import leap_assert
 
-from zope.interface import implements
+from OpenSSL.crypto import X509StoreContext
+from OpenSSL.crypto import X509StoreContextError
+from OpenSSL.SSL import Context
+from OpenSSL.SSL import TLSv1_METHOD
 
 from twisted.internet import reactor
 from twisted.internet import defer
+from twisted.internet.ssl import Certificate, trustRootFromCertificates
+from twisted.internet.ssl import ClientContextFactory
+from twisted.logger import Logger
 from twisted.python import failure
+from twisted.python.filepath import FilePath
 
 from twisted.web.client import Agent
+from twisted.web.client import BrowserLikePolicyForHTTPS
 from twisted.web.client import HTTPConnectionPool
 from twisted.web.client import _HTTP11ClientFactory as HTTP11ClientFactory
 from twisted.web.client import readBody
@@ -48,14 +60,81 @@ from twisted.web.http_headers import Headers
 from twisted.web.iweb import IBodyProducer
 from twisted.web._newclient import HTTP11ClientProtocol
 
+from zope.interface import implements
 
 __all__ = ["HTTPClient"]
+
+
+log = Logger()
 
 
 # A default HTTP timeout is used for 2 distinct purposes:
 #   1. as HTTP connection timeout, prior to connection estabilshment.
 #   2. as data reception timeout, after the connection has been established.
+
 DEFAULT_HTTP_TIMEOUT = 30  # seconds
+
+SKIP_SSL_CHECK = os.environ.get('SKIP_TWISTED_SSL_CHECK', False)
+
+
+def certsFromBundle(path, x509=False):
+    PEM_RE = re.compile(
+        "-----BEGIN CERTIFICATE-----\r?.+?\r?"
+        "-----END CERTIFICATE-----\r?\n?""",
+        re.DOTALL)
+    if not os.path.isfile(path):
+        log.warn("Attempted to load non-existent certificate bundle path %s"
+                 % path)
+        return []
+
+    pems = FilePath(path).getContent()
+    cstr = [match.group(0) for match in PEM_RE.finditer(pems)]
+    certs = [Certificate.loadPEM(cert) for cert in cstr]
+    if x509:
+        certs = [cert.original for cert in certs]
+    return certs
+
+
+def hasUsablePlatformTrust():
+
+    _knownchain = certsFromBundle(ca_bundle.where('EFFchain.pem'), x509=True)
+    _knowncert = _knownchain[0]
+    _knowninterm = _knownchain[1:]
+
+    def _verify_test_cert(store, cert):
+        store_ctx = X509StoreContext(store, cert)
+        try:
+            assert store_ctx.verify_certificate() is None
+        except (X509StoreContextError, AssertionError):
+            return False
+        else:
+            return True
+
+    def _add_intermediates(store, intermediates):
+        for _cert in intermediates:
+            store.add_cert(_cert)
+
+    ctx = Context(TLSv1_METHOD)
+    ctx.set_default_verify_paths()
+    store = ctx.get_cert_store()
+    _add_intermediates(store, _knowninterm)
+
+    return _verify_test_cert(store, _knowncert)
+
+
+def getCertifiTrustRoot():
+    try:
+        import certifi
+        bundle = certifi.where()
+    except ImportError:
+        log.warn("certifi was not found. Using leap.common bundle")
+        bundle = ca_bundle.where()
+    if bundle is None:
+        log.error("Cannot find an usable cacert bundle. "
+                  "Certificate verification will fail")
+        return None
+    cacerts = certsFromBundle(bundle)
+    return trustRootFromCertificates(cacerts)
 
 
 class _HTTP11ClientFactory(HTTP11ClientFactory):
@@ -102,6 +181,39 @@ class _HTTPConnectionPool(HTTPConnectionPool):
         return endpoint.connect(factory)
 
 
+# TODO deprecate this in favor of treq.
+# We need treq to have support for:
+
+# [ ] timeout
+# [ ] retries
+# [ ] download/upload pool.
+
+
+def getPolicyForHTTPS(trustRoot=None):
+
+    if SKIP_SSL_CHECK:
+        log.info("---------------------------------------")
+        log.info("SKIPPING SSL CERT VERIFICATION!!!")
+        log.info("I assume you know WHAT YOU ARE DOING...")
+        log.info("---------------------------------------")
+
+        class WebClientContextFactory(ClientContextFactory):
+            """
+            A web context factory which ignores the hostname and port and does
+            no certificate verification.
+            """
+            def getContext(self, hostname, port):
+                return ClientContextFactory.getContext(self)
+
+        contextFactory = WebClientContextFactory()
+        return contextFactory
+
+    if isinstance(trustRoot, str):
+        trustRoot = Certificate.loadPEM(FilePath(trustRoot).getContent())
+
+    return BrowserLikePolicyForHTTPS(trustRoot)
+
+
 class HTTPClient(object):
     """
     HTTP client done the twisted way, with a main focus on pinning the SSL
@@ -122,13 +234,14 @@ class HTTPClient(object):
         maxPersistentPerHost=10
     )
 
-    def __init__(self, cert_file=None,
+    def __init__(self, cert_path=None,
                  timeout=DEFAULT_HTTP_TIMEOUT, pool=None):
         """
         Init the HTTP client
 
-        :param cert_file: The path to the certificate file, if None given the
-                          system's CAs will be used.
+        :param cert_file: The path to the ca certificate file to verify
+                          certificates, if None given the system's CAs will be
+                          used.
         :type cert_file: str
         :param timeout: The amount of time that this Agent will wait for the
                         peer to accept a connection and for each request to be
@@ -139,9 +252,19 @@ class HTTPClient(object):
 
         self._timeout = timeout
         self._pool = pool if pool is not None else self._pool
+
+        if cert_path is None:
+            if hasUsablePlatformTrust():
+                # Twisted Knows What To Do
+                trustRoot = None
+            else:
+                trustRoot = getCertifiTrustRoot()
+        else:
+            trustRoot = cert_path
+
         self._agent = Agent(
             reactor,
-            get_compatible_ssl_context_factory(cert_file),
+            contextFactory=getPolicyForHTTPS(trustRoot),
             pool=self._pool,
             connectTimeout=self._timeout)
         self._semaphore = defer.DeferredSemaphore(
@@ -205,9 +328,7 @@ class HTTPClient(object):
         :return: A deferred that fires with the body of the request.
         :rtype: twisted.internet.defer.Deferred
         """
-        leap_assert(
-            callable(callback),
-            message="The callback parameter should be a callable!")
+        assert callable(callback), "The callback parameter should be a callable!"
         return self._semaphore.run(self._request, url, method, body, headers,
                                    callback)
 
@@ -216,6 +337,7 @@ class HTTPClient(object):
         Close any cached connections.
         """
         self._pool.closeCachedConnections()
+
 
 #
 # An IBodyProducer to write the body of an HTTP request as a string.
