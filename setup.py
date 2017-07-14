@@ -153,6 +153,9 @@ setup(
         # needed for leap.common.http
         #  service_identity needed for propper hostname identification,
         #  see http://twistedmatrix.com/documents/current/core/howto/ssl.html
-        'http': ["Twisted>=14.0.2", "service_identity", "zope.interface"]
+        'http': [
+            "Twisted>=14.0.2",
+            "service_identity", "zope.interface",
+            "certifi"]
     },
 )
