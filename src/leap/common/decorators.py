@@ -14,9 +14,13 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 """
 Useful decorators.
 """
+
+# TODO this can be moved to bitmask, soledad is not using it.
+
 import collections
 import datetime
 import functools
