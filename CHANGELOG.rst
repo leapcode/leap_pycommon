@@ -9,13 +9,14 @@ Changelog
 .. note:: This version is not yet released and is under active development.
  
  
-0.6.0 Jul 8, 2017
+0.6.0 Jul 14, 2017
 ~~~~~~~~~~~~~~~~~
 
 Features
 ++++++++
 
-- Update certificate bundle
+- Add dependency on certifi
+- Update certificate bundle as a fallback, will be deprecated.
 - Adapt parsing of the cert bundle for twisted http client.
 
 
