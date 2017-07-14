@@ -95,33 +95,6 @@ def certsFromBundle(path, x509=False):
     return certs
 
 
-def hasUsablePlatformTrust():
-
-    _knownchain = certsFromBundle(ca_bundle.where('EFFchain.pem'), x509=True)
-    _knowncert = _knownchain[0]
-    _knowninterm = _knownchain[1:]
-
-    def _verify_test_cert(store, cert):
-        store_ctx = X509StoreContext(store, cert)
-        try:
-            assert store_ctx.verify_certificate() is None
-        except (X509StoreContextError, AssertionError):
-            return False
-        else:
-            return True
-
-    def _add_intermediates(store, intermediates):
-        for _cert in intermediates:
-            store.add_cert(_cert)
-
-    ctx = Context(TLSv1_METHOD)
-    ctx.set_default_verify_paths()
-    store = ctx.get_cert_store()
-    _add_intermediates(store, _knowninterm)
-
-    return _verify_test_cert(store, _knowncert)
-
-
 def getCertifiTrustRoot():
     try:
         import certifi
@@ -254,11 +227,7 @@ class HTTPClient(object):
         self._pool = pool if pool is not None else self._pool
 
         if cert_path is None:
-            if hasUsablePlatformTrust():
-                # Twisted Knows What To Do
-                trustRoot = None
-            else:
-                trustRoot = getCertifiTrustRoot()
+            trustRoot = getCertifiTrustRoot()
         else:
             trustRoot = cert_path
 
