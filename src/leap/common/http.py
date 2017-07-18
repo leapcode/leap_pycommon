@@ -216,13 +216,15 @@ class HTTPClient(object):
                         ignored.
         :type timeout: float
         """
-
         self._timeout = timeout
         self._pool = pool if pool is not None else self._pool
 
         if cert_path is None:
             trustRoot = getCertifiTrustRoot()
         else:
+            if not os.path.isfile(cert_path):
+                raise RuntimeError(
+                    'Certificate file %s cannot be found' % cert_path)
             trustRoot = cert_path
 
         self._agent = Agent(
