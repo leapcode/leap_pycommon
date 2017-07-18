@@ -37,12 +37,6 @@ except ImportError:
 
 from leap.common import ca_bundle
 
-
-from OpenSSL.crypto import X509StoreContext
-from OpenSSL.crypto import X509StoreContextError
-from OpenSSL.SSL import Context
-from OpenSSL.SSL import TLSv1_METHOD
-
 from twisted.internet import reactor
 from twisted.internet import defer
 from twisted.internet.ssl import Certificate, trustRootFromCertificates
