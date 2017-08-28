@@ -57,3 +57,10 @@ package:amd64_stretch:
 #    DIST: "yakkety"
 #    REPONAMES: "client"
 #  <<: *job_definition
+
+package:amd64_zesty:
+  variables:
+    ARCH: "amd64"
+    DIST: "zesty"
+    REPONAMES: "client"
+  <<: *job_definition
