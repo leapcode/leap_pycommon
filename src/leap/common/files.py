@@ -59,8 +59,9 @@ def get_mtime(filename):
     :rtype: str
     """
     try:
-        mtime = time.ctime(os.path.getmtime(filename)) + " GMT"
-        return mtime
+        return time.strftime(
+            '%a, %d %b %Y %H:%M:%S GMT', time.gmtime(
+                os.path.getmtime(filename)))
     except OSError:
         return None
 
