@@ -7,6 +7,10 @@ Changelog
 -----------------
 
 .. note:: This version is not yet released and is under active development.
+
+Bugfixes
+++++++++
+- Add proper formatting for the modification time (if-modified-since header)
  
  
 0.6.0 Jul 14, 2017

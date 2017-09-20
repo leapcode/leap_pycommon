@@ -293,7 +293,8 @@ class HTTPClient(object):
         :return: A deferred that fires with the body of the request.
         :rtype: twisted.internet.defer.Deferred
         """
-        assert callable(callback), "The callback parameter should be a callable!"
+        assert callable(callback), ("The callback parameter "
+                                    "should be a callable!")
         return self._semaphore.run(self._request, url, method, body, headers,
                                    callback)
 
