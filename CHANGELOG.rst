@@ -3,10 +3,13 @@
 Changelog
 ---------
 
-0.6.1 - `master`_
+0.6.2 - `master`_
 -----------------
 
 .. note:: This version is not yet released and is under active development.
+
+0.6.1 Sep 27, 2017
+------------------
 
 Bugfixes
 ++++++++
