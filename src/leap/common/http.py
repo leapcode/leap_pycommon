@@ -109,7 +109,7 @@ class _HTTP11ClientFactory(HTTP11ClientFactory):
     A timeout-able HTTP 1.1 client protocol factory.
     """
 
-    def __init__(self, quiescentCallback, timeout):
+    def __init__(self, quiescentCallback, metadata, timeout):
         """
         :param quiescentCallback: The quiescent callback to be passed to
                                   protocol instances, used to return them to
@@ -119,7 +119,11 @@ class _HTTP11ClientFactory(HTTP11ClientFactory):
                         protocols created by this factory.
         :type timeout: float
         """
-        HTTP11ClientFactory.__init__(self, quiescentCallback)
+        try:
+            HTTP11ClientFactory.__init__(self, quiescentCallback)
+        except TypeError:
+            # Twisted >= 17.9 added an extra param
+            HTTP11ClientFactory.__init__(self, quiescentCallback, metadata)
         self._timeout = timeout
 
     def buildProtocol(self, _):
@@ -144,7 +148,8 @@ class _HTTPConnectionPool(HTTPConnectionPool):
     def _newConnection(self, key, endpoint):
         def quiescentCallback(protocol):
             self._putConnection(key, protocol)
-        factory = self._factory(quiescentCallback, timeout=self._timeout)
+        factory = self._factory(quiescentCallback, repr(endpoint),
+                                timeout=self._timeout)
         return endpoint.connect(factory)
 
 
