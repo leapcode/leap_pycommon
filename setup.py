@@ -49,7 +49,7 @@ trove_classifiers = [
     "Topic :: Utilities"
 ]
 
-DOWNLOAD_BASE = ('https://github.com/leapcode/bitmask_client/'
+DOWNLOAD_BASE = ('https://github.com/leapcode/bitmask-dev/'
                  'archive/%s.tar.gz')
 _versions = versioneer.get_versions()
 VERSION = _versions['version']
