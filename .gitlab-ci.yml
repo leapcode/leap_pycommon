@@ -61,3 +61,10 @@ package:amd64_zesty:
     DIST: "zesty"
     REPONAMES: "client"
   <<: *job_definition
+
+package:amd64_artful:
+  variables:
+    ARCH: "amd64"
+    DIST: "artful"
+    REPONAMES: "client"
+  <<: *job_definition
