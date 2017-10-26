@@ -35,6 +35,10 @@ package:amd64_jessie:
     DIST: "jessie"
     REPONAME: "platform"
     REPONAMES: "platform,client"
+    # Default is to fail on warnings, we disable it here
+    # unless we fix the standards-version depending on the release
+    # (see https://0xacab.org/leap/bitmask-dev/issues/9060)
+    LINTIAN_OPTS: "-X filename-length"
   <<: *job_definition
 
 package:amd64_stretch:
@@ -42,6 +46,10 @@ package:amd64_stretch:
     ARCH: "amd64"
     DIST: "stretch"
     REPONAMES: "platform,client"
+    # Default is to fail on warnings, we disable it here
+    # unless we fix the standards-version depending on the release
+    # (see https://0xacab.org/leap/bitmask-dev/issues/9060)
+    LINTIAN_OPTS: "-X filename-length"
   <<: *job_definition
 
 package:amd64_buster:
@@ -49,10 +57,6 @@ package:amd64_buster:
     ARCH: "amd64"
     DIST: "buster"
     REPONAMES: "platform,client"
-    # Default is to fail on warnings, we disable it here
-    # unless we fix the standards-version depending on the release
-    # (see https://0xacab.org/leap/bitmask-dev/issues/9060)
-    LINTIAN_OPTS: "-X filename-length"
   <<: *job_definition
 
 package:amd64_zesty:
@@ -60,6 +64,10 @@ package:amd64_zesty:
     ARCH: "amd64"
     DIST: "zesty"
     REPONAMES: "client"
+    # Default is to fail on warnings, we disable it here
+    # unless we fix the standards-version depending on the release
+    # (see https://0xacab.org/leap/bitmask-dev/issues/9060)
+    LINTIAN_OPTS: "-X filename-length"
   <<: *job_definition
 
 package:amd64_artful:
