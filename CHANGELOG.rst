@@ -3,10 +3,21 @@
 Changelog
 ---------
 
-0.6.3 - `master`_
+0.6.4 - `master`_
 -----------------
 
 .. note:: This version is not yet released and is under active development.
+
+0.6.3 Nov 22, 2017
+------------------
+
+Bugfixes
+++++++++
+- Fix pyzmq pinning.
+
+Features
+++++++++
+- Packaging improvements
 
 0.6.2 Sep 29, 2017
 ------------------
