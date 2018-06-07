@@ -29,18 +29,6 @@ test:
   script:
   - tox --recreate
 
-package:amd64_jessie:
-  variables:
-    ARCH: "amd64"
-    DIST: "jessie"
-    REPONAME: "platform"
-    REPONAMES: "platform,client"
-    # Default is to fail on warnings, we disable it here
-    # unless we fix the standards-version depending on the release
-    # (see https://0xacab.org/leap/bitmask-dev/issues/9060)
-    LINTIAN_OPTS: "-X filename-length"
-  <<: *job_definition
-
 package:amd64_stretch:
   variables:
     ARCH: "amd64"
@@ -66,20 +54,19 @@ package:amd64_sid:
     REPONAMES: "client"
   <<: *job_definition
 
-package:amd64_zesty:
-  variables:
-    ARCH: "amd64"
-    DIST: "zesty"
-    REPONAMES: "client"
-    # Default is to fail on warnings, we disable it here
-    # unless we fix the standards-version depending on the release
-    # (see https://0xacab.org/leap/bitmask-dev/issues/9060)
-    LINTIAN_OPTS: "-X filename-length"
-  <<: *job_definition
-
 package:amd64_artful:
   variables:
     ARCH: "amd64"
     DIST: "artful"
     REPONAMES: "client"
+  <<: *job_definition
+
+package:amd64_bionic:
+  variables:
+    ARCH: "amd64"
+    DIST: "bionic"
+    REPONAMES: "client"
+    # Default is to fail on warnings, we disable it here
+    # unless all lintian warnings are fixed (#9033)
+    LINTIAN_OPTS: "-X filename-length, --suppress-tags newer-standards-version"
   <<: *job_definition
